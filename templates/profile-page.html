@@ -1,0 +1,6 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Profile page</h1>
+    {{ session[current_user].display_name }}
+{% endblock %}
