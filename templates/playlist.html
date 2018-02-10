@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>{{ playlist.name }}</h1>
+    <table>
+        <tr>
+            <th>TITLE</th>
+            <th>ARTIST</th>
+            <th>ALBUM</th>
+            <th>DURATION</th>
+            <th>BPM</th>
+        </tr>
+        {% if playlist_tracks %}
+            {% for item in playlist_tracks %}
+                <tr>
+                    <td>{{ item.track.title }}</td>
+                    <td>{{ item.track.artist }}</td>
+                    <td>{{ item.track.album }}</td>
+                    <td>{{ item.track.duration }}</td>
+                    <td>{{ item.track.tempo }}</td>
+                </tr>
+            {% endfor %}
+        {% else %}
+            This playlist is empty!
+        {% endif %}
+{% endblock %}

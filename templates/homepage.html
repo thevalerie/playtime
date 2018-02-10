@@ -2,8 +2,5 @@
 
 {% block content %}
     <h1>Welcome to PlayTime!</h1>
-    <h2><a href='{{ authorization_url }}'>Log in to your Spotify account</a>:</h2>
-    <!-- <form action='/login' id='loginForm'>
-        <input type='submit' id='loginButton' value='Log In'>
-    </form> -->
+    <input type="button" value="Log in to your Spotify account" onclick="window.location.href='{{ authorization_url }}'""/>
 {% endblock %}

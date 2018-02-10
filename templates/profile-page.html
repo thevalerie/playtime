@@ -2,5 +2,22 @@
 
 {% block content %}
     <h1>Profile page</h1>
-    {{ session[current_user].display_name }}
+    Hi {{ user.display_name }}!</br>
+    {% if playlists %}
+        Select a playlist to work on:
+        <ul>
+            {% for playlist in playlists %}
+                <li><a href='/playlist/{{ playlist.playlist_id }}'>{{ playlist.name }}</a></li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <h3>Looks like you haven't added any playlists yet! Sync playlists from Spotify:</h3>
+        <form action='/add_playlists' method="POST" id='addPlaylistsForm'>
+            {% for sp_playlist in spotify_playlists %}
+                <input type="checkbox" name="sp_playlists" value={{ sp_playlist.id }}>
+                {{ sp_playlist.name }}</br>
+            {% endfor %}
+            <input type="submit" value="Sync from Spotify">
+        </form>
+    {% endif %}
 {% endblock %}
