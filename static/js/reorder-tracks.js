@@ -3,9 +3,9 @@
 function reorderTracks(e, tr) {
     let originals = tr.children();
     let helper = tr.clone();
-    // helper.children().each(function(track) {
-    //     $(this).width(originals.eq(track).width())
-    // });
+    helper.children().each(function(track) {
+        $(this).width(originals.eq(track).width())
+    });
     return helper;
 }
 
@@ -15,7 +15,7 @@ function reorderTracks(e, tr) {
 // }
 
 $("#tracksTable").sortable( {
-    helper: reorderTracks,    
+    helper: reorderTracks,
     }).disableSelection();
 
 

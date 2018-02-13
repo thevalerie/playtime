@@ -10,6 +10,9 @@
                 <li><a href='/playlist/{{ playlist.playlist_id }}'>{{ playlist.name }}</a></li>
             {% endfor %}
         </ul>
+        </br>
+            <span id="importMore">Import more playlists from Spotify</span>
+            <script type="text/javascript" src="/static/js/load-playlists.js"></script>
     {% else %}
         <h3>Looks like you haven't added any playlists yet! Sync playlists from Spotify:</h3>
         <form action='/add_playlists' method="POST" id='addPlaylistsForm'>
