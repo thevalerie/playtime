@@ -61,7 +61,7 @@ def add_track_to_db(sp_track, audio_features):
     explicit = sp_track['explicit']
     title = sp_track['name']
     artist = ', '.join(artist['name'] for artist in sp_track['artists'])
-    tempo = audio_features['tempo']
+    tempo = int(round(audio_features['tempo']))
     danceability = audio_features['danceability']
     energy = audio_features['energy']
     valence = audio_features['valence']

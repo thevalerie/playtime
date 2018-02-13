@@ -49,7 +49,7 @@ class Track(db.Model):
     artist = db.Column(db.String(100))
     album = db.Column(db.String(100))
     duration = db.Column(db.Integer)
-    tempo = db.Column(db.Float)
+    tempo = db.Column(db.Integer)
     danceability = db.Column(db.Float)
     energy = db.Column(db.Float)
     valence = db.Column(db.Float)

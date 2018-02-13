@@ -22,7 +22,9 @@ app.jinja_env.undefined = StrictUndefined
 def homepage():
     """Homepage"""
 
-    # if 'access_token' not in session:
+    if 'access_token' in session:
+        return redirect('/profile')
+
     oauth = a.create_oauth()
     authorization_url, state = a.get_auth_url(oauth)
     session['state'] = state
@@ -117,12 +119,8 @@ def add_playlists_to_db():
 
             # get audio features info from Spotify
             audio_features = a.get_track_data(sp_track_id)
-            print audio_features
-            
             # create track object and add to the db
             track = f.add_track_to_db(sp_track, audio_features)
-
-
             # create PlaylistTrack object and add to the db
             f.add_playlist_track_to_db(playlist, track, position)
   
@@ -136,12 +134,11 @@ def work_on_playlist(playlist_id):
 
     # query database to get the playlist info and list of tracks in the playlist
     playlist = Playlist.query.get(playlist_id)
-    playlist_tracks = PlaylistTrack.query.filter(PlaylistTrack.playlist_id == playlist_id).all()
-
+    playlist_tracks = PlaylistTrack.query.filter(PlaylistTrack.playlist_id == playlist_id).order_by(PlaylistTrack.position).all()
     # send API call to Spotify to see if the tracks in the playlist have changed
     sp_user_id = User.query.get(session['current_user']).sp_user_id
-    sp_tracks = a.get_playlist_tracks(sp_user_id, playlist.sp_playlist_id)
-    print sp_tracks
+    # sp_tracks = a.get_playlist_tracks(sp_user_id, playlist.sp_playlist_id)
+    # print sp_tracks
 
     # if sp_tracks is different from the tracks in the db for that playlist
     # ask user if they want to resync from spotify, 
