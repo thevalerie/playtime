@@ -13,7 +13,7 @@
                 <th>BPM</th>
             </tr>
             </thead>
-            <tbody id="tracksTable">
+            <tbody id="tracksTable" data-playlist-id={{ playlist.playlist_id }}>
                 {% for item in playlist_tracks %}
                     <tr class='track' data-pt-id={{ item.pt_id }} data-position={{ item.position }}>
                         <td>{{ item.track.title }}</td>

@@ -88,3 +88,18 @@ def add_playlist_track_to_db(playlist, track, position):
     db.session.commit()
 
 
+def update_track_order(new_track_order):
+    """Get the PlaylistTrack object from the database and update its position"""
+
+    updated_pt_objects = []
+
+    for pt_id, new_position in new_track_order.iteritems():
+        playlist_track = PlaylistTrack.query.get(int(pt_id))
+        playlist_track.position = (int(new_position))
+        updated_pt_objects.append(playlist_track)
+
+    db.session.commit()
+
+    print "Updated in DB:", updated_pt_objects
+
+

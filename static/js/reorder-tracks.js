@@ -10,14 +10,16 @@ function reorderTracks(evt, tr) {
 }
 
 function updateTrackOrder(evt) {
+
+    let newTrackOrder = new Object()
+
     $('.track').each(function(i) {
         $(this).attr('data-position', i);
+        newTrackOrder[$(this).attr('data-pt-id')] = $(this).attr('data-position')
     });
-}
 
-function updateTrackOrderDB() {
-    // $.ajax('/reorder', {}, reorderTracks);
-    // console.log("Finished sending AJAX")
+    $.post('/reorder', {'new_track_order' : JSON.stringify(newTrackOrder)},
+                        function(data){ console.log(data) });
 
 }
 

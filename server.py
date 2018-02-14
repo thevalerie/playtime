@@ -2,6 +2,7 @@
 from jinja2 import StrictUndefined
 from flask_debugtoolbar import DebugToolbarExtension
 from flask import (Flask, render_template, redirect, request, flash, session, url_for)
+import json
 import sys
 import requests
 import config as c
@@ -146,7 +147,17 @@ def work_on_playlist(playlist_id):
     return render_template('playlist.html', playlist=playlist, playlist_tracks=playlist_tracks)
 
 
-# @app.route('/reorder')
+@app.route('/reorder', methods=['POST'])
+def update_playlist_in_db():
+    """Update the track order of a playlist in the database"""
+
+    # playlist_id = request.form.get('playlist_id')
+    new_track_order = json.loads(request.form.get('new_track_order'))
+    print new_track_order
+    print type(new_track_order)
+    f.update_track_order(new_track_order)
+
+    return 'Success!'
 
 
 

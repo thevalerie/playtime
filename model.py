@@ -76,6 +76,12 @@ class PlaylistTrack(db.Model):
     playlist = db.relationship('Playlist', backref='playlistTracks')
     track = db.relationship('Track', backref='playlistTracks')
 
+    def __repr__(self):
+        """Show track order"""
+
+        return "\n<PlaylistTrack pt_id={} position={}>".format(self.pt_id,
+                                                               self.position)
+
 
 
 # class Label(db.Model):
