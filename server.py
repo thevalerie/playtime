@@ -7,7 +7,8 @@ import sys
 import requests
 import config as c
 import api_calls as a
-import functions as f
+import db_functions as f
+import helper as h
 from model import User, Playlist, PlaylistTrack, Track, connect_to_db, db
 # from api_calls import (create_oauth, get_auth_url, get_token, get_user_profile,
 #                        get_user_playlists, get_playlist_data, get_track_data,
@@ -61,7 +62,7 @@ def log_in():
     response = a.get_token(code)
     # if anything other than a 200 response code, call error message func
     if response.status_code != 200:
-        return response_error(response.status_code)
+        return h.response_error(response.status_code)
 
     # if success, save the access token and refresh token to the session
     token = response.json()
@@ -82,7 +83,7 @@ def view_user_profile():
     # check to see if the current user is in the db/add if not
     current_user = f.check_db_for_user(sp_user_id, display_name)
     # add current user id to session
-    f.add_user_to_session(current_user)
+    h.add_user_to_session(current_user)
 
     spotify_playlists = a.get_user_playlists(c.user_playlists_url)
 
@@ -158,15 +159,6 @@ def update_playlist_in_db():
     f.update_track_order(new_track_order)
 
     return 'Success!'
-
-
-
-#################Helper functions######################
-
-def response_error(status_code):
-    """Status code error messaging"""
-
-    return render_template('error-page.html', status_code=status_code)
 
 
 if __name__ == "__main__":

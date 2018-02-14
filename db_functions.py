@@ -32,14 +32,6 @@ def add_user_to_db(sp_user_id, display_name):
     return current_user
 
 
-def add_user_to_session(current_user):
-    """Add the current user id to the session"""
-
-    session['current_user'] = current_user.user_id
-
-    print "Added to session: current_user", session['current_user']
-
-
 def add_playlist_to_db(user_id, sp_playlist_id, playlist_name):
     """Add a playlist to database"""
 
