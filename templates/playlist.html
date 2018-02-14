@@ -15,7 +15,7 @@
             </thead>
             <tbody id="tracksTable">
                 {% for item in playlist_tracks %}
-                    <tr class='track' data-pt-id='{{ item.pt_id }}' data-position='{{ item.position }}'>
+                    <tr class='track' data-pt-id={{ item.pt_id }} data-position={{ item.position }}>
                         <td>{{ item.track.title }}</td>
                         <td>{{ item.track.artist }}</td>
                         <td>{{ item.track.album }}</td>
