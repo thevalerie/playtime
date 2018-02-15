@@ -5,7 +5,8 @@ from flask import session
 from model import User, Playlist, PlaylistTrack, Track, connect_to_db, db
 from config import (client_id, client_secret, redirect_uri, scope,
                     authorization_base_url, token_url, user_profile_url,
-                    user_playlists_url, users_base_url, audio_features_url,)
+                    user_playlists_url, users_base_url, tracks_url,
+                    audio_features_url,)
 
 
 def create_oauth():
@@ -32,8 +33,6 @@ def get_auth_url(oauth):
 
 def get_token(code):
     """Get OAuth token"""
-
-    # import pdb; pdb.set_trace()
 
     # create params to send to retrieve OAuth token
     payload = {'grant_type': 'authorization_code',
@@ -80,6 +79,27 @@ def get_playlist_data(sp_user_id, sp_playlist_id):
     return [playlist_name, tracks_to_add]
 
 
+def get_tracks_sp(tracks_to_add):
+
+    payload = {'ids': tracks_to_add}
+
+    response = requests.get(tracks_url, payload)
+    basic_track_info = response.json()['tracks']
+
+    return basic_track_info
+
+
+def get_audio_features_sp(tracks_to_add):
+
+    headers = create_headers()
+    payload = {'ids': tracks_to_add}
+
+    response = requests.get(audio_features_url, payload)
+    audio_features = response.json()['audio_features']
+
+    return audio_features
+
+
 def get_track_data(sp_track_id):
 
     url = (audio_features_url + sp_track_id)
@@ -91,19 +111,37 @@ def get_track_data(sp_track_id):
     return audio_features
 
 
-def get_playlist_tracks(sp_user_id, sp_playlist_id):
+def get_playlist_tracks_sp(sp_user_id, sp_playlist_id):
 
-    url = (users_base_url + sp_user_id + '/playlists' + sp_playlist_id + '/tracks')
+    url = (users_base_url + sp_user_id + '/playlists/' + sp_playlist_id + '/tracks')
     headers = create_headers()
     payload = {'fields': 'items(track(id))'}
 
     response = requests.get(url, headers=headers, params=payload)
-    sp_tracks = response.json()
+    sp_tracks = response.json()['items']
 
     return sp_tracks
 
 
+def update_playlist_sp(new_track_listing):
 
+    # updated_pt_objects = []
+
+    # for pt_id, new_position in new_track_listing.iteritems():
+    #     pass
+
+
+    #     sp_track_id = PlaylistTrack.query.get(int(pt_id))
+    #     playlist_track.position = (int(new_position))
+    #     updated_pt_objects.append(playlist_track) 
+
+    # url = (users_base_url + sp_user_id + '/playlists/' + sp_playlist_id + '/tracks')
+    # headers = create_headers()
+    # payload = {'uris': }
+
+    # response.requests.put(url, headers=headers, params=payload)
+
+    pass
 
 
 

@@ -99,32 +99,15 @@ def view_user_profile():
 def add_playlists_to_db():
     """Pull in playlists from Spotify and add the relevant information to the DB"""
 
-    # get the playlists checked in the add playlists form
+    # get the playlists that the user selected in the add playlists form
     playlists_to_add = request.form.getlist('sp_playlists')
     sp_user_id = User.query.get(session['current_user']).sp_user_id
     
     print playlists_to_add
 
-    # send API call to get the playlist info
-    for sp_playlist_id in playlists_to_add:
-        playlist_name, tracks_to_add = a.get_playlist_data(sp_user_id, sp_playlist_id)
-        print tracks_to_add
-
-        # create playlist object and add to db
-        playlist = f.add_playlist_to_db(session['current_user'], sp_playlist_id, playlist_name)
-
-        # get data for each track & add to database
-        for position, track_obj in enumerate(tracks_to_add):
-
-            sp_track = track_obj['track']
-            sp_track_id = sp_track['id']
-
-            # get audio features info from Spotify
-            audio_features = a.get_track_data(sp_track_id)
-            # create track object and add to the db
-            track = f.add_track_to_db(sp_track, audio_features)
-            # create PlaylistTrack object and add to the db
-            f.add_playlist_track_to_db(playlist, track, position)
+    # send API call to get the playlist info,
+    # add playlist and track info to the db
+    h.import_user_playlists(sp_user_id, playlists_to_add)
   
     # redirect back to the user profile page
     return redirect('/profile')
@@ -134,16 +117,12 @@ def add_playlists_to_db():
 def work_on_playlist(playlist_id):
     """View a selected playlist"""
 
-    # query database to get the playlist info and list of tracks in the playlist
+    # query database to get the playlist info
     playlist = Playlist.query.get(playlist_id)
-    playlist_tracks = PlaylistTrack.query.filter(PlaylistTrack.playlist_id == playlist_id).order_by(PlaylistTrack.position).all()
-    # send API call to Spotify to see if the tracks in the playlist have changed
-    sp_user_id = User.query.get(session['current_user']).sp_user_id
-    # sp_tracks = a.get_playlist_tracks(sp_user_id, playlist.sp_playlist_id)
-    # print sp_tracks
 
-    # if sp_tracks is different from the tracks in the db for that playlist
-    # ask user if they want to resync from spotify, 
+    # check Spotify to see if the user has changed the playlist since they last logged in
+    playlist_tracks = h.check_sp_playlist_info(playlist)
+    
 
     return render_template('playlist.html', playlist=playlist, playlist_tracks=playlist_tracks)
 
@@ -159,6 +138,17 @@ def update_playlist_in_db():
     f.update_track_order(new_track_order)
 
     return 'Success!'
+
+
+@app.route('/update_spotify', methods=['POST'])
+def update_playlist_in_spotify():
+    """Push playlist changes to Spotify"""
+
+    playlist_id = request.form.get('playlist_id')
+
+    h.update_spotify_tracks(playlist_id)
+
+    return 'Success'
 
 
 if __name__ == "__main__":

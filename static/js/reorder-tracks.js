@@ -20,9 +20,7 @@ function updateTrackOrder(evt) {
 
     $.post('/reorder', {'new_track_order' : JSON.stringify(newTrackOrder)},
                         function(data){ console.log(data) });
-
 }
-
 
 $("#tracksTable").sortable( {
     helper: reorderTracks,
