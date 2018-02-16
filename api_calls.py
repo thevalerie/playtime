@@ -1,5 +1,4 @@
 # coding=utf8
-from requests_oauthlib import OAuth2Session
 import requests
 from flask import session
 from model import User, Playlist, PlaylistTrack, Track, connect_to_db, db
@@ -7,14 +6,6 @@ from config import (client_id, client_secret, redirect_uri, scope,
                     authorization_base_url, token_url, user_profile_url,
                     user_playlists_url, users_base_url, tracks_url,
                     audio_features_url,)
-
-
-def create_oauth():
-    """Create OAuth2 object"""
-    
-    oauth = OAuth2Session(client_id=client_id, redirect_uri=redirect_uri, scope=scope)
-
-    return oauth
 
 
 def create_headers():
@@ -25,10 +16,24 @@ def create_headers():
     return headers
 
 
-def get_auth_url(oauth):
-    """Takes in OAuth2 object, generates auth URL and state"""
-    
-    return oauth.authorization_url(authorization_base_url)
+def get_auth_url():
+    """"""
+
+    # create params to get code from Spotify OAuth
+    payload = {'client_id': client_id,
+               'response_type': 'code',
+               'redirect_uri': redirect_uri,
+               'state': 'ohheythere',
+               'scope': scope}
+
+    auth_url = authorization_base_url
+
+    for key, value in payload.iteritems():
+        auth_url += key + '=' + value + '&'
+
+    auth_url = auth_url.rstrip('&')
+
+    return auth_url
 
 
 def get_token(code):
@@ -81,9 +86,12 @@ def get_playlist_data(sp_user_id, sp_playlist_id):
 
 def get_tracks_sp(tracks_to_add):
 
+    headers = create_headers()
     payload = {'ids': tracks_to_add}
 
-    response = requests.get(tracks_url, payload)
+    response = requests.get(tracks_url, headers=headers, params=payload)
+    print response
+    # import pdb; pdb.set_trace()
     basic_track_info = response.json()['tracks']
 
     return basic_track_info
@@ -94,7 +102,7 @@ def get_audio_features_sp(tracks_to_add):
     headers = create_headers()
     payload = {'ids': tracks_to_add}
 
-    response = requests.get(audio_features_url, payload)
+    response = requests.get(audio_features_url, headers=headers, params=payload)
     audio_features = response.json()['audio_features']
 
     return audio_features
@@ -119,29 +127,20 @@ def get_playlist_tracks_sp(sp_user_id, sp_playlist_id):
 
     response = requests.get(url, headers=headers, params=payload)
     sp_tracks = response.json()['items']
+    sp_track_ids = [track['track']['id'] for track in sp_tracks]
 
-    return sp_tracks
-
-
-def update_playlist_sp(new_track_listing):
-
-    # updated_pt_objects = []
-
-    # for pt_id, new_position in new_track_listing.iteritems():
-    #     pass
+    return sp_track_ids
 
 
-    #     sp_track_id = PlaylistTrack.query.get(int(pt_id))
-    #     playlist_track.position = (int(new_position))
-    #     updated_pt_objects.append(playlist_track) 
+def update_playlist_sp(sp_user_id, sp_playlist_id, new_track_ids):
 
-    # url = (users_base_url + sp_user_id + '/playlists/' + sp_playlist_id + '/tracks')
-    # headers = create_headers()
-    # payload = {'uris': }
+    url = (users_base_url + sp_user_id + '/playlists/' + sp_playlist_id + '/tracks')
+    headers = create_headers()
+    payload = {'uris': new_track_ids}
 
-    # response.requests.put(url, headers=headers, params=payload)
+    response = requests.put(url, headers=headers, params=payload)
 
-    pass
+    return response.json()
 
 
 

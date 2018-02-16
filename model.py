@@ -71,7 +71,7 @@ class PlaylistTrack(db.Model):
     pt_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     playlist_id = db.Column(db.Integer, db.ForeignKey('playlists.playlist_id'), nullable=False)
     track_id = db.Column(db.Integer, db.ForeignKey('tracks.track_id'), nullable=False)
-    position = db.Column(db.Integer, nullable=False)
+    position = db.Column(db.Integer)
 
     playlist = db.relationship('Playlist', backref='playlistTracks')
     track = db.relationship('Track', backref='playlistTracks')

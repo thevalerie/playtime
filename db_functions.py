@@ -98,7 +98,8 @@ def update_track_order(new_track_order):
 def get_playlist_tracks_db(playlist_id):
     """Get the track IDs for a given playlist, in position order"""
 
-    playlist_tracks = PlaylistTrack.query.filter(PlaylistTrack.playlist_id == playlist_id).order_by(PlaylistTrack.position).all()
+    playlist_tracks = PlaylistTrack.query.filter(PlaylistTrack.playlist_id == playlist_id,
+                                                 PlaylistTrack.position != None).order_by(PlaylistTrack.position).all()
 
     return playlist_tracks
 
@@ -114,47 +115,44 @@ def remove_playlist_tracks_db(playlist_tracks_to_remove):
     print "Removed tracks from playlist"
 
 
-def update_playlist_tracks_db(sp_playlist_id, sp_track_ids):
+def update_tracks_db(sp_tracks, audio_features):
     """"""
 
-    # handle adding new tracks from Spotify
-    tracks_to_add = ""
-    playlist_tracks_to_add = []
-        # query tracks table to see if it's already in the db
-    for sp_track_id in sp_track_ids:
-        track_obj = Track.query.filter(Track.sp_track_id == sp_track_id).first()
-        pt_obj = PlaylistTrack.query.filter(PlaylistTrack.track.sp_track_id == sp_track_id,
-                                            PlaylistTrack.playlist.sp_playlist_id == sp_playlist_id).first
-        # if not, add to string of IDs to send
-        if not track_obj:
-            tracks_to_add += "," + sp_track_id
-        # if the playlist_track object isn't in the db, add to the list to be created
-        if not pt_obj:
-            playlist_tracks_to_add.append(sp_track_id)
-
-    sp_tracks = a.get_tracks_sp(tracks_to_add)
-    audio_features = a.get_audio_features_sp(tracks_to_add)
-
     # for each track that needs to be added, pass the Spotify track data and audio features to the db function
-    for i in len(range(sp_tracks)):
+    for i in range(len(sp_tracks)):
         sp_track = sp_tracks[i]
         audio_features = audio_features[i]
         add_track_to_db(sp_track, audio_features)
+
+
+def update_playlist_tracks_db(sp_track_ids, sp_playlist_id, playlist_tracks_to_add):
 
     for i, sp_track_id in enumerate(sp_track_ids):
         # check to see if the track & playlist combo is in the pt table
         # if not, add
         if sp_track_id in playlist_tracks_to_add:
-            playlist = Playlist.query.filter(Playlist.sp_playlist_id == sp_playlist_id).first
-            track = Track.query.filter(Track.sp_track_id == sp_track_id).first
+            playlist = db.session.query(Playlist).filter(Playlist.sp_playlist_id == sp_playlist_id).first()
+            track = db.session.query(Track).filter(Track.sp_track_id == sp_track_id).first()
             position = i
             add_playlist_track_to_db(playlist, track, position)
         # if it's already in the db, check position against sp data and update if necessary
         else:
-            playlist_track = PlaylistTrack.query.filter(PlaylistTrack.track.sp_track_id == sp_track_id,
-                                                        PlaylistTrack.playlist.sp_playlist_id == sp_playlist_id).first
+            playlist_track = db.session.query(PlaylistTrack).join(PlaylistTrack.playlist).join(PlaylistTrack.track).filter(Track.sp_track_id == sp_track_id,
+                                                        Playlist.sp_playlist_id == sp_playlist_id).first()
             if playlist_track.position != i:
                 playlist_track.position = i
+
+
+def get_tracks_in_playlist(playlist_id):
+    """Takes a playlist ID, returns a list of track objects in that playlist"""
+
+    new_track_listings = db.session.query(Track).join(PlaylistTrack).filter(PlaylistTrack.playlist_id == playlist_id).all()
+    
+    print new_track_listings
+
+    return new_track_listings
+
+
 
 
 

@@ -27,18 +27,12 @@ def homepage():
     if 'access_token' in session:
         return redirect('/profile')
 
-    oauth = a.create_oauth()
-    authorization_url, state = a.get_auth_url(oauth)
-    session['state'] = state
+    session['state'] = 'ohheythere'
 
-    # can try to refactor using requests library instead of OAuth object
-    # paylod = {'client_id': client_id,
-    #           'response_type': 'code'
-    #           'redirect_uri': redirect_uri,
-                # 'state': 'ohheythere'
-    #           'scope': scope,}
+    # oauth = a.create_oauth()
+    # authorization_url, state = a.get_auth_url(oauth)
 
-    # response = requests.get(authorization_base_url, payload)
+    authorization_url = a.get_auth_url()
 
     return render_template("homepage.html", authorization_url=authorization_url)
 
@@ -46,8 +40,6 @@ def homepage():
 @app.route('/login')
 def log_in():
     """Return path after user logs in to Spotify"""
-
-    # import pdb; pdb.set_trace()
 
     # retrieve code and state from the return value from the OAuth
     code = request.args.get('code')
@@ -122,7 +114,6 @@ def work_on_playlist(playlist_id):
 
     # check Spotify to see if the user has changed the playlist since they last logged in
     playlist_tracks = h.check_sp_playlist_info(playlist)
-    
 
     return render_template('playlist.html', playlist=playlist, playlist_tracks=playlist_tracks)
 
@@ -140,7 +131,7 @@ def update_playlist_in_db():
     return 'Success!'
 
 
-@app.route('/update_spotify', methods=['POST'])
+@app.route('/push_to_spotify', methods=['POST'])
 def update_playlist_in_spotify():
     """Push playlist changes to Spotify"""
 

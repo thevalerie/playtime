@@ -3,6 +3,7 @@
 {% block content %}
     <h1>{{ playlist.name }}</h1>
     {% if playlist_tracks %}
+        <button id='saveChanges' data-playlist-id={{ playlist.playlist_id }}>Save Changes</button>
         <table id='playlistTable'>
             <thead>
             <tr>
@@ -26,6 +27,7 @@
             </tbody>  
         </table>
         <script type="text/javascript" src="/static/js/reorder-tracks.js"></script>
+        <script type="text/javascript" src="/static/push-changes-to-spotify.js"></script>
     {% else %}
         This playlist is empty!
     {% endif %}
