@@ -29,9 +29,6 @@ def homepage():
 
     session['state'] = 'ohheythere'
 
-    # oauth = a.create_oauth()
-    # authorization_url, state = a.get_auth_url(oauth)
-
     authorization_url = a.get_auth_url()
 
     return render_template("homepage.html", authorization_url=authorization_url)

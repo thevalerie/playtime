@@ -146,11 +146,12 @@ def update_playlist_tracks_db(sp_track_ids, sp_playlist_id, playlist_tracks_to_a
 def get_tracks_in_playlist(playlist_id):
     """Takes a playlist ID, returns a list of track objects in that playlist"""
 
-    new_track_listings = db.session.query(Track).join(PlaylistTrack).filter(PlaylistTrack.playlist_id == playlist_id).all()
+    tracks_in_playlist = db.session.query(Track).join(PlaylistTrack).filter(PlaylistTrack.playlist_id == playlist_id,
+                                                                            PlaylistTrack.position != None).order_by(PlaylistTrack.position).all()
     
-    print new_track_listings
+    print tracks_in_playlist
 
-    return new_track_listings
+    return tracks_in_playlist
 
 
 
