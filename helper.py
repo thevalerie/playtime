@@ -26,12 +26,16 @@ def response_error(status_code):
 def import_user_playlists(sp_user_id, playlists_to_add):
     """send API call to get the playlist info, add playlist and track info to the db"""
 
+    new_playlists = []
+
     for sp_playlist_id in playlists_to_add:
         playlist_name, tracks_to_add = a.get_playlist_data(sp_user_id, sp_playlist_id)
         print tracks_to_add
 
         # create playlist object and add to db
         playlist = f.add_playlist_to_db(session['current_user'], sp_playlist_id, playlist_name)
+
+        new_playlists.append(playlist)
 
         # get data for each track & add to database
         for position, track_obj in enumerate(tracks_to_add):
@@ -47,6 +51,8 @@ def import_user_playlists(sp_user_id, playlists_to_add):
             f.add_playlist_track_to_db(playlist, track, position)
 
     print "All playlists and tracks added"
+
+    return new_playlists
 
 
 def check_sp_playlist_info(playlist):

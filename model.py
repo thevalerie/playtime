@@ -83,10 +83,25 @@ class PlaylistTrack(db.Model):
                                                                self.position)
 
 
+class Filter(db.Model):
+    """Filter for a song type"""
+    
+    filter_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    filter_name = db.Column(db.String(100), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
+    duration_min = db.Column(db.Integer)
+    duration_max = db.Column(db.Integer)
+    tempo_min = db.Column(db.Integer)
+    tempo_max = db.Column(db.Integer)
+    danceability_min = db.Column(db.Float)
+    danceability_max = db.Column(db.Float)
+    energy_min = db.Column(db.Float)
+    energy_max = db.Column(db.Float)
+    valence_min = db.Column(db.Float)
+    valence_max = db.Column(db.Float)
+    explicit = db.Column(db.Boolean)
 
-# class Label(db.Model):
-#     """Label for a song type"""
-#     pass
+    user = db.relationship('User', backref='filters')
 
 # class Template(db.Model):
 #     """Template for a type of playlist"""

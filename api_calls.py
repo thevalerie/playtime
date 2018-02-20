@@ -10,7 +10,7 @@ from config import (client_id, client_secret, redirect_uri, scope,
 
 def create_headers():
     """Create headers for API requests with the access token"""
-
+    
     headers = {'Authorization': 'Bearer ' + session['access_token']}
 
     return headers
@@ -52,18 +52,23 @@ def get_token(code):
     return response
 
 
-def get_user_profile(url):
+def get_user_profile():
 
+    url = user_profile_url
     headers = create_headers()
+
     response = requests.get(url, headers=headers)
     spotify_user = response.json()
 
     return [spotify_user['id'], spotify_user['display_name']]
 
 
-def get_user_playlists(url):
+def get_user_playlists():
 
+    url = user_playlists_url
     headers = create_headers()
+    # payload = {'offset': offset}
+
     response = requests.get(url, headers=headers)
     spotify_playlists = response.json()['items']
 
@@ -91,7 +96,7 @@ def get_tracks_sp(tracks_to_add):
 
     response = requests.get(tracks_url, headers=headers, params=payload)
     print response
-    # import pdb; pdb.set_trace()
+    
     basic_track_info = response.json()['tracks']
 
     return basic_track_info

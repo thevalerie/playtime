@@ -1,7 +1,7 @@
 # coding=utf8
 from jinja2 import StrictUndefined
 from flask_debugtoolbar import DebugToolbarExtension
-from flask import (Flask, render_template, redirect, request, flash, session, url_for)
+from flask import (Flask, render_template, redirect, request, flash, session, jsonify)
 import json
 import sys
 import requests
@@ -53,6 +53,9 @@ def log_in():
     if response.status_code != 200:
         return h.response_error(response.status_code)
 
+    print response
+
+    # import pdb; pdb.set_trace()
     # if success, save the access token and refresh token to the session
     token = response.json()
     session['access_token'] = token['access_token']
@@ -68,38 +71,46 @@ def view_user_profile():
     """View current user profile page"""
     
     # get the Spotify user profile
-    sp_user_id, display_name = a.get_user_profile(c.user_profile_url)
+    sp_user_id, display_name = a.get_user_profile()
     # check to see if the current user is in the db/add if not
     current_user = f.check_db_for_user(sp_user_id, display_name)
     # add current user id to session
     h.add_user_to_session(current_user)
 
-    spotify_playlists = a.get_user_playlists(c.user_playlists_url)
-
-    playlists = Playlist.query.filter(Playlist.user_id == current_user.user_id).all()
-
     return render_template("profile-page.html",
-                           user=current_user,
-                           playlists=playlists,
-                           spotify_playlists=spotify_playlists,)
+                           user=current_user)
 
 
-@app.route('/add_playlists', methods=['POST'])
+@app.route('/get_db_playlists.json')
+def query_db_for_user_playlists():
+    
+    db_playlists = f.get_user_playlists()
+
+    return jsonify({'dbPlaylists': db_playlists})
+
+
+@app.route('/get_sp_playlists.json')
+def query_sp_for_user_playlists():
+
+    spotify_playlists = a.get_user_playlists()
+
+    return jsonify({'spPlaylists': spotify_playlists})
+
+
+@app.route('/add_playlists.json', methods=['POST'])
 def add_playlists_to_db():
     """Pull in playlists from Spotify and add the relevant information to the DB"""
 
     # get the playlists that the user selected in the add playlists form
     playlists_to_add = request.form.getlist('sp_playlists')
     sp_user_id = User.query.get(session['current_user']).sp_user_id
-    
-    print playlists_to_add
 
     # send API call to get the playlist info,
     # add playlist and track info to the db
-    h.import_user_playlists(sp_user_id, playlists_to_add)
+    new_playlists = h.import_user_playlists(sp_user_id, playlists_to_add)
   
     # redirect back to the user profile page
-    return redirect('/profile')
+    return jsonify({'newDbPlaylists': new_playlists})
 
 
 @app.route('/playlist/<playlist_id>')
@@ -125,7 +136,7 @@ def update_playlist_in_db():
     print type(new_track_order)
     f.update_track_order(new_track_order)
 
-    return 'Success!'
+    return 'Successfully updated playlist in DB'
 
 
 @app.route('/push_to_spotify', methods=['POST'])
@@ -136,7 +147,45 @@ def update_playlist_in_spotify():
 
     h.update_spotify_tracks(playlist_id)
 
-    return 'Success'
+    return 'Successfully updated playlist in Spotify'
+
+
+@app.route('/more_playlists')
+def load_more_playlists():
+    """Load & display more playlists from Spotify"""
+
+    offset = request.args.get('offset')
+
+    more_playlists = a.get_user_playlists(offset=offset)
+
+
+@app.route('/my_filters')
+def view_filters():
+    """Display current user's song filters"""
+
+    filters = f.get_user_filters_db()
+
+    return render_template('user-filters.html', filters=filters)
+
+
+@app.route('/create_filter', methods=['POST'])
+def create_new_filter():
+    """UI for user to create a new filter"""
+
+
+
+    # get the playlists that the user selected in the add playlists form
+    playlists_to_add = request.form.getlist('sp_playlists')
+    sp_user_id = User.query.get(session['current_user']).sp_user_id
+    
+    print playlists_to_add
+
+    # send API call to get the playlist info,
+    # add playlist and track info to the db
+    h.import_user_playlists(sp_user_id, playlists_to_add)
+  
+    # redirect back to the user profile page
+    return redirect('/profile')
 
 
 if __name__ == "__main__":

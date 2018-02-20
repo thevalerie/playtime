@@ -32,6 +32,14 @@ def add_user_to_db(sp_user_id, display_name):
     return current_user
 
 
+def get_user_playlists():
+    """Get playlists associated with the current user"""
+
+    playlists = db.session.query(Playlist).filter(Playlist.user_id == session['current_user']).limit(20).all()
+
+    return playlists
+
+
 def add_playlist_to_db(user_id, sp_playlist_id, playlist_name):
     """Add a playlist to database"""
 
@@ -154,6 +162,11 @@ def get_tracks_in_playlist(playlist_id):
     return tracks_in_playlist
 
 
+def get_user_filters_db():
+    """Gets the list of filters in the database for the current user"""
 
+    user_filters = db.session.query(Filter).filter(Filter.user_id == session['current_user']).all()
+
+    return user_filters
 
 
