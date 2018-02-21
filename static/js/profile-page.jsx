@@ -15,19 +15,26 @@ class UserPlaylists extends React.Component {
         evt.preventDefault();
 
         // create an empty FormData object
-        let formInputs = new FormData();
+        window.formInputs = new FormData();
 
         // append the data from the sp-playlists child page
-        let playlistsToAdd = document.querySelector("input[name='sp_playlists']:checked").value
+        window.playlistsToAdd = document.querySelectorAll("input[name='sp_playlists']:checked")
+        
+        console.log(playlistsToAdd);
 
-        formInputs.append('sp_playlists', playlistsToAdd)
+        for (let playlist in playlistsToAdd) {
+            console.log(playlist['value']);
+            formInputs.append('sp_playlists', playlist['value'])
+        }
+
+        console.log('formInputs', formInputs)
 
         // create the fetch request
-        let fetchOptions = {'method': 'POST',
-                            'body': formInputs,
+        let fetchOptions = {method: 'POST',
+                            body: formInputs,
                             credentials: 'same-origin'};
 
-        fetch('/add_playlists', fetchOptions)
+        fetch('/add_playlists.json', fetchOptions)
             .then((response) => response.json())
             .then((data) => {
                 this.setState({dbPlaylists: this.state.dbPlaylists.concat(data)});
@@ -40,6 +47,7 @@ class UserPlaylists extends React.Component {
         fetch('/get_db_playlists.json', fetchOptions) // fetch user's playlists from the db
             .then((response) => response.json())
             .then((data) => {
+                console.log('data', data);
                 this.setState({dbPlaylists: this.state.dbPlaylists.concat(data)});
             });
         fetch('/get_sp_playlists.json', fetchOptions)
@@ -53,16 +61,16 @@ class UserPlaylists extends React.Component {
         return (
             <div>
                 <CurrentDbPlaylists playlists = {this.state.dbPlaylists} />
-                <PlaylistsToImport sp_playlists = {this.state.spPlaylists} />
+                <PlaylistsToImport sp_playlists = {this.state.spPlaylists} addPlaylists = {this.addPlaylists} />
             </div>
         )
     }
 }
-
+console.log('begin');
 ReactDOM.render(
-    <UserPlaylists>
-    <div>CurrentDbPlaylists</div>
-    <div>PlaylistsToImport</div>
-    </UserPlaylists>,
+    <UserPlaylists/>,
+
     document.getElementById('root')
 );
+console.log('end');
+

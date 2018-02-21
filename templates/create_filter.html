@@ -2,19 +2,30 @@
 
 {% block content %}
     <h1>Create a new filter</h1>
-    <h3>Filter by:</h3>
     <form>
-
-        <!-- duration_min = db.Column(db.Integer)
-        duration_max = db.Column(db.Integer)
-        tempo_min = db.Column(db.Integer)
-        tempo_max = db.Column(db.Integer)
-        danceability_min = db.Column(db.Float)
-        danceability_max = db.Column(db.Float)
-        energy_min = db.Column(db.Float)
-        energy_max = db.Column(db.Float)
-        valence_min = db.Column(db.Float)
-        valence_max = db.Column(db.Float)
-        explicit = db.Column(db.Boolean) -->
+        Filter name:
+        <input type="text" name="filter_name">
+        <h4>Filter by:</h4>
+        Exclude explicit?<input type="checkbox" name="explicit">
+        <br>Song length<br>
+            Min length:<input type="text" name="duration_min" placeholder="minutes:seconds">
+            Max length:<input type="text" name="duration_max" placeholder="minutes:seconds">
+        <br>Tempo<br>
+            Min tempo:<input type="text" name="tempo_min" placeholder="BPM (beats per minute)">
+            Max tempo:<input type="text" name="tempo_max" placeholder="BPM (beats per minute)">
+        <br>Danceability<br>
+            Min danceability:<select name="danceability_min">
+                {% for num in range(1,10) %}
+                    <option value={{ num }}>{{num}}</option>
+                {% endfor %}
+            Max tempo:<input type="text" name="danceability_max">
+        <br>Energy<br>
+            Min tempo:<input type="text" name="energy_min">
+            Max tempo:<input type="text" name="energy_max">
+        <br>Cheerfulness<br>
+            Min tempo:<input type="text" name="valence_min">
+            Max tempo:<input type="text" name="valence_max">
+        <br>
+            <input type="submit" value="Create new filter">
     </form>
 {% endblock %}

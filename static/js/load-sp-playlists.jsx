@@ -1,19 +1,29 @@
 "use strict";
 
 class PlaylistsToImport extends React.Component {
-    
+
+    addPlaylists(evt) {
+        this.props.addPlaylists(evt);
+    }    
     render() {
         let spPlaylistsToDisplay = [];
 
+        console.log('Spotify playlists:')
+        console.log(this.props.sp_playlists)
+
         for (let sp_playlist of this.props.sp_playlists) {
-            spPlaylistsToDisplay.push(<input type='checkbox' name='sp_playlists' value={ sp_playlist.id }>{ sp_playlist.name }</br>);
+            spPlaylistsToDisplay.push(<div><input type="checkbox" name="sp_playlists" value={ sp_playlist.id }/>{ sp_playlist.name }</div>);
         }
+
+        console.log(spPlaylistsToDisplay)
         
         return(
-            <form onSubmit=(this.props.addPlaylists)>
-                <div className='container'>
+            <div>
+                <form onSubmit={this.addPlaylists.bind(this)}>
                     { spPlaylistsToDisplay }
-                    <input type="submit" value="Sync from Spotify">
-                </div>
-            </form>
+                    <input type="submit" value="Sync from Spotify"/>
+                </form>
+            </div>
         )
+    }
+}

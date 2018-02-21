@@ -86,7 +86,10 @@ def query_db_for_user_playlists():
     
     db_playlists = f.get_user_playlists()
 
-    return jsonify({'dbPlaylists': db_playlists})
+    # make a list of dicts with just the id and name
+    playlist_data = [{ playlist.playlist_id: playlist.name} for playlist in db_playlists]
+
+    return jsonify(playlist_data)
 
 
 @app.route('/get_sp_playlists.json')
@@ -94,13 +97,15 @@ def query_sp_for_user_playlists():
 
     spotify_playlists = a.get_user_playlists()
 
-    return jsonify({'spPlaylists': spotify_playlists})
+    return jsonify(spotify_playlists)
 
 
 @app.route('/add_playlists.json', methods=['POST'])
 def add_playlists_to_db():
     """Pull in playlists from Spotify and add the relevant information to the DB"""
-
+    # import pdb
+    # pdb.set_trace()
+    print request.form
     # get the playlists that the user selected in the add playlists form
     playlists_to_add = request.form.getlist('sp_playlists')
     sp_user_id = User.query.get(session['current_user']).sp_user_id
@@ -108,9 +113,11 @@ def add_playlists_to_db():
     # send API call to get the playlist info,
     # add playlist and track info to the db
     new_playlists = h.import_user_playlists(sp_user_id, playlists_to_add)
+
+    playlist_data = [{ playlist.playlist_id: playlist.name} for playlist in new_playlists]
   
     # redirect back to the user profile page
-    return jsonify({'newDbPlaylists': new_playlists})
+    return jsonify(playlist_data)
 
 
 @app.route('/playlist/<playlist_id>')
@@ -168,24 +175,12 @@ def view_filters():
     return render_template('user-filters.html', filters=filters)
 
 
-@app.route('/create_filter', methods=['POST'])
+@app.route('/create_filter')
 def create_new_filter():
     """UI for user to create a new filter"""
-
-
-
-    # get the playlists that the user selected in the add playlists form
-    playlists_to_add = request.form.getlist('sp_playlists')
-    sp_user_id = User.query.get(session['current_user']).sp_user_id
-    
-    print playlists_to_add
-
-    # send API call to get the playlist info,
-    # add playlist and track info to the db
-    h.import_user_playlists(sp_user_id, playlists_to_add)
   
-    # redirect back to the user profile page
-    return redirect('/profile')
+    # redirect back to the user filters page
+    return render_template('create_filter.html')
 
 
 if __name__ == "__main__":
