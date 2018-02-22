@@ -87,7 +87,7 @@ def query_db_for_user_playlists():
     db_playlists = f.get_user_playlists()
 
     # make a list of dicts with just the id and name
-    playlist_data = [{ playlist.playlist_id: playlist.name} for playlist in db_playlists]
+    playlist_data = [{ 'playlist_id': playlist.playlist_id, 'name': playlist.name} for playlist in db_playlists]
 
     return jsonify(playlist_data)
 
@@ -105,16 +105,19 @@ def add_playlists_to_db():
     """Pull in playlists from Spotify and add the relevant information to the DB"""
     # import pdb
     # pdb.set_trace()
-    print request.form
+    print request.json
     # get the playlists that the user selected in the add playlists form
-    playlists_to_add = request.form.getlist('sp_playlists')
+    playlists_to_add = request.json
     sp_user_id = User.query.get(session['current_user']).sp_user_id
 
     # send API call to get the playlist info,
     # add playlist and track info to the db
     new_playlists = h.import_user_playlists(sp_user_id, playlists_to_add)
 
-    playlist_data = [{ playlist.playlist_id: playlist.name} for playlist in new_playlists]
+    print ('new playlists in route:', new_playlists)
+
+    playlist_data = [{playlist.playlist_id: playlist.name} for playlist in new_playlists]
+    print ('playlist data:', playlist_data)
   
     # redirect back to the user profile page
     return jsonify(playlist_data)
@@ -179,8 +182,31 @@ def view_filters():
 def create_new_filter():
     """UI for user to create a new filter"""
   
-    # redirect back to the user filters page
     return render_template('create_filter.html')
+
+
+@app.route('/create_filter', methods=['POST'])
+def add_filter_to_db():
+    """Create a new filter, add to the db"""
+
+    user_id = session['current_user']
+    filter_name = request.form.get('filter_name')
+
+    
+    duration_min = db.Column(db.Integer)
+    duration_max = db.Column(db.Integer)
+    tempo_min = db.Column(db.Integer)
+    tempo_max = db.Column(db.Integer)
+    danceability_min = db.Column(db.Float)
+    danceability_max = db.Column(db.Float)
+    energy_min = db.Column(db.Float)
+    energy_max = db.Column(db.Float)
+    valence_min = db.Column(db.Float)
+    valence_max = db.Column(db.Float)
+    explicit
+  
+    # redirect back to the user filters page
+    return redirect('/my_filters')
 
 
 if __name__ == "__main__":

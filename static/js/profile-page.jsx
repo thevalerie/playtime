@@ -11,33 +11,48 @@ class UserPlaylists extends React.Component {
         this.addPlaylists = this.addPlaylists.bind(this);
     }
 
-    addPlaylists(evt) {
-        evt.preventDefault();
+    addPlaylists(spPlaylistIds) {
+        // evt.preventDefault();
 
-        // create an empty FormData object
-        window.formInputs = new FormData();
+        // // create an empty FormData object
+        // window.formInputs = new FormData();
 
-        // append the data from the sp-playlists child page
-        window.playlistsToAdd = document.querySelectorAll("input[name='sp_playlists']:checked")
+        // // append the data from the sp-playlists child page
+        // window.playlistsToAdd = document.querySelectorAll("input[name='spPlaylists']:checked")
         
-        console.log(playlistsToAdd);
+        // console.log(playlistsToAdd);
 
-        for (let playlist in playlistsToAdd) {
-            console.log(playlist['value']);
-            formInputs.append('sp_playlists', playlist['value'])
-        }
+        // for (let playlist of playlistsToAdd) {
+        //     console.log(playlist['value']);
+        //     formInputs.append('spPlaylists', playlist['value'])
+        // }
 
-        console.log('formInputs', formInputs)
+        // console.log('formInputs', formInputs)
+
+        let spPlaylistIdList = Array.from(spPlaylistIds)
+        console.log('playlists:', spPlaylistIdList);
 
         // create the fetch request
-        let fetchOptions = {method: 'POST',
-                            body: formInputs,
-                            credentials: 'same-origin'};
+        let fetchOptions = {method: 'post',
+                            body: JSON.stringify(spPlaylistIdList),
+                            credentials: 'same-origin',
+                            headers: {
+                                'Accept': 'application/json',
+                                'Content-Type': 'application/json'
+                                },
+                            mode: 'cors'
+                            };
+
+        console.log('fetchOptions:', fetchOptions.body)
 
         fetch('/add_playlists.json', fetchOptions)
             .then((response) => response.json())
             .then((data) => {
-                this.setState({dbPlaylists: this.state.dbPlaylists.concat(data)});
+                console.log(data);
+                console.log(this.state.dbPlaylists);
+                // let dbPlaylists = this.state.dbPlaylists;
+                // dbPlaylists.push(data)
+                this.setState({'dbPlaylists': this.state.dbPlaylists.concat(data)});
             });
     }
 
@@ -48,28 +63,35 @@ class UserPlaylists extends React.Component {
             .then((response) => response.json())
             .then((data) => {
                 console.log('data', data);
-                this.setState({dbPlaylists: this.state.dbPlaylists.concat(data)});
+                this.setState({'dbPlaylists': this.state.dbPlaylists.concat(data)});
             });
         fetch('/get_sp_playlists.json', fetchOptions)
             .then((response) => response.json())
             .then((data) => {
-                this.setState({spPlaylists: this.state.spPlaylists.concat(data)});
+                this.setState({'spPlaylists': this.state.spPlaylists.concat(data)});
             });
     }
 
-    render() {    
+    render() {
+
+        let spPlaylistsDisplay = []
+
+        if (this.state.dbPlaylists.length == 0) {
+            spPlaylistsDisplay = <PlaylistsToImport spPlaylists = {this.state.spPlaylists} addPlaylists = {this.addPlaylists} />
+        }
+
         return (
             <div>
-                <CurrentDbPlaylists playlists = {this.state.dbPlaylists} />
-                <PlaylistsToImport sp_playlists = {this.state.spPlaylists} addPlaylists = {this.addPlaylists} />
+                <CurrentDbPlaylists dbPlaylists = {this.state.dbPlaylists} />
+                { spPlaylistsDisplay }
             </div>
         )
     }
 }
+
 console.log('begin');
 ReactDOM.render(
     <UserPlaylists/>,
-
     document.getElementById('root')
 );
 console.log('end');

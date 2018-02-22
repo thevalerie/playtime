@@ -27,6 +27,7 @@ def import_user_playlists(sp_user_id, playlists_to_add):
     """send API call to get the playlist info, add playlist and track info to the db"""
 
     new_playlists = []
+    print ('playlists to add', playlists_to_add)
 
     for sp_playlist_id in playlists_to_add:
         playlist_name, tracks_to_add = a.get_playlist_data(sp_user_id, sp_playlist_id)
@@ -34,6 +35,8 @@ def import_user_playlists(sp_user_id, playlists_to_add):
 
         # create playlist object and add to db
         playlist = f.add_playlist_to_db(session['current_user'], sp_playlist_id, playlist_name)
+
+        print playlist
 
         new_playlists.append(playlist)
 
@@ -51,6 +54,7 @@ def import_user_playlists(sp_user_id, playlists_to_add):
             f.add_playlist_track_to_db(playlist, track, position)
 
     print "All playlists and tracks added"
+    print ('new playlists from helper function', new_playlists)
 
     return new_playlists
 
