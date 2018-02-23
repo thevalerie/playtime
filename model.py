@@ -85,6 +85,8 @@ class PlaylistTrack(db.Model):
 
 class Filter(db.Model):
     """Filter for a song type"""
+
+    __tablename__ = 'filters'
     
     filter_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     filter_name = db.Column(db.String(100), nullable=False)
@@ -102,6 +104,12 @@ class Filter(db.Model):
     explicit = db.Column(db.Boolean)
 
     user = db.relationship('User', backref='filters')
+
+    def __repr__(self):
+        """Show filter information"""
+
+        return "\n<Filter filter_id={} filter_name={}>".format(self.filter_id,
+                                                               self.filter_name)
 
 # class Template(db.Model):
 #     """Template for a type of playlist"""

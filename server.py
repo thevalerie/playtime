@@ -133,7 +133,9 @@ def work_on_playlist(playlist_id):
     # check Spotify to see if the user has changed the playlist since they last logged in
     playlist_tracks = h.check_sp_playlist_info(playlist)
 
-    return render_template('playlist.html', playlist=playlist, playlist_tracks=playlist_tracks)
+    return render_template('playlist.html', playlist=playlist, 
+                           playlist_tracks=playlist_tracks,
+                           format_time=h.millisecs_to_mins_secs)
 
 
 @app.route('/reorder', methods=['POST'])
@@ -189,21 +191,11 @@ def create_new_filter():
 def add_filter_to_db():
     """Create a new filter, add to the db"""
 
-    user_id = session['current_user']
-    filter_name = request.form.get('filter_name')
+    filter_data = {key: (value if value else None) for key, value in request.form.iteritems()}
+    filter_data['user_id'] = session['current_user']
+    filter_data['explicit'] = not filter_data.get('explicit')
 
-    
-    duration_min = db.Column(db.Integer)
-    duration_max = db.Column(db.Integer)
-    tempo_min = db.Column(db.Integer)
-    tempo_max = db.Column(db.Integer)
-    danceability_min = db.Column(db.Float)
-    danceability_max = db.Column(db.Float)
-    energy_min = db.Column(db.Float)
-    energy_max = db.Column(db.Float)
-    valence_min = db.Column(db.Float)
-    valence_max = db.Column(db.Float)
-    explicit
+    f.add_filter_to_db(filter_data)
   
     # redirect back to the user filters page
     return redirect('/my_filters')

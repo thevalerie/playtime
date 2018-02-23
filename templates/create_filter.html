@@ -4,52 +4,58 @@
     <h1>Create a new filter</h1>
     <form id="newFilterForm" action="/create_filter" method='POST'>
         Filter name:
-        <input type="text" name="filter_name">
+        <input type="text" name="filter_name" placeholder="required" required>
         <h4>Filter by:</h4>
-        Exclude explicit?<input type="checkbox" name="explicit">
+        Exclude explicit?<input type="checkbox" name="explicit" value="exclude">
         <br>Song length<br>
-            Min length:<input type="text" name="duration_min" placeholder="minutes:seconds">
-            Max length:<input type="text" name="duration_max" placeholder="minutes:seconds">
+            Min length:<input type="text" name="duration_min" placeholder="mins:secs">
+            Max length:<input type="text" name="duration_max" placeholder="mins:secs">
         <br>Tempo<br>
             Min tempo:<input type="text" name="tempo_min" placeholder="BPM (beats per minute)">
             Max tempo:<input type="text" name="tempo_max" placeholder="BPM (beats per minute)">
         <br>Danceability<br>
             Min danceability:
                 <select name="danceability_min">
-                    {% for num in range(1,10) %}
-                        <option value={{ num }}>{{num}}</option>
+                    <option value="" selected></option>
+                    {% for num in range(1,11) %}
+                        <option value={{ num/10 }}>{{num}}</option>
                     {% endfor %}
                 </select>
             Max danceability:
                 <select name="danceability_max">
+                    <option value="" selected></option>
                     {% for num in range(1,11) %}
-                        <option value={{ num }}>{{num}}</option>
+                        <option value={{ num/10 }}>{{num}}</option>
                     {% endfor %}
                 </select>
         <br>Energy level<br>
             Min energy:
                 <select name="energy_min">
-                    {% for num in range(1,10) %}
-                        <option value={{ num }}>{{num}}</option>
+                    <option value="" selected></option>
+                    {% for num in range(1,11) %}
+                        <option value={{ num/10 }}>{{num}}</option>
                     {% endfor %}
                 </select>
             Max energy:
                 <select name="energy_max">
+                    <option value="" selected></option>
                     {% for num in range(1,11) %}
-                        <option value={{ num }}>{{num}}</option>
+                        <option value={{ num/10 }}>{{num}}</option>
                     {% endfor %}
                 </select>
         <br>Cheerfulness<br>
             Min cheerfulness:
-                <select name="cheerfulness_min">
-                    {% for num in range(1,10) %}
-                        <option value={{ num }}>{{num}}</option>
+                <select name="valence_min">
+                    <option value="" selected></option>
+                    {% for num in range(1,11) %}
+                        <option value={{ num/10 }}>{{num}}</option>
                     {% endfor %}
                 </select>
             Max cheerfulness:
-                <select name="cheerfulness_max">
+                <select name="valence_max">
+                    <option value="" selected></option>
                     {% for num in range(1,11) %}
-                        <option value={{ num }}>{{num}}</option>
+                        <option value={{ num/10 }}>{{num}}</option>
                     {% endfor %}
                 </select>
         <br>

@@ -3,8 +3,9 @@ from flask import (Flask, request, session)
 import sys
 import requests
 import config
-from model import User, Playlist, PlaylistTrack, Track, connect_to_db, db
+from model import User, Playlist, PlaylistTrack, Track, Filter, connect_to_db, db
 import api_calls as a
+import helper as h
 
 
 def check_db_for_user(sp_user_id, display_name):
@@ -165,8 +166,37 @@ def get_tracks_in_playlist(playlist_id):
 def get_user_filters_db():
     """Gets the list of filters in the database for the current user"""
 
-    user_filters = db.session.query(Filter).filter(Filter.user_id == session['current_user']).all()
+    user_filters = Filter.query.filter(Filter.user_id == session['current_user']).all()
+    # db.session.query(Filter).filter(Filter.user_id == session['current_user']).all()
 
     return user_filters
+
+
+def add_filter_to_db(filter_data):
+    """Create Filter object, add to database"""
+
+    # what comes back from empty form field?
+    # if i don't int or float a string, can i just send it to Postgres as is
+
+    if filter_data['duration_min']:
+        filter_data['duration_min'] = h.mins_secs_to_millisecs(filter_data['duration_min'])
+    
+    if filter_data['duration_max']:
+        filter_data['duration_max'] = h.mins_secs_to_millisecs(filter_data['duration_max'])
+
+    new_filter = Filter(**filter_data)
+
+    db.session.add(new_filter)
+    db.session.commit()
+
+    print "Added to DB:", new_filter
+
+    return new_filter
+
+
+def get_playlist_info_db(playlist_id):
+    """"""
+
+    playlist_data = Playlist.query.get(playlist_id)
 
 

@@ -154,6 +154,30 @@ def update_spotify_tracks(playlist_id):
     print result
 
 
+def mins_secs_to_millisecs(mins_secs):
+    """Turn a string formatted as mins:secs to an int representing milliseconds"""
+
+    if ':' in mins_secs:
+        mins, secs = mins_secs.split(':')
+    else:
+        mins = mins_secs
+        secs = 0
+
+    return (int(mins) * 60000) + (int(secs) * 1000)
+
+
+def millisecs_to_mins_secs(milliseconds):
+    """Turn an int representing a length of time in milliseconds to a string in the format mins:secs"""
+
+    mins = milliseconds / 60000
+    secs = (milliseconds % 60000) / 1000
+
+    if secs < 10:
+        return str(mins) + ':0' + str(secs)
+    else:
+        return str(mins) + ':' + str(secs)
+
+
 
 
 

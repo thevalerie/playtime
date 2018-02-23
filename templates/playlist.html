@@ -20,7 +20,7 @@
                         <td>{{ item.track.title }}</td>
                         <td>{{ item.track.artist }}</td>
                         <td>{{ item.track.album }}</td>
-                        <td>{{ item.track.duration }}</td>
+                        <td>{{ format_time(item.track.duration) }}</td>
                         <td>{{ item.track.tempo }}</td>
                     </tr>
                 {% endfor %}
