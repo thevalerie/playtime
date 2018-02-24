@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
+
 class User(db.Model):
     """App user"""
 
@@ -68,6 +69,7 @@ class PlaylistTrack(db.Model):
 
     __tablename__ = 'playlistTracks'
 
+    # NOTE(cwaggoner): `pt_id` is a kind of a confusing name to me
     pt_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     playlist_id = db.Column(db.Integer, db.ForeignKey('playlists.playlist_id'), nullable=False)
     track_id = db.Column(db.Integer, db.ForeignKey('tracks.track_id'), nullable=False)
@@ -87,7 +89,7 @@ class Filter(db.Model):
     """Filter for a song type"""
 
     __tablename__ = 'filters'
-    
+
     filter_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     filter_name = db.Column(db.String(100), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
@@ -110,10 +112,6 @@ class Filter(db.Model):
 
         return "\n<Filter filter_id={} filter_name={}>".format(self.filter_id,
                                                                self.filter_name)
-
-# class Template(db.Model):
-#     """Template for a type of playlist"""
-#     pass
 
 
 def connect_to_db(app):

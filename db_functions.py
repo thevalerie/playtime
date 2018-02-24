@@ -1,10 +1,6 @@
 # coding=utf8
-from flask import (Flask, request, session)
-import sys
-import requests
-import config
-from model import User, Playlist, PlaylistTrack, Track, Filter, connect_to_db, db
-import api_calls as a
+from flask import session
+from model import User, Playlist, PlaylistTrack, Track, Filter, db
 import helper as h
 
 
@@ -57,7 +53,7 @@ def add_track_to_db(sp_track, audio_features):
     """Create Track object, add to database"""
 
     sp_track_id = sp_track['id']
-    duration =  sp_track['duration_ms']
+    duration = sp_track['duration_ms']
     album = sp_track['album']['name']
     explicit = sp_track['explicit']
     title = sp_track['name']
@@ -83,8 +79,9 @@ def add_playlist_track_to_db(playlist, track, position):
     """Create PlaylistTrack object, add to database"""
 
     playlist_track = PlaylistTrack(playlist_id=playlist.playlist_id,
-                                           track_id=track.track_id,
-                                           position=position,)
+                                   track_id=track.track_id,
+                                   position=position,)
+
     db.session.add(playlist_track)
     db.session.commit()
 
@@ -108,33 +105,30 @@ def get_playlist_tracks_db(playlist_id):
     """Get the track IDs for a given playlist, in position order"""
 
     playlist_tracks = PlaylistTrack.query.filter(PlaylistTrack.playlist_id == playlist_id,
-                                                 PlaylistTrack.position != None).order_by(PlaylistTrack.position).all()
+                                                 PlaylistTrack.position is not None).order_by(PlaylistTrack.position).all()
 
     return playlist_tracks
 
 
 def remove_playlist_tracks_db(playlist_tracks_to_remove):
-    """"""
+    """Remove tracks from the playlist"""
 
     for playlist_track in playlist_tracks_to_remove:
         playlist_track.position = None
 
     db.session.commit()
 
-    print "Removed tracks from playlist"
-
 
 def update_tracks_db(sp_tracks, audio_features):
-    """"""
+    """Add tracks with audio features to the database"""
 
     # for each track that needs to be added, pass the Spotify track data and audio features to the db function
     for i in range(len(sp_tracks)):
-        sp_track = sp_tracks[i]
-        audio_features = audio_features[i]
-        add_track_to_db(sp_track, audio_features)
+        add_track_to_db(sp_tracks[i], audio_features[i])
 
 
 def update_playlist_tracks_db(sp_track_ids, sp_playlist_id, playlist_tracks_to_add):
+    """TODO: Add a comment here for consistency"""
 
     for i, sp_track_id in enumerate(sp_track_ids):
         # check to see if the track & playlist combo is in the pt table
@@ -142,12 +136,12 @@ def update_playlist_tracks_db(sp_track_ids, sp_playlist_id, playlist_tracks_to_a
         if sp_track_id in playlist_tracks_to_add:
             playlist = db.session.query(Playlist).filter(Playlist.sp_playlist_id == sp_playlist_id).first()
             track = db.session.query(Track).filter(Track.sp_track_id == sp_track_id).first()
-            position = i
-            add_playlist_track_to_db(playlist, track, position)
+            add_playlist_track_to_db(playlist, track, i)
         # if it's already in the db, check position against sp data and update if necessary
         else:
-            playlist_track = db.session.query(PlaylistTrack).join(PlaylistTrack.playlist).join(PlaylistTrack.track).filter(Track.sp_track_id == sp_track_id,
-                                                        Playlist.sp_playlist_id == sp_playlist_id).first()
+            playlist_track = db.session.query(PlaylistTrack).join(
+                PlaylistTrack.playlist).join(PlaylistTrack.track).filter(
+                Track.sp_track_id == sp_track_id, Playlist.sp_playlist_id == sp_playlist_id).first()
             if playlist_track.position != i:
                 playlist_track.position = i
 
@@ -155,10 +149,8 @@ def update_playlist_tracks_db(sp_track_ids, sp_playlist_id, playlist_tracks_to_a
 def get_tracks_in_playlist(playlist_id):
     """Takes a playlist ID, returns a list of track objects in that playlist"""
 
-    tracks_in_playlist = db.session.query(Track).join(PlaylistTrack).filter(PlaylistTrack.playlist_id == playlist_id,
-                                                                            PlaylistTrack.position != None).order_by(PlaylistTrack.position).all()
-    
-    print tracks_in_playlist
+    tracks_in_playlist = db.session.query(Track).join(PlaylistTrack).filter(
+        PlaylistTrack.playlist_id == playlist_id, PlaylistTrack.position is not None).order_by(PlaylistTrack.position).all()
 
     return tracks_in_playlist
 
@@ -167,7 +159,6 @@ def get_user_filters_db():
     """Gets the list of filters in the database for the current user"""
 
     user_filters = Filter.query.filter(Filter.user_id == session['current_user']).all()
-    # db.session.query(Filter).filter(Filter.user_id == session['current_user']).all()
 
     return user_filters
 
@@ -180,7 +171,7 @@ def add_filter_to_db(filter_data):
 
     if filter_data['duration_min']:
         filter_data['duration_min'] = h.mins_secs_to_millisecs(filter_data['duration_min'])
-    
+
     if filter_data['duration_max']:
         filter_data['duration_max'] = h.mins_secs_to_millisecs(filter_data['duration_max'])
 
@@ -195,8 +186,6 @@ def add_filter_to_db(filter_data):
 
 
 def get_playlist_info_db(playlist_id):
-    """"""
+    """TODO: Add a comment here for consistency"""
 
     playlist_data = Playlist.query.get(playlist_id)
-
-
