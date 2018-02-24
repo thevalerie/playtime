@@ -1,12 +1,8 @@
 # coding=utf8
-from flask import (Flask, request, session)
-import sys
-import requests
-import config as c
+from flask import session
 import api_calls as a
 import db_functions as f
-from model import User, Playlist, PlaylistTrack, Track, connect_to_db, db
-# import api_calls as a
+from model import User, Playlist, PlaylistTrack, Track, db
 
 
 def add_user_to_session(current_user):
@@ -20,6 +16,7 @@ def add_user_to_session(current_user):
 def response_error(status_code):
     """Status code error messaging"""
 
+    # NOTE(cwaggoner): render_template is undefined here
     return render_template('error-page.html', status_code=status_code)
 
 
@@ -27,16 +24,12 @@ def import_user_playlists(sp_user_id, playlists_to_add):
     """send API call to get the playlist info, add playlist and track info to the db"""
 
     new_playlists = []
-    print ('playlists to add', playlists_to_add)
 
     for sp_playlist_id in playlists_to_add:
         playlist_name, tracks_to_add = a.get_playlist_data(sp_user_id, sp_playlist_id)
-        print tracks_to_add
 
         # create playlist object and add to db
         playlist = f.add_playlist_to_db(session['current_user'], sp_playlist_id, playlist_name)
-
-        print playlist
 
         new_playlists.append(playlist)
 
@@ -53,14 +46,11 @@ def import_user_playlists(sp_user_id, playlists_to_add):
             # create PlaylistTrack object and add to the db
             f.add_playlist_track_to_db(playlist, track, position)
 
-    print "All playlists and tracks added"
-    print ('new playlists from helper function', new_playlists)
-
     return new_playlists
 
 
 def check_sp_playlist_info(playlist):
-    """"""
+    """TODO: Add description for consistency"""
 
     # query the db to get the list of playlist track objects for the playlist
     playlist_tracks = f.get_playlist_tracks_db(playlist.playlist_id)
@@ -92,6 +82,7 @@ def check_sp_playlist_info(playlist):
 
     # otherwise, update the database with the new playlist track info and re-query
     else:
+        # NOTE(cwaggoner): this function is pretty long -- maybe move the logic in this `else` to a separate helper function
         # find all the tracks in the db currently associated with the playlist that are not in the Spotify list
         playlist_tracks_to_remove = []
         for playlist_track in playlist_tracks:
@@ -100,11 +91,11 @@ def check_sp_playlist_info(playlist):
         f.remove_playlist_tracks_db(playlist_tracks_to_remove)
         # update the db with the new tracks and new track positions
         update_playlist_from_sp(playlist.sp_playlist_id, sp_track_ids)
-    
-    new_playlist_tracks = f.get_playlist_tracks_db(playlist.playlist_id)  
+
+    new_playlist_tracks = f.get_playlist_tracks_db(playlist.playlist_id)
     print "Playlist has been updated"
 
-    return new_playlist_tracks    
+    return new_playlist_tracks
 
 
 def update_playlist_from_sp(sp_playlist_id, sp_track_ids):
@@ -115,11 +106,14 @@ def update_playlist_from_sp(sp_playlist_id, sp_track_ids):
         # query tracks table to see if it's already in the db
     for sp_track_id in sp_track_ids:
         track_obj = Track.query.filter(Track.sp_track_id == sp_track_id).first()
-        pt_obj = db.session.query(PlaylistTrack).join(PlaylistTrack.playlist).join(PlaylistTrack.track).filter(Track.sp_track_id == sp_track_id,
-                                                        Playlist.sp_playlist_id == sp_playlist_id).first()
+        # NOTE(cwaggoner): the logic below is duplicated in db_functions.py
+        # at line 142 -- maybe pull it out into a common helper function that can be reused
+        pt_obj = db.session.query(PlaylistTrack).join(
+            PlaylistTrack.playlist).join(PlaylistTrack.track).filter(
+            Track.sp_track_id == sp_track_id, Playlist.sp_playlist_id == sp_playlist_id).first()
         # if not, add to string of IDs to send
         if not track_obj:
-            tracks_to_add += sp_track_id + "," 
+            tracks_to_add += sp_track_id + ","
         # if the playlist_track object isn't in the db, add to the list to be created
         if not pt_obj:
             playlist_tracks_to_add.append(sp_track_id)
@@ -135,6 +129,7 @@ def update_playlist_from_sp(sp_playlist_id, sp_track_ids):
 
 
 def update_spotify_tracks(playlist_id):
+    """TODO: Add comment for consistency"""
 
     sp_user_id = User.query.get(session['current_user']).sp_user_id
     sp_playlist_id = Playlist.query.get(playlist_id).sp_playlist_id
@@ -149,9 +144,7 @@ def update_spotify_tracks(playlist_id):
 
     new_track_ids = new_track_ids.rstrip(',')
 
-    result = a.update_playlist_sp(sp_user_id, sp_playlist_id, new_track_ids)
-
-    print result
+    a.update_playlist_sp(sp_user_id, sp_playlist_id, new_track_ids)
 
 
 def mins_secs_to_millisecs(mins_secs):
@@ -176,11 +169,3 @@ def millisecs_to_mins_secs(milliseconds):
         return str(mins) + ':0' + str(secs)
     else:
         return str(mins) + ':' + str(secs)
-
-
-
-
-
-
-
-

@@ -10,10 +10,7 @@ import api_calls as a
 import db_functions as f
 import helper as h
 from model import User, Playlist, PlaylistTrack, Track, connect_to_db, db
-# from api_calls import (create_oauth, get_auth_url, get_token, get_user_profile,
-#                        get_user_playlists, get_playlist_data, get_track_data,
-#                        get_playlist_tracks)
-# from functions import (check_db_for_user, add_track_to_db,)
+
 
 app = Flask(__name__)
 app.secret_key = "ABC"
@@ -53,10 +50,6 @@ def log_in():
     if response.status_code != 200:
         return h.response_error(response.status_code)
 
-    print response
-
-    # import pdb; pdb.set_trace()
-    # if success, save the access token and refresh token to the session
     token = response.json()
     session['access_token'] = token['access_token']
     session['refresh_token'] = token['refresh_token']
@@ -69,7 +62,7 @@ def log_in():
 @app.route('/profile')
 def view_user_profile():
     """View current user profile page"""
-    
+
     # get the Spotify user profile
     sp_user_id, display_name = a.get_user_profile()
     # check to see if the current user is in the db/add if not
@@ -83,17 +76,19 @@ def view_user_profile():
 
 @app.route('/get_db_playlists.json')
 def query_db_for_user_playlists():
-    
+    """Add a comment?"""
+
     db_playlists = f.get_user_playlists()
 
     # make a list of dicts with just the id and name
-    playlist_data = [{ 'playlist_id': playlist.playlist_id, 'name': playlist.name} for playlist in db_playlists]
+    playlist_data = [{'playlist_id': playlist.playlist_id, 'name': playlist.name} for playlist in db_playlists]
 
     return jsonify(playlist_data)
 
 
 @app.route('/get_sp_playlists.json')
 def query_sp_for_user_playlists():
+    """Add a comment?"""
 
     spotify_playlists = a.get_user_playlists()
 
@@ -103,9 +98,7 @@ def query_sp_for_user_playlists():
 @app.route('/add_playlists.json', methods=['POST'])
 def add_playlists_to_db():
     """Pull in playlists from Spotify and add the relevant information to the DB"""
-    # import pdb
-    # pdb.set_trace()
-    print request.json
+
     # get the playlists that the user selected in the add playlists form
     playlists_to_add = request.json
     sp_user_id = User.query.get(session['current_user']).sp_user_id
@@ -114,11 +107,8 @@ def add_playlists_to_db():
     # add playlist and track info to the db
     new_playlists = h.import_user_playlists(sp_user_id, playlists_to_add)
 
-    print ('new playlists in route:', new_playlists)
-
     playlist_data = [{playlist.playlist_id: playlist.name} for playlist in new_playlists]
-    print ('playlist data:', playlist_data)
-  
+
     # redirect back to the user profile page
     return jsonify(playlist_data)
 
@@ -133,7 +123,7 @@ def work_on_playlist(playlist_id):
     # check Spotify to see if the user has changed the playlist since they last logged in
     playlist_tracks = h.check_sp_playlist_info(playlist)
 
-    return render_template('playlist.html', playlist=playlist, 
+    return render_template('playlist.html', playlist=playlist,
                            playlist_tracks=playlist_tracks,
                            format_time=h.millisecs_to_mins_secs)
 
@@ -142,10 +132,7 @@ def work_on_playlist(playlist_id):
 def update_playlist_in_db():
     """Update the track order of a playlist in the database"""
 
-    # playlist_id = request.form.get('playlist_id')
     new_track_order = json.loads(request.form.get('new_track_order'))
-    print new_track_order
-    print type(new_track_order)
     f.update_track_order(new_track_order)
 
     return 'Successfully updated playlist in DB'
@@ -183,7 +170,7 @@ def view_filters():
 @app.route('/create_filter')
 def create_new_filter():
     """UI for user to create a new filter"""
-  
+
     return render_template('create_filter.html')
 
 
@@ -196,7 +183,7 @@ def add_filter_to_db():
     filter_data['explicit'] = not filter_data.get('explicit')
 
     f.add_filter_to_db(filter_data)
-  
+
     # redirect back to the user filters page
     return redirect('/my_filters')
 
