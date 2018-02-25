@@ -3,7 +3,7 @@ from flask import (Flask, request, session)
 import sys
 import requests
 import config
-from model import User, Playlist, PlaylistTrack, Track, Filter, connect_to_db, db
+from model import User, Playlist, PlaylistTrack, Track, Category, connect_to_db, db
 import api_calls as a
 import helper as h
 
@@ -59,7 +59,7 @@ def add_track_to_db(sp_track, audio_features):
     sp_track_id = sp_track['id']
     duration =  sp_track['duration_ms']
     album = sp_track['album']['name']
-    explicit = sp_track['explicit']
+    is_explicit = sp_track['explicit']
     title = sp_track['name']
     artist = ', '.join(artist['name'] for artist in sp_track['artists'])
     tempo = int(round(audio_features['tempo']))
@@ -69,7 +69,7 @@ def add_track_to_db(sp_track, audio_features):
 
     track = Track(sp_track_id=sp_track_id, title=title, artist=artist, album=album,
                   duration=duration, tempo=tempo, danceability=danceability,
-                  energy=energy, explicit=explicit, valence=valence,)
+                  energy=energy, is_explicit=is_explicit, valence=valence,)
 
     db.session.add(track)
     db.session.commit()
@@ -163,35 +163,34 @@ def get_tracks_in_playlist(playlist_id):
     return tracks_in_playlist
 
 
-def get_user_filters_db():
-    """Gets the list of filters in the database for the current user"""
+def get_user_categories_db():
+    """Gets the list of categories in the database for the current user"""
 
-    user_filters = Filter.query.filter(Filter.user_id == session['current_user']).all()
-    # db.session.query(Filter).filter(Filter.user_id == session['current_user']).all()
+    user_categories = Category.query.filter(Category.user_id == session['current_user']).all()
 
-    return user_filters
+    return user_categories
 
 
-def add_filter_to_db(filter_data):
-    """Create Filter object, add to database"""
+def add_category_to_db(category_data):
+    """Create Category object, add to database"""
 
     # what comes back from empty form field?
     # if i don't int or float a string, can i just send it to Postgres as is
 
-    if filter_data['duration_min']:
-        filter_data['duration_min'] = h.mins_secs_to_millisecs(filter_data['duration_min'])
+    if category_data['duration_min']:
+        category_data['duration_min'] = h.mins_secs_to_millisecs(category_data['duration_min'])
     
-    if filter_data['duration_max']:
-        filter_data['duration_max'] = h.mins_secs_to_millisecs(filter_data['duration_max'])
+    if category_data['duration_max']:
+        category_data['duration_max'] = h.mins_secs_to_millisecs(category_data['duration_max'])
 
-    new_filter = Filter(**filter_data)
+    new_category = Category(**category_data)
 
-    db.session.add(new_filter)
+    db.session.add(new_category)
     db.session.commit()
 
-    print "Added to DB:", new_filter
+    print "Added to DB:", new_category
 
-    return new_filter
+    return new_category
 
 
 def get_playlist_info_db(playlist_id):

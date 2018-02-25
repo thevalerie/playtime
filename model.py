@@ -53,7 +53,7 @@ class Track(db.Model):
     danceability = db.Column(db.Float)
     energy = db.Column(db.Float)
     valence = db.Column(db.Float)
-    explicit = db.Column(db.Boolean)
+    is_explicit = db.Column(db.Boolean)
 
     def __repr__(self):
         """Show relevant playlist info when printed"""
@@ -83,13 +83,13 @@ class PlaylistTrack(db.Model):
                                                                self.position)
 
 
-class Filter(db.Model):
-    """Filter for a song type"""
+class Category(db.Model):
+    """User-created category for a song type"""
 
-    __tablename__ = 'filters'
+    __tablename__ = 'categories'
     
-    filter_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    filter_name = db.Column(db.String(100), nullable=False)
+    cat_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    cat_name = db.Column(db.String(100), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
     duration_min = db.Column(db.Integer)
     duration_max = db.Column(db.Integer)
@@ -101,15 +101,15 @@ class Filter(db.Model):
     energy_max = db.Column(db.Float)
     valence_min = db.Column(db.Float)
     valence_max = db.Column(db.Float)
-    explicit = db.Column(db.Boolean)
+    exclude_explicit = db.Column(db.Boolean)
 
-    user = db.relationship('User', backref='filters')
+    user = db.relationship('User', backref='categories')
 
     def __repr__(self):
         """Show filter information"""
 
-        return "\n<Filter filter_id={} filter_name={}>".format(self.filter_id,
-                                                               self.filter_name)
+        return "\n<Category cat_id={} cat_name={}>".format(self.cat_id,
+                                                           self.cat_name)
 
 # class Template(db.Model):
 #     """Template for a type of playlist"""

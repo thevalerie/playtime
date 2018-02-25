@@ -9,7 +9,7 @@ import config as c
 import api_calls as a
 import db_functions as f
 import helper as h
-from model import User, Playlist, PlaylistTrack, Track, connect_to_db, db
+from model import User, Playlist, PlaylistTrack, Track, Category, connect_to_db, db
 # from api_calls import (create_oauth, get_auth_url, get_token, get_user_profile,
 #                        get_user_playlists, get_playlist_data, get_track_data,
 #                        get_playlist_tracks)
@@ -103,9 +103,7 @@ def query_sp_for_user_playlists():
 @app.route('/add_playlists.json', methods=['POST'])
 def add_playlists_to_db():
     """Pull in playlists from Spotify and add the relevant information to the DB"""
-    # import pdb
-    # pdb.set_trace()
-    print request.json
+    
     # get the playlists that the user selected in the add playlists form
     playlists_to_add = request.json
     sp_user_id = User.query.get(session['current_user']).sp_user_id
@@ -133,9 +131,14 @@ def work_on_playlist(playlist_id):
     # check Spotify to see if the user has changed the playlist since they last logged in
     playlist_tracks = h.check_sp_playlist_info(playlist)
 
+    # get the current user's filters from the db
+    user_categories = f.get_user_categories_db()
+
     return render_template('playlist.html', playlist=playlist, 
                            playlist_tracks=playlist_tracks,
-                           format_time=h.millisecs_to_mins_secs)
+                           user_categories=user_categories,
+                           format_time=h.millisecs_to_mins_secs,
+                           format_explicit=h.view_is_explicit,)
 
 
 @app.route('/reorder', methods=['POST'])
@@ -144,8 +147,6 @@ def update_playlist_in_db():
 
     # playlist_id = request.form.get('playlist_id')
     new_track_order = json.loads(request.form.get('new_track_order'))
-    print new_track_order
-    print type(new_track_order)
     f.update_track_order(new_track_order)
 
     return 'Successfully updated playlist in DB'
@@ -173,32 +174,52 @@ def load_more_playlists():
 
 @app.route('/my_filters')
 def view_filters():
-    """Display current user's song filters"""
+    """Display current user's song categories"""
 
-    filters = f.get_user_filters_db()
+    categories = f.get_user_categories_db()
 
-    return render_template('user-filters.html', filters=filters)
+    return render_template('user-categories.html', categories=categories)
 
 
-@app.route('/create_filter')
-def create_new_filter():
-    """UI for user to create a new filter"""
+@app.route('/create_category')
+def create_new_category():
+    """UI for user to create a new category"""
   
-    return render_template('create_filter.html')
+    return render_template('create_category.html')
 
 
-@app.route('/create_filter', methods=['POST'])
-def add_filter_to_db():
-    """Create a new filter, add to the db"""
+@app.route('/create_category', methods=['POST'])
+def add_category_to_db():
+    """Create a new category, add to the db"""
 
-    filter_data = {key: (value if value else None) for key, value in request.form.iteritems()}
-    filter_data['user_id'] = session['current_user']
-    filter_data['explicit'] = not filter_data.get('explicit')
+    category_data = {key: (value if value else None) for key, value in request.form.iteritems()}
+    category_data['user_id'] = session['current_user']
+    category_data['exclude_explicit'] = category_data.get('exclude_explicit')
 
-    f.add_filter_to_db(filter_data)
+    f.add_category_to_db(category_data)
   
-    # redirect back to the user filters page
-    return redirect('/my_filters')
+    # redirect back to the user categories page
+    return redirect('/my_categories')
+
+
+@app.route('/check_category.json')
+def match_tracks_to_category():
+    """Finds the tracks that match the selected categoy"""
+
+    cat_info = request.json
+
+    cat_id = request.args.get('cat_id')
+    playlist_id = request.args.get('playlist_id')
+
+    track_list = f.get_tracks_in_playlist(playlist_id)
+
+    selected_cat, matching_tracks = h.apply_category(cat_id, track_list)
+
+    print matching_tracks
+
+    track_ids = [track.track_id for track in matching_tracks]
+
+    return jsonify({'matchingTracks': track_ids, 'cagegoryName': selected_cat.cat_name})
 
 
 if __name__ == "__main__":

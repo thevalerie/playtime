@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>Create a new filter</h1>
-    <form id="newFilterForm" action="/create_filter" method='POST'>
-        Filter name:
-        <input type="text" name="filter_name" placeholder="required" required>
-        <h4>Filter by:</h4>
-        Exclude explicit?<input type="checkbox" name="explicit" value="exclude">
+    <h1>Create a new category</h1>
+    <form id="newCategoryForm" action="/create_category" method='POST'>
+        Category name:
+        <input type="text" name="cat_name" placeholder="required" required>
+        <h4>Category by:</h4>
+        Exclude explicit?<input type="checkbox" name="exclude_explicit" value="exclude">
         <br>Song length<br>
             Min length:<input type="text" name="duration_min" placeholder="mins:secs">
             Max length:<input type="text" name="duration_max" placeholder="mins:secs">
@@ -59,7 +59,7 @@
                     {% endfor %}
                 </select>
         <br>
-            <input type="submit" value="Create new filter">
+            <input type="submit" value="Create new category">
     </form>
-    <!-- <script type="text/javascript" src="/static/js/create_filter.js"></script> -->
+    <!-- <script type="text/javascript" src="/static/js/create_category.js"></script> -->
 {% endblock %}

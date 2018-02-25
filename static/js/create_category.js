@@ -1,7 +1,7 @@
 "use strict";
 
 
-function sendFilterData(evt) {
+function sendCategoryData(evt) {
     evt.preventDefault();
 
     let payload = {
@@ -10,9 +10,9 @@ function sendFilterData(evt) {
 
     console.log(payload)
 
-    $.post('/create_filter', payload, function(data) {
+    $.post('/create_category', payload, function(data) {
         console.log(data);
         });    
 }
 
-$("#newFilterForm").on('submit', sendFilterData);
+$("#newCategoryForm").on('submit', sendCategoryData);
