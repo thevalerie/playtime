@@ -53,9 +53,6 @@ def log_in():
     if response.status_code != 200:
         return h.response_error(response.status_code)
 
-    print response
-
-    # import pdb; pdb.set_trace()
     # if success, save the access token and refresh token to the session
     token = response.json()
     session['access_token'] = token['access_token']
@@ -79,6 +76,13 @@ def view_user_profile():
 
     return render_template("profile-page.html",
                            user=current_user)
+
+
+@app.route('/my_playlists')
+def view_user_playlists():
+    """View current user's playlists in the database/import more from Spotify"""
+
+    return render_template("my_playlists.html")
 
 
 @app.route('/get_db_playlists.json')
@@ -172,8 +176,8 @@ def load_more_playlists():
     more_playlists = a.get_user_playlists(offset=offset)
 
 
-@app.route('/my_filters')
-def view_filters():
+@app.route('/my_categories')
+def view_categories():
     """Display current user's song categories"""
 
     categories = f.get_user_categories_db()

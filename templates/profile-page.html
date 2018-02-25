@@ -4,13 +4,6 @@
     <h1>Profile page</h1>
     Hi {{ user.display_name }}!</br>
     
-    <div id="root"></div>
-
-    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
-    <script src="http://unpkg.com/babel-standalone"></script>
-
-    <script src="static/js/load-db-playlists.jsx" type="text/jsx"></script>
-    <script src="static/js/load-sp-playlists.jsx" type="text/jsx"></script>
-    <script src="static/js/profile-page.jsx" type="text/jsx"></script>
+    <a href="/my_playlists">Playlists</a><br>
+    <a href="/my_categories">Categories</a>
 {% endblock %}
