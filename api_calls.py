@@ -17,7 +17,7 @@ def create_headers():
 
 
 def get_auth_url():
-    """"""
+    """Create the OAuth authorization URL for the current user"""
 
     # create params to get code from Spotify OAuth
     payload = {'client_id': client_id,
@@ -53,6 +53,7 @@ def get_token(code):
 
 
 def get_user_profile():
+    """Get the current user's Spotify ID and display name"""
 
     url = user_profile_url
     headers = create_headers()
@@ -64,6 +65,7 @@ def get_user_profile():
 
 
 def get_user_playlists():
+    """Get all playlists owned by the current user (limit of 20)"""
 
     url = user_playlists_url
     headers = create_headers()
@@ -76,6 +78,7 @@ def get_user_playlists():
 
 
 def get_playlist_data(sp_user_id, sp_playlist_id):
+    """Get playlist and track information for a given list of playlists"""
 
     url = (users_base_url + sp_user_id + '/playlists/' + sp_playlist_id)
     headers = create_headers()
@@ -90,6 +93,7 @@ def get_playlist_data(sp_user_id, sp_playlist_id):
 
 
 def get_tracks_sp(tracks_to_add):
+    """Get Spotify track objects for multiple track IDs"""
 
     headers = create_headers()
     payload = {'ids': tracks_to_add}
@@ -103,6 +107,7 @@ def get_tracks_sp(tracks_to_add):
 
 
 def get_audio_features_sp(tracks_to_add):
+    """Get Spotify audio feature objects for multiple track ids"""
 
     headers = create_headers()
     payload = {'ids': tracks_to_add}
@@ -113,18 +118,19 @@ def get_audio_features_sp(tracks_to_add):
     return audio_features
 
 
-def get_track_data(sp_track_id):
+# def get_track_data(sp_track_id):
 
-    url = (audio_features_url + sp_track_id)
-    headers = create_headers()
+#     url = (audio_features_url + sp_track_id)
+#     headers = create_headers()
     
-    response = requests.get(url, headers=headers)
-    audio_features = response.json()
+#     response = requests.get(url, headers=headers)
+#     audio_features = response.json()
 
-    return audio_features
+#     return audio_features
 
 
 def get_playlist_tracks_sp(sp_user_id, sp_playlist_id):
+    """Get Spotify track IDs for all tracks in a given playlist"""
 
     url = (users_base_url + sp_user_id + '/playlists/' + sp_playlist_id + '/tracks')
     headers = create_headers()
@@ -138,6 +144,7 @@ def get_playlist_tracks_sp(sp_user_id, sp_playlist_id):
 
 
 def update_playlist_sp(sp_user_id, sp_playlist_id, new_track_ids):
+    """Replace all current tracks in a Spotify playlist with a new list of tracks"""
 
     url = (users_base_url + sp_user_id + '/playlists/' + sp_playlist_id + '/tracks')
     headers = create_headers()

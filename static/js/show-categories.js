@@ -4,7 +4,7 @@ function tagTracksInCategory(data) {
     console.log('tracks received:', data);
     // select all the track elements where the playlist-id is in the list
     let trackIds = data.matchingTracks;
-    // whyyyy this this not filtering?
+    // whyyyy is this not filtering?
     let tracksInCategory = $('.track').filter(track => 
         trackIds.includes($(this).data('trackId')));
     console.log(tracksInCategory);

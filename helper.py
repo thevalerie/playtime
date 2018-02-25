@@ -31,30 +31,33 @@ def import_user_playlists(sp_user_id, playlists_to_add):
 
     for sp_playlist_id in playlists_to_add:
         playlist_name, tracks_to_add = a.get_playlist_data(sp_user_id, sp_playlist_id)
-        print tracks_to_add
 
         # create playlist object and add to db
         playlist = f.add_playlist_to_db(session['current_user'], sp_playlist_id, playlist_name)
 
-        print playlist
-
         new_playlists.append(playlist)
 
-        # get data for each track & add to database
-        for position, track_obj in enumerate(tracks_to_add):
+        # get data for all the tracks
+        sp_tracks = [track_obj['track'] for track_obj in tracks_to_add]
+        
+        # create string of all the spotify IDs to send to API call
+        sp_track_ids = ""
+        for sp_track in sp_tracks:
+            sp_track_ids += sp_track['id'] + ","
+        sp_track_ids = sp_track_ids.rstrip(',')
+        
+        audio_features = a.get_audio_features_sp(sp_track_ids)
+        # make the track object and audio features object into a tuple
+        sp_track_info = zip(sp_tracks, audio_features)
 
-            sp_track = track_obj['track']
-            sp_track_id = sp_track['id']
-
-            # get audio features info from Spotify
-            audio_features = a.get_track_data(sp_track_id)
+        # add each track to database
+        for position, track_info in enumerate(sp_track_info):
             # create track object and add to the db
-            track = f.add_track_to_db(sp_track, audio_features)
+            track = f.add_track_to_db(track_info[0], track_info[1])
             # create PlaylistTrack object and add to the db
             f.add_playlist_track_to_db(playlist, track, position)
 
     print "All playlists and tracks added"
-    print ('new playlists from helper function', new_playlists)
 
     return new_playlists
 
