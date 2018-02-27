@@ -177,10 +177,12 @@ def add_category_to_db(category_data):
     # what comes back from empty form field?
     # if i don't int or float a string, can i just send it to Postgres as is
 
-    if category_data['duration_min']:
+    print category_data
+
+    if category_data.get('duration_min'):
         category_data['duration_min'] = h.mins_secs_to_millisecs(category_data['duration_min'])
     
-    if category_data['duration_max']:
+    if category_data.get('duration_max'):
         category_data['duration_max'] = h.mins_secs_to_millisecs(category_data['duration_max'])
 
     new_category = Category(**category_data)
@@ -196,6 +198,11 @@ def add_category_to_db(category_data):
 def get_playlist_info_db(playlist_id):
     """"""
 
-    playlist_data = Playlist.query.get(playlist_id)
+    return Playlist.query.get(playlist_id)
 
+
+def get_category_info_db(cat_id):
+    """"""
+
+    return Category.query.get(cat_id)
 

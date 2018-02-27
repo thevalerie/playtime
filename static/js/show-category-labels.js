@@ -22,6 +22,7 @@ function showCategories(evt) {
         'cat_id': $(this).children('option:selected').data('catId'),
         'playlist_id': $('#tracksTable').data('playlistId')
     };
+    console.log(payload)
 
     $.get('/check_category.json', payload, (data => tagTracksInCategory(data))
     );

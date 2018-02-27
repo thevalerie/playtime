@@ -140,9 +140,9 @@ def work_on_playlist(playlist_id):
 
     return render_template('playlist.html', playlist=playlist, 
                            playlist_tracks=playlist_tracks,
-                           user_categories=user_categories,
-                           format_time=h.millisecs_to_mins_secs,
-                           format_explicit=h.view_is_explicit,)
+                           user_categories=user_categories,)
+                           # format_time=convert_to_mins_secs,
+                           # format_explicit=view_is_explicit,)
 
 
 @app.route('/reorder', methods=['POST'])
@@ -182,7 +182,7 @@ def view_categories():
 
     categories = f.get_user_categories_db()
 
-    return render_template('user-categories.html', categories=categories)
+    return render_template('my_categories.html', categories=categories)
 
 
 @app.route('/create_category')
@@ -192,7 +192,7 @@ def create_new_category():
     return render_template('create_category.html')
 
 
-@app.route('/create_category', methods=['POST'])
+@app.route('/create_category.json', methods=['POST'])
 def add_category_to_db():
     """Create a new category, add to the db"""
 
@@ -203,16 +203,15 @@ def add_category_to_db():
     f.add_category_to_db(category_data)
   
     # redirect back to the user categories page
-    return redirect('/my_categories')
+    return jsonify('Success!')
 
 
 @app.route('/check_category.json')
 def match_tracks_to_category():
     """Finds the tracks that match the selected categoy"""
 
-    cat_info = request.json
-
     cat_id = request.args.get('cat_id')
+    print cat_id
     playlist_id = request.args.get('playlist_id')
 
     track_list = f.get_tracks_in_playlist(playlist_id)
@@ -224,6 +223,7 @@ def match_tracks_to_category():
     track_ids = [track.track_id for track in matching_tracks]
 
     return jsonify({'matchingTracks': track_ids, 'cagegoryName': selected_cat.cat_name})
+
 
 
 if __name__ == "__main__":

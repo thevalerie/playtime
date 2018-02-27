@@ -1,7 +1,54 @@
 # coding=utf8
 from flask_sqlalchemy import SQLAlchemy
+import json
 
 db = SQLAlchemy()
+
+
+class ToDictMixin(object):
+    """Convert an object into a dict with attributes"""
+
+    def to_dict(self):
+
+        object_info = {}
+
+        # loop through columns, set key as column name and value as attribute value
+        for column_name in self.__mapper__.column_attrs.keys():
+            attribute = getattr(self, column_name, None)
+            object_info[column_name] = attribute
+
+        return object_info
+
+    def to_json(self):
+
+        return json.dumps(self.to_dict())
+
+
+class FormatConversionMixin(object):
+    """Mixin to convert time and percentage formats"""
+
+    def convert_to_mins_secs(self, attribute):
+        """Takes in the attribute to be converted (duration_min or duration_max), 
+        turns length of time in milliseconds to a string in the format mins:secs"""
+
+        milliseconds = attribute
+
+        mins = milliseconds / 60000
+        secs = (milliseconds % 60000) / 1000
+
+        if secs < 10:
+            return str(mins) + ':0' + str(secs)
+        else:
+            return str(mins) + ':' + str(secs)
+
+    def convert_to_percentage(self, attribute):
+        """Takes in the attribute to be converted,
+        turns decimal representation of percentage to decimal string representation"""
+
+        decimal = attribute
+
+        return str(int(decimal * 100)) + '%'
+
 
 class User(db.Model):
     """App user"""
@@ -19,7 +66,7 @@ class User(db.Model):
                                                             self.display_name)
 
 
-class Playlist(db.Model):
+class Playlist(db.Model, ToDictMixin):
     """Playlist, belongs to a particular user"""
 
     __tablename__ = 'playlists'
@@ -38,7 +85,7 @@ class Playlist(db.Model):
                                                             self.name)
 
 
-class Track(db.Model):
+class Track(db.Model, ToDictMixin, FormatConversionMixin):
     """Track in the database"""
 
     __tablename__ = 'tracks'
@@ -55,6 +102,8 @@ class Track(db.Model):
     valence = db.Column(db.Float)
     is_explicit = db.Column(db.Boolean)
 
+    # set up secondary relationship to Playlist table
+
     def __repr__(self):
         """Show relevant playlist info when printed"""
 
@@ -62,9 +111,17 @@ class Track(db.Model):
                                                                  self.artist.encode('ascii', 'ignore'),
                                                                  self.title.encode('ascii', 'ignore'))
 
+    def view_is_explicit(self):
+        """Takes the boolean value of track.is_explicit and returns a descriptive string"""
+
+        if self.is_explicit:
+            return "Explicit"
+        else:
+            return ""
+
 
 class PlaylistTrack(db.Model):
-    """Playlist/track association table"""
+    """Playlist/track middle table"""
 
     __tablename__ = 'playlistTracks'
 
@@ -83,7 +140,7 @@ class PlaylistTrack(db.Model):
                                                                self.position)
 
 
-class Category(db.Model):
+class Category(db.Model, ToDictMixin, FormatConversionMixin):
     """User-created category for a song type"""
 
     __tablename__ = 'categories'
@@ -110,6 +167,20 @@ class Category(db.Model):
 
         return "\n<Category cat_id={} cat_name={}>".format(self.cat_id,
                                                            self.cat_name)
+
+
+
+# class TrackCategory(db.Model):
+#     """Category/track middle table"""
+
+#     __tablename__ = 'trackCategories'
+
+#     track_cat_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+#     track_id = db.Column(db.Integer, db.ForeignKey('tracks.track_id'))
+#     cat_id = db.Column(db.Integer, db.ForeignKey('categories.cat_id'))
+#     category_match = db.Column(db.Boolean)
+
+
 
 # class Template(db.Model):
 #     """Template for a type of playlist"""

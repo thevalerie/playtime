@@ -169,25 +169,25 @@ def mins_secs_to_millisecs(mins_secs):
     return (int(mins) * 60000) + (int(secs) * 1000)
 
 
-def millisecs_to_mins_secs(milliseconds):
-    """Turn an int representing a length of time in milliseconds to a string in the format mins:secs"""
+# def millisecs_to_mins_secs(milliseconds):
+#     """Turn an int representing a length of time in milliseconds to a string in the format mins:secs"""
 
-    mins = milliseconds / 60000
-    secs = (milliseconds % 60000) / 1000
+#     mins = milliseconds / 60000
+#     secs = (milliseconds % 60000) / 1000
 
-    if secs < 10:
-        return str(mins) + ':0' + str(secs)
-    else:
-        return str(mins) + ':' + str(secs)
+#     if secs < 10:
+#         return str(mins) + ':0' + str(secs)
+#     else:
+#         return str(mins) + ':' + str(secs)
 
 
-def view_is_explicit(is_explicit):
-    """Takes the boolean value of playlist.is_explicit and returns a descriptive string"""
+# def view_is_explicit(is_explicit):
+#     """Takes the boolean value of playlist.is_explicit and returns a descriptive string"""
 
-    if is_explicit:
-        return "Explicit"
-    else:
-        return ""
+#     if is_explicit:
+#         return "Explicit"
+#     else:
+#         return ""
 
 
 def apply_category(cat_id, track_list):
