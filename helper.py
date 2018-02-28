@@ -169,60 +169,45 @@ def mins_secs_to_millisecs(mins_secs):
     return (int(mins) * 60000) + (int(secs) * 1000)
 
 
-# def millisecs_to_mins_secs(milliseconds):
-#     """Turn an int representing a length of time in milliseconds to a string in the format mins:secs"""
+def percent_to_decimal(percentage):
+    """Turn a string formatted as a whole number percentage to its decimal equivalent"""
 
-#     mins = milliseconds / 60000
-#     secs = (milliseconds % 60000) / 1000
-
-#     if secs < 10:
-#         return str(mins) + ':0' + str(secs)
-#     else:
-#         return str(mins) + ':' + str(secs)
+    return float(percentage) / 100
 
 
-# def view_is_explicit(is_explicit):
-#     """Takes the boolean value of playlist.is_explicit and returns a descriptive string"""
+# def apply_category(cat_id, track_list):
+#     """Given a category ID and a list of track objects, return a list of tracks that match the category"""
 
-#     if is_explicit:
-#         return "Explicit"
-#     else:
-#         return ""
+#     given_cat = Category.query.get(cat_id)
+#     tracks_in_category = []
 
+#     # check the track against each criterion in the category, if it passes all, add to the list
+#     for track in track_list:
+#         if track.duration < given_cat.duration_min:
+#             continue
+#         if given_cat.duration_max and (track.duration > given_cat.duration_max):
+#             continue
+#         if track.tempo < given_cat.tempo_min:
+#             continue
+#         if given_cat.tempo_max and (track.tempo > given_cat.tempo_max):
+#             continue
+#         if track.danceability < given_cat.danceability_min:
+#             continue
+#         if given_cat.danceability_max and (track.danceability > given_cat.danceability_max):
+#             continue
+#         if track.energy < given_cat.energy_min:
+#             continue
+#         if given_cat.energy_max and (track.energy > given_cat.energy_max):
+#             continue
+#         if track.valence < given_cat.valence_min:
+#             continue
+#         if given_cat.valence_max and (track.valence > given_cat.valence_max):
+#             continue
+#         if given_cat.exclude_explicit and track.is_explicit:
+#             continue
+#         tracks_in_category.append(track)
 
-def apply_category(cat_id, track_list):
-    """Given a category ID and a list of track objects, return a list of tracks that match the category"""
-
-    given_cat = Category.query.get(cat_id)
-    tracks_in_category = []
-
-    # check the track against each criterion in the category, if it passes all, add to the list
-    for track in track_list:
-        if track.duration < given_cat.duration_min:
-            continue
-        if given_cat.duration_max and (track.duration > given_cat.duration_max):
-            continue
-        if track.tempo < given_cat.tempo_min:
-            continue
-        if given_cat.tempo_max and (track.tempo > given_cat.tempo_max):
-            continue
-        if track.danceability < given_cat.danceability_min:
-            continue
-        if given_cat.danceability_max and (track.danceability > given_cat.danceability_max):
-            continue
-        if track.energy < given_cat.energy_min:
-            continue
-        if given_cat.energy_max and (track.energy > given_cat.energy_max):
-            continue
-        if track.valence < given_cat.valence_min:
-            continue
-        if given_cat.valence_max and (track.valence > given_cat.valence_max):
-            continue
-        if given_cat.exclude_explicit and track.is_explicit:
-            continue
-        tracks_in_category.append(track)
-
-    return given_cat, tracks_in_category
+#     return given_cat, tracks_in_category
 
 
 

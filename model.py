@@ -169,7 +169,6 @@ class Category(db.Model, ToDictMixin, FormatConversionMixin):
                                                            self.cat_name)
 
 
-
 # class TrackCategory(db.Model):
 #     """Category/track middle table"""
 
@@ -203,5 +202,5 @@ if __name__ == "__main__":
 
     from server import app
     connect_to_db(app)
-    db.create_all()
+    # db.create_all()
     print "Connected to DB."

@@ -214,15 +214,16 @@ def match_tracks_to_category():
     print cat_id
     playlist_id = request.args.get('playlist_id')
 
-    track_list = f.get_tracks_in_playlist(playlist_id)
+    # track_list = f.get_tracks_in_playlist(playlist_id)
 
-    selected_cat, matching_tracks = h.apply_category(cat_id, track_list)
+    selected_cat, matching_tracks = f.apply_category_to_playlist_db(cat_id, playlist_id)
 
+    print selected_cat
     print matching_tracks
 
     track_ids = [track.track_id for track in matching_tracks]
 
-    return jsonify({'matchingTracks': track_ids, 'cagegoryName': selected_cat.cat_name})
+    return jsonify({'matchingTracks': track_ids, 'categoryName': selected_cat.cat_name})
 
 
 

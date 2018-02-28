@@ -1,16 +1,23 @@
 "use strict";
 
+$('.track-category').hide();
+
+
 function tagTracksInCategory(data) {
+    
     console.log('tracks received:', data);
-    // select all the track elements where the playlist-id is in the list
+
     let trackIds = data.matchingTracks;
-    // whyyyy is this not filtering?
-    let tracksInCategory = $('.track').filter(track => 
-        trackIds.includes($(this).data('trackId')));
-    console.log(tracksInCategory);
-    // change the inner HTML of the track-category td child elements to the category name
-    tracksInCategory.each(trackRowElement => 
-        $(this).children('td.track-category').innerHTML = data.categoryName);
+
+    // change the HTML text of the track-category td child elements to the category name
+    $('.track').each(function() { 
+        console.log($(this).data('trackId'));
+        console.log(trackIds);
+        console.log(trackIds.includes($(this).data('trackId')));
+        if (trackIds.includes($(this).data('trackId'))) {
+            $(this).children('td.track-category').text(data.categoryName);
+        }
+    });
     // make all the track-category elements visible
     $('.track-category').show();
 }

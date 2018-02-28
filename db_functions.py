@@ -157,8 +157,6 @@ def get_tracks_in_playlist(playlist_id):
 
     tracks_in_playlist = db.session.query(Track).join(PlaylistTrack).filter(PlaylistTrack.playlist_id == playlist_id,
                                                                             PlaylistTrack.position != None).order_by(PlaylistTrack.position).all()
-    
-    print tracks_in_playlist
 
     return tracks_in_playlist
 
@@ -174,16 +172,22 @@ def get_user_categories_db():
 def add_category_to_db(category_data):
     """Create Category object, add to database"""
 
-    # what comes back from empty form field?
-    # if i don't int or float a string, can i just send it to Postgres as is
-
-    print category_data
-
     if category_data.get('duration_min'):
-        category_data['duration_min'] = h.mins_secs_to_millisecs(category_data['duration_min'])
-    
+        category_data['duration_min'] = h.mins_secs_to_millisecs(category_data['duration_min'])   
     if category_data.get('duration_max'):
         category_data['duration_max'] = h.mins_secs_to_millisecs(category_data['duration_max'])
+    if category_data.get('danceability_min'):
+        category_data['danceability_min'] = h.percent_to_decimal(category_data['danceability_min'])
+    if category_data.get('danceability_max'):
+        category_data['danceability_max'] = h.percent_to_decimal(category_data['danceability_max'])
+    if category_data.get('energy_min'):
+        category_data['energy_min'] = h.percent_to_decimal(category_data['energy_min'])
+    if category_data.get('energy_max'):
+        category_data['energy_max'] = h.percent_to_decimal(category_data['energy_max'])
+    if category_data.get('valence_min'):
+        category_data['valence_min'] = h.percent_to_decimal(category_data['valence_min'])
+    if category_data.get('valence_max'):
+        category_data['valence_max'] = h.percent_to_decimal(category_data['valence_max'])
 
     new_category = Category(**category_data)
 
@@ -196,13 +200,103 @@ def add_category_to_db(category_data):
 
 
 def get_playlist_info_db(playlist_id):
-    """"""
 
     return Playlist.query.get(playlist_id)
 
 
 def get_category_info_db(cat_id):
-    """"""
 
     return Category.query.get(cat_id)
 
+
+def get_user_tracks_db():
+    """Returns a set of tracks in the database for the current user"""
+
+    user_tracks = db.session.query(Track).join(PlaylistTrack.track).join(PlaylistTrack.playlist).filter(Playlist.user_id == session['current_user']).all()
+
+    return set(user_tracks)
+
+
+def apply_category_to_playlist_db(cat_id, playlist_id):
+    """Given a category ID and playlist ID, return tracks in that playlist that match the category criteria"""
+
+    given_cat = Category.query.get(cat_id)
+
+    print given_cat
+
+    # base_query
+    q = (db.session.query(Track).
+                             join(PlaylistTrack).
+                             filter(PlaylistTrack.playlist_id == playlist_id,
+                                    PlaylistTrack.position != None))
+
+    # go through each criterion, if it is specified, add it to the filter
+    if given_cat.duration_min:
+        q = q.filter(Track.duration > given_cat.duration_min)
+    if given_cat.duration_max:
+        q = q.filter(Track.duration < given_cat.duration_max)
+    if given_cat.tempo_min:
+        q = q.filter(Track.tempo > given_cat.tempo_min)
+    if given_cat.tempo_max:
+        q = q.filter(Track.tempo < given_cat.tempo_max)
+    if given_cat.danceability_min:
+        q = q.filter(Track.danceability > given_cat.danceability_min)
+    if given_cat.danceability_max:
+        q = q.filter(Track.danceability < given_cat.danceability_max)
+    if given_cat.energy_min:
+        q = q.filter(Track.energy > given_cat.energy_min)
+    if given_cat.energy_max:
+        q = q.filter(Track.energy < given_cat.energy_max)
+    if given_cat.valence_min:
+        q = q.filter(Track.valence > given_cat.valence_min)
+    if given_cat.valence_max:
+        q = q.filter(Track.valence < given_cat.valence_max)
+    if given_cat.exclude_explicit:
+        q = q.filter(not Track.is_explicit)
+
+    tracks_in_category = q.all()
+
+    print tracks_in_category
+
+    return given_cat, tracks_in_category
+
+
+def apply_category_to_user_db(cat_id):
+    """Given a category ID, return all tracks in the current user's playlists that match"""
+
+    given_cat = Category.query.get(cat_id)
+
+    # base_query
+    q = (db.session.query(Track).
+                    join(PlaylistTrack.track).
+                    join(PlaylistTrack.playlist).
+                    filter(Playlist.user_id == session['current_user'],
+                           PlaylistTrack.position != None))
+    
+    # go through each criterion, if it is specified, add it to the filter
+    if given_cat.duration_min:
+        q = q.filter(Track.duration > given_cat.duration_min)
+    if given_cat.duration_max:
+        q = q.filter(Track.duration < given_cat.duration_max)
+    if given_cat.tempo_min:
+        q = q.filter(Track.tempo > given_cat.tempo_min)
+    if given_cat.tempo_max:
+        q = q.filter(Track.tempo < given_cat.tempo_max)
+    if given_cat.danceability_min:
+        q = q.filter(Track.danceability > given_cat.danceability_min)
+    if given_cat.danceability_max:
+        q = q.filter(Track.danceability < given_cat.danceability_max)
+    if given_cat.energy_min:
+        q = q.filter(Track.energy > given_cat.energy_min)
+    if given_cat.energy_max:
+        q = q.filter(Track.energy < given_cat.energy_max)
+    if given_cat.valence_min:
+        q = q.filter(Track.valence > given_cat.valence_min)
+    if given_cat.valence_max:
+        q = q.filter(Track.valence < given_cat.valence_max)
+    if given_cat.exclude_explicit:
+        q = q.filter(not Track.is_explicit)
+
+    tracks_in_category = q.all()
+
+    return given_cat, tracks_in_category

@@ -24,7 +24,7 @@
                     <th class='track-energy' hidden>ENERGY</th>
                     <th class='track-valence' hidden>CHEERFULNESS</th>
                     <th class='track-is-explicit' hidden>EXPLICIT?</th>
-                    <th class='track-category' hidden></th>
+                    <th class='track-category'>CATEGORIES</th>
                 </tr>
                 </thead>
                 <tbody id="tracksTable" data-playlist-id={{ playlist.playlist_id }}>
@@ -39,7 +39,7 @@
                             <td class='track-energy' data-track-energy={{ item.track.energy }} hidden>{{ item.track.energy }}</td>
                             <td class='track-valence' data-track-valence={{ item.track.valence }} hidden>{{ item.track.valence }}</td>
                             <td class='track-is-explicit' data-track-is-explicit={{ item.track.is_explicit }} hidden>{{ item.track.view_is_explicit() }}</td>
-                            <td class="track-category" hidden></td>
+                            <td class="track-category"></td>
                         </tr>
                     {% endfor %}
                 </tbody>  
