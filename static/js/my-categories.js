@@ -88,7 +88,7 @@ function sendCategoryData(evt) {
     evt.preventDefault();
 
     console.log($(this));
-    debugger
+
     $.post('/create_category.json', $(this).serialize(), function(data) {
         console.log(data);
         });    

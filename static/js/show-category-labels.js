@@ -1,8 +1,5 @@
 "use strict";
 
-$('.track-category').hide();
-
-
 function tagTracksInCategory(data) {
     
     console.log('tracks received:', data);

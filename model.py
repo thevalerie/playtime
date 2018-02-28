@@ -27,7 +27,7 @@ class ToDictMixin(object):
 class FormatConversionMixin(object):
     """Mixin to convert time and percentage formats"""
 
-    def convert_to_mins_secs(self, attribute):
+    def to_mins_secs(self, attribute):
         """Takes in the attribute to be converted (duration_min or duration_max), 
         turns length of time in milliseconds to a string in the format mins:secs"""
 
@@ -41,7 +41,7 @@ class FormatConversionMixin(object):
         else:
             return str(mins) + ':' + str(secs)
 
-    def convert_to_percentage(self, attribute):
+    def to_percentage(self, attribute):
         """Takes in the attribute to be converted,
         turns decimal representation of percentage to decimal string representation"""
 

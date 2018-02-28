@@ -11,19 +11,20 @@
                     <option data-cat-id={{ category.cat_id }}>{{ category.cat_name }}</option>
                 {% endfor %}
             </select>
+        <button id='showHideColumnsBtn' class="btn btn-default" data-toggle='modal' data-target='#showHideColumnsModal'>Customize columns</button> 
         <div class="container-fluid">
             <table id='playlistTable'>
                 <thead>
                 <tr>
                     <th class='track-title'>TITLE</th>
                     <th class='track-artist'>ARTIST</th>
-                    <th class='track-album' hidden>ALBUM</th>
+                    <th class='track-album'>ALBUM</th>
                     <th class='track-duration'>DURATION</th>
                     <th class='track-tempo'>BPM</th>
-                    <th class='track-danceability' hidden>DANCEABILITY</th>
-                    <th class='track-energy' hidden>ENERGY</th>
-                    <th class='track-valence' hidden>CHEERFULNESS</th>
-                    <th class='track-is-explicit' hidden>EXPLICIT?</th>
+                    <th class='track-danceability'>DANCEABILITY</th>
+                    <th class='track-energy'>ENERGY</th>
+                    <th class='track-valence'>CHEERFULNESS</th>
+                    <th class='track-is-explicit'>EXPLICIT?</th>
                     <th class='track-category'>CATEGORIES</th>
                 </tr>
                 </thead>
@@ -32,24 +33,51 @@
                         <tr class='track' data-track-id={{ item.track.track_id }} data-pt-id={{ item.pt_id }} data-position={{ item.position }}>
                             <td class='track-title' data-track-title={{ item.track.title }}>{{ item.track.title }}</td>
                             <td class='track-artist' data-track-artist={{ item.track.artist }}>{{ item.track.artist }}</td>
-                            <td class='track-album' data-track-album={{ item.track.album }} hidden>{{ item.track.album }}</td>
-                            <td class='track-duration' data-track-duration={{ item.track.duration }}>{{ item.track.convert_to_mins_secs(item.track.duration) }}</td>
+                            <td class='track-album' data-track-album={{ item.track.album }}>{{ item.track.album }}</td>
+                            <td class='track-duration' data-track-duration={{ item.track.duration }}>{{ item.track.to_mins_secs(item.track.duration) }}</td>
                             <td class='track-tempo' data-track-tempo={{ item.track.tempo }}>{{ item.track.tempo }}</td>
-                            <td class='track-danceability' data-track-danceability={{ item.track.danceability }} hidden>{{ item.track.danceability }}</td>
-                            <td class='track-energy' data-track-energy={{ item.track.energy }} hidden>{{ item.track.energy }}</td>
-                            <td class='track-valence' data-track-valence={{ item.track.valence }} hidden>{{ item.track.valence }}</td>
-                            <td class='track-is-explicit' data-track-is-explicit={{ item.track.is_explicit }} hidden>{{ item.track.view_is_explicit() }}</td>
+                            <td class='track-danceability' data-track-danceability={{ item.track.danceability }}>{{ item.track.to_percentage(item.track.danceability) }}</td>
+                            <td class='track-energy' data-track-energy={{ item.track.energy }}>{{ item.track.to_percentage(item.track.energy) }}</td>
+                            <td class='track-valence' data-track-valence={{ item.track.valence }}>{{ item.track.to_percentage(item.track.valence) }}</td>
+                            <td class='track-is-explicit' data-track-is-explicit={{ item.track.is_explicit }}>{{ item.track.view_is_explicit() }}</td>
                             <td class="track-category"></td>
                         </tr>
                     {% endfor %}
                 </tbody>  
             </table>
         </div>
-        <script type="text/javascript" src="/static/js/show-category-labels.js"></script>
-        <script type="text/javascript" src="/static/js/show-hide-columns.js"></script>
-        <script type="text/javascript" src="/static/js/reorder-tracks.js"></script>
-        <script type="text/javascript" src="/static/js/push-changes-to-spotify.js"></script>
     {% else %}
         This playlist is empty!
     {% endif %}
+
+    <!-- Modal show/hide columns -->
+    <div class='modal' id='showHideColumnsModal' role='dialog'>
+        <div class='modal-dialog'>
+            <div class='modal-content'>
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h1>Select columns to view</h1>
+                </div>
+                <div class='modal-body'>
+                    <input class='column-checkbox' type='checkbox' name='column-name' value='track-title' checked>Title<br>
+                    <input class='column-checkbox' type='checkbox' name='column-name' value='track-artist' checked>Artist<br>
+                    <input class='column-checkbox' type='checkbox' name='column-name' value='track-album'>Album<br>
+                    <input class='column-checkbox' type='checkbox' name='column-name' value='track-duration' checked>Duration<br>
+                    <input class='column-checkbox' type='checkbox' name='column-name' value='track-tempo' checked>BPM<br>
+                    <input class='column-checkbox' type='checkbox' name='column-name' value='track-danceability'>Danceability<br>
+                    <input class='column-checkbox' type='checkbox' name='column-name' value='track-energy'>Energy<br>
+                    <input class='column-checkbox' type='checkbox' name='column-name' value='track-valence'>Cheerfulness<br>
+                    <input class='column-checkbox' type='checkbox' name='column-name' value='track-is-explicit'>Explicit?
+                </div>
+                <div class='modal-footer'>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="/static/js/show-category-labels.js"></script>
+    <script type="text/javascript" src="/static/js/show-hide-columns.js"></script>
+    <script type="text/javascript" src="/static/js/reorder-tracks.js"></script>
+    <script type="text/javascript" src="/static/js/push-changes-to-spotify.js"></script>
 {% endblock %}

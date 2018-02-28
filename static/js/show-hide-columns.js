@@ -1,25 +1,32 @@
 "use strict";
 
+$('.track-album').hide();
+$('.track-danceability').hide();
+$('.track-energy').hide();
+$('.track-valence').hide();
+$('.track-is-explicit').hide();
+$('.track-category').hide();
 
-// function sendFilterData(evt) {
-//     evt.preventDefault();
+// show modal for customize column view
 
-//     let payload = {
-//         'data': $(this).serialize()
-//         };
+$('#showHideColumnsBtn').on('click', function() {
+    $('#showHideColumnsModal').show();
+});
 
-//     console.log(payload)
+$(window).on('click', function(evt) {
+    if (evt.target == $('#showHideColumnsModal')) {
+        $('#showHideColumnsModal').hide();
+    }
+});
 
-//     $.post('/create_filter', payload, function(data) {
-//         console.log(data);
-//         });    
-// }
+// toggle columns show/hide
 
-// $("#newFilterForm").on('submit', sendFilterData);
+function showHideColumns(evt) {
 
+    let to_toggle = $(this).prop('value');
+    console.log(to_toggle)
+    $('.'+to_toggle).toggle()
 
+}
 
-
-// figure out my even listener to show/hide
-// if .is(':hidden') or .is(':visible'), do the opposite
-// remember that data selectors convert to camelCase
+$(".column-checkbox").on('click', showHideColumns);
