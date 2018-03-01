@@ -1,7 +1,6 @@
 # coding=utf8
 import requests
 from flask import session
-from model import User, Playlist, PlaylistTrack, Track, connect_to_db, db
 from config import (client_id, client_secret, redirect_uri, scope,
                     authorization_base_url, token_url, user_profile_url,
                     user_playlists_url, users_base_url, tracks_url,
@@ -64,10 +63,8 @@ def get_playlist_data(sp_user_id, sp_playlist_id):
     
     response = requests.get(url, headers=headers, params=payload)
     playlist_data = response.json()
-    playlist_name= playlist_data['name']
+    playlist_name = playlist_data['name']
     tracks_to_add = playlist_data['tracks']['items']
-
-    print [playlist_name, tracks_to_add]
 
     return [playlist_name, tracks_to_add]
 
@@ -83,8 +80,6 @@ def get_tracks_sp(tracks_to_add):
     
     basic_track_info = response.json()['tracks']
 
-    print basic_track_info
-
     return basic_track_info
 
 
@@ -96,8 +91,6 @@ def get_audio_features_sp(tracks_to_add):
 
     response = requests.get(audio_features_url, headers=headers, params=payload)
     audio_features = response.json()['audio_features']
-
-    print audio_features
 
     return audio_features
 
@@ -113,8 +106,6 @@ def get_playlist_tracks_sp(sp_user_id, sp_playlist_id):
     sp_tracks = response.json()['items']
     sp_track_ids = [track['track']['id'] for track in sp_tracks]
 
-    print sp_track_ids
-
     return sp_track_ids
 
 
@@ -126,7 +117,5 @@ def update_playlist_sp(sp_user_id, sp_playlist_id, new_track_ids):
     payload = {'uris': new_track_ids}
 
     response = requests.put(url, headers=headers, params=payload)
-
-    print response
 
     return response

@@ -1,31 +1,26 @@
 # coding=utf8
-from flask import (Flask, request, session)
-import sys
-import requests
-import config as c
+from flask import session
+from config import client_id, redirect_uri, scope, authorization_base_url
+from model import User, Playlist, PlaylistTrack, Track, Category, db
 import api_calls as a
 import db_functions as f
-from model import User, Playlist, PlaylistTrack, Track, Category, connect_to_db, db
-# import api_calls as a
 
 def get_auth_url():
     """Create the OAuth authorization URL for the current user"""
 
     # create params to get code from Spotify OAuth
-    payload = [('client_id', c.client_id),
+    payload = [('client_id', client_id),
                ('response_type', 'code'),
-               ('redirect_uri', c.redirect_uri),
+               ('redirect_uri', redirect_uri),
                ('state', 'ohheythere'),
-               ('scope', c.scope)]
+               ('scope', scope)]
 
-    auth_url = c.authorization_base_url
+    auth_url = authorization_base_url
 
     for key, value in payload:
         auth_url += key + '=' + value + '&'
 
     auth_url = auth_url.rstrip('&')
-
-    print auth_url
 
     return auth_url
 
@@ -66,7 +61,6 @@ def import_user_playlists(sp_user_id, playlists_to_add):
     """send API call to get the playlist info, add playlist and track info to the db"""
 
     new_playlists = []
-    print ('playlists to add', playlists_to_add)
 
     for sp_playlist_id in playlists_to_add:
         playlist_name, tracks_to_add = a.get_playlist_data(sp_user_id, sp_playlist_id)
@@ -80,10 +74,7 @@ def import_user_playlists(sp_user_id, playlists_to_add):
         sp_tracks = [track_obj['track'] for track_obj in tracks_to_add]
         
         # create string of all the spotify IDs to send to API call
-        sp_track_ids = ""
-        for sp_track in sp_tracks:
-            sp_track_ids += sp_track['id'] + ","
-        sp_track_ids = sp_track_ids.rstrip(',')
+        sp_track_ids = ','.join(sp_tracks)
         
         audio_features = a.get_audio_features_sp(sp_track_ids)
         # make the track object and audio features object into a tuple
@@ -95,8 +86,6 @@ def import_user_playlists(sp_user_id, playlists_to_add):
             track = f.add_track_to_db(track_info[0], track_info[1])
             # create PlaylistTrack object and add to the db
             f.add_playlist_track_to_db(playlist, track, position)
-
-    print "All playlists and tracks added"
 
     return new_playlists
 
@@ -146,7 +135,7 @@ def check_sp_playlist_info(playlist):
     new_playlist_tracks = f.get_playlist_tracks_db(playlist.playlist_id)  
     print "Playlist has been updated"
 
-    return new_playlist_tracks    
+    return new_playlist_tracks
 
 
 def update_playlist_from_sp(sp_playlist_id, sp_track_ids):
@@ -157,11 +146,10 @@ def update_playlist_from_sp(sp_playlist_id, sp_track_ids):
         # query tracks table to see if it's already in the db
     for sp_track_id in sp_track_ids:
         track_obj = Track.query.filter(Track.sp_track_id == sp_track_id).first()
-        pt_obj = db.session.query(PlaylistTrack).join(PlaylistTrack.playlist).join(PlaylistTrack.track).filter(Track.sp_track_id == sp_track_id,
-                                                        Playlist.sp_playlist_id == sp_playlist_id).first()
+        pt_obj = match_playlist_track_db(sp_track_id, sp_playlist_id)
         # if not, add to string of IDs to send
         if not track_obj:
-            tracks_to_add += sp_track_id + "," 
+            tracks_to_add += sp_track_id + ","
         # if the playlist_track object isn't in the db, add to the list to be created
         if not pt_obj:
             playlist_tracks_to_add.append(sp_track_id)
@@ -177,6 +165,7 @@ def update_playlist_from_sp(sp_playlist_id, sp_track_ids):
 
 
 def update_spotify_tracks(playlist_id):
+    """Handle updating Spotify with new track order"""
 
     sp_user_id = User.query.get(session['current_user']).sp_user_id
     sp_playlist_id = Playlist.query.get(playlist_id).sp_playlist_id
@@ -194,6 +183,36 @@ def update_spotify_tracks(playlist_id):
     response = a.update_playlist_sp(sp_user_id, sp_playlist_id, new_track_ids)
 
     return response
+
+
+def apply_filter_query(base_query, given_cat):
+    """Given a base query and a category object, build a query based on the filter criteria"""
+    
+    # go through each criterion, if it is specified, add it to the filter
+    if given_cat.duration_min:
+        base_query = base_query.filter(Track.duration > given_cat.duration_min)
+    if given_cat.duration_max:
+        base_query = base_query.filter(Track.duration < given_cat.duration_max)
+    if given_cat.tempo_min:
+        base_query = base_query.filter(Track.tempo > given_cat.tempo_min)
+    if given_cat.tempo_max:
+        base_query = base_query.filter(Track.tempo < given_cat.tempo_max)
+    if given_cat.danceability_min:
+        base_query = base_query.filter(Track.danceability > given_cat.danceability_min)
+    if given_cat.danceability_max:
+        base_query = base_query.filter(Track.danceability < given_cat.danceability_max)
+    if given_cat.energy_min:
+        base_query = base_query.filter(Track.energy > given_cat.energy_min)
+    if given_cat.energy_max:
+        base_query = base_query.filter(Track.energy < given_cat.energy_max)
+    if given_cat.valence_min:
+        base_query = base_query.filter(Track.valence > given_cat.valence_min)
+    if given_cat.valence_max:
+        base_query = base_query.filter(Track.valence < given_cat.valence_max)
+    if given_cat.exclude_explicit:
+        base_query = base_query.filter(not Track.is_explicit)
+
+    return base_query
 
 
 def mins_secs_to_millisecs(mins_secs):

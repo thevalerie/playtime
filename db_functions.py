@@ -1,9 +1,6 @@
 # coding=utf8
-from flask import (Flask, request, session)
-import sys
-import requests
-import config
-from model import User, Playlist, PlaylistTrack, Track, Category, connect_to_db, db
+from flask import session
+from model import User, Playlist, PlaylistTrack, Track, Category, db
 import api_calls as a
 import helper as h
 
@@ -33,14 +30,6 @@ def add_user_to_db(sp_user_id, display_name):
     return current_user
 
 
-def get_user_playlists():
-    """Get playlists associated with the current user"""
-
-    playlists = db.session.query(Playlist).filter(Playlist.user_id == session['current_user']).limit(20).all()
-
-    return playlists
-
-
 def add_playlist_to_db(user_id, sp_playlist_id, playlist_name):
     """Add a playlist to database"""
 
@@ -57,7 +46,7 @@ def add_track_to_db(sp_track, audio_features):
     """Create Track object, add to database"""
 
     sp_track_id = sp_track['id']
-    duration =  sp_track['duration_ms']
+    duration = sp_track['duration_ms']
     album = sp_track['album']['name']
     is_explicit = sp_track['explicit']
     title = sp_track['name']
@@ -83,10 +72,18 @@ def add_playlist_track_to_db(playlist, track, position):
     """Create PlaylistTrack object, add to database"""
 
     playlist_track = PlaylistTrack(playlist_id=playlist.playlist_id,
-                                           track_id=track.track_id,
-                                           position=position,)
+                                   track_id=track.track_id,
+                                   position=position,)
     db.session.add(playlist_track)
     db.session.commit()
+
+
+def get_user_playlists():
+    """Get playlists associated with the current user"""
+
+    playlists = db.session.query(Playlist).filter(Playlist.user_id == session['current_user']).limit(20).all()
+
+    return playlists
 
 
 def update_track_order(new_track_order):
@@ -108,46 +105,49 @@ def get_playlist_tracks_db(playlist_id):
     """Get the track IDs for a given playlist, in position order"""
 
     playlist_tracks = PlaylistTrack.query.filter(PlaylistTrack.playlist_id == playlist_id,
-                                                 PlaylistTrack.position != None).order_by(PlaylistTrack.position).all()
+                      PlaylistTrack.position is not None).order_by(PlaylistTrack.position).all()
 
     return playlist_tracks
 
 
+def match_playlist_track_db(sp_track_id, sp_playlist_id):
+    """Given Spotify playlist ID and track ID, get the corresponding PlaylistTrack object from the DB if it exists"""
+
+    playlist_track = db.session.query(PlaylistTrack).join(PlaylistTrack.playlist).join(PlaylistTrack.track).filter(
+                     Track.sp_track_id == sp_track_id, Playlist.sp_playlist_id == sp_playlist_id).first()
+
+    return playlist_track
+
+
 def remove_playlist_tracks_db(playlist_tracks_to_remove):
-    """"""
+    """Remove tracks from a playlist"""
 
     for playlist_track in playlist_tracks_to_remove:
         playlist_track.position = None
 
     db.session.commit()
 
-    print "Removed tracks from playlist"
-
 
 def update_tracks_db(sp_tracks, audio_features):
-    """"""
+    """Add tracks to database from lists of Spotify tracks and corresponding audio features"""
 
     # for each track that needs to be added, pass the Spotify track data and audio features to the db function
     for i in range(len(sp_tracks)):
-        sp_track = sp_tracks[i]
-        audio_features = audio_features[i]
-        add_track_to_db(sp_track, audio_features)
+        add_track_to_db(sp_tracks[i], audio_features[i])
 
 
 def update_playlist_tracks_db(sp_track_ids, sp_playlist_id, playlist_tracks_to_add):
+    """Update PlaylistTrack objects in DB based on changes to playlist in Spotify"""
 
     for i, sp_track_id in enumerate(sp_track_ids):
-        # check to see if the track & playlist combo is in the pt table
-        # if not, add
+        # check to see if the PlaylistTrack needs to be added to the DB
         if sp_track_id in playlist_tracks_to_add:
             playlist = db.session.query(Playlist).filter(Playlist.sp_playlist_id == sp_playlist_id).first()
             track = db.session.query(Track).filter(Track.sp_track_id == sp_track_id).first()
-            position = i
-            add_playlist_track_to_db(playlist, track, position)
+            add_playlist_track_to_db(playlist, track, i)
         # if it's already in the db, check position against sp data and update if necessary
         else:
-            playlist_track = db.session.query(PlaylistTrack).join(PlaylistTrack.playlist).join(PlaylistTrack.track).filter(Track.sp_track_id == sp_track_id,
-                                                        Playlist.sp_playlist_id == sp_playlist_id).first()
+            playlist_track = match_playlist_track_db(sp_track_id, sp_playlist_id)
             if playlist_track.position != i:
                 playlist_track.position = i
 
@@ -155,8 +155,9 @@ def update_playlist_tracks_db(sp_track_ids, sp_playlist_id, playlist_tracks_to_a
 def get_tracks_in_playlist(playlist_id):
     """Takes a playlist ID, returns a list of track objects in that playlist"""
 
-    tracks_in_playlist = db.session.query(Track).join(PlaylistTrack).filter(PlaylistTrack.playlist_id == playlist_id,
-                                                                            PlaylistTrack.position != None).order_by(PlaylistTrack.position).all()
+    tracks_in_playlist = db.session.query(Track).join(PlaylistTrack).filter(
+        PlaylistTrack.playlist_id == playlist_id, PlaylistTrack.position is not None).order_by(
+        PlaylistTrack.position).all()
 
     return tracks_in_playlist
 
@@ -202,11 +203,13 @@ def add_category_to_db(category_data):
 
 
 def get_playlist_info_db(playlist_id):
+    """Given playlist ID, return Playlist object"""
 
     return Playlist.query.get(playlist_id)
 
 
 def get_category_info_db(cat_id):
+    """Given category ID, return Category object"""
 
     return Category.query.get(cat_id)
 
@@ -214,7 +217,8 @@ def get_category_info_db(cat_id):
 def get_user_tracks_db():
     """Returns a set of tracks in the database for the current user"""
 
-    user_tracks = db.session.query(Track).join(PlaylistTrack.track).join(PlaylistTrack.playlist).filter(Playlist.user_id == session['current_user']).all()
+    user_tracks = db.session.query(Track).join(PlaylistTrack.track).join(
+                  PlaylistTrack.playlist).filter(Playlist.user_id == session['current_user']).all()
 
     return set(user_tracks)
 
@@ -224,41 +228,11 @@ def apply_category_to_playlist_db(cat_id, playlist_id):
 
     given_cat = Category.query.get(cat_id)
 
-    print given_cat
-
     # base_query
-    q = (db.session.query(Track).
-                             join(PlaylistTrack).
-                             filter(PlaylistTrack.playlist_id == playlist_id,
-                                    PlaylistTrack.position != None))
+    base_query = db.session.query(Track).join(PlaylistTrack).filter(
+                 PlaylistTrack.playlist_id == playlist_id, PlaylistTrack.position is not None)
 
-    # go through each criterion, if it is specified, add it to the filter
-    if given_cat.duration_min:
-        q = q.filter(Track.duration > given_cat.duration_min)
-    if given_cat.duration_max:
-        q = q.filter(Track.duration < given_cat.duration_max)
-    if given_cat.tempo_min:
-        q = q.filter(Track.tempo > given_cat.tempo_min)
-    if given_cat.tempo_max:
-        q = q.filter(Track.tempo < given_cat.tempo_max)
-    if given_cat.danceability_min:
-        q = q.filter(Track.danceability > given_cat.danceability_min)
-    if given_cat.danceability_max:
-        q = q.filter(Track.danceability < given_cat.danceability_max)
-    if given_cat.energy_min:
-        q = q.filter(Track.energy > given_cat.energy_min)
-    if given_cat.energy_max:
-        q = q.filter(Track.energy < given_cat.energy_max)
-    if given_cat.valence_min:
-        q = q.filter(Track.valence > given_cat.valence_min)
-    if given_cat.valence_max:
-        q = q.filter(Track.valence < given_cat.valence_max)
-    if given_cat.exclude_explicit:
-        q = q.filter(not Track.is_explicit)
-
-    tracks_in_category = q.all()
-
-    print tracks_in_category
+    tracks_in_category = (h.apply_filter_query(base_query, given_cat)).all()
 
     return given_cat, tracks_in_category
 
@@ -269,36 +243,9 @@ def apply_category_to_user_db(cat_id):
     given_cat = Category.query.get(cat_id)
 
     # base_query
-    q = (db.session.query(Track).
-                    join(PlaylistTrack.track).
-                    join(PlaylistTrack.playlist).
-                    filter(Playlist.user_id == session['current_user'],
-                           PlaylistTrack.position != None))
-    
-    # go through each criterion, if it is specified, add it to the filter
-    if given_cat.duration_min:
-        q = q.filter(Track.duration > given_cat.duration_min)
-    if given_cat.duration_max:
-        q = q.filter(Track.duration < given_cat.duration_max)
-    if given_cat.tempo_min:
-        q = q.filter(Track.tempo > given_cat.tempo_min)
-    if given_cat.tempo_max:
-        q = q.filter(Track.tempo < given_cat.tempo_max)
-    if given_cat.danceability_min:
-        q = q.filter(Track.danceability > given_cat.danceability_min)
-    if given_cat.danceability_max:
-        q = q.filter(Track.danceability < given_cat.danceability_max)
-    if given_cat.energy_min:
-        q = q.filter(Track.energy > given_cat.energy_min)
-    if given_cat.energy_max:
-        q = q.filter(Track.energy < given_cat.energy_max)
-    if given_cat.valence_min:
-        q = q.filter(Track.valence > given_cat.valence_min)
-    if given_cat.valence_max:
-        q = q.filter(Track.valence < given_cat.valence_max)
-    if given_cat.exclude_explicit:
-        q = q.filter(not Track.is_explicit)
+    base_query = db.session.query(Track).join(PlaylistTrack.track).join(PlaylistTrack.playlist).filter(
+                 Playlist.user_id == session['current_user'], PlaylistTrack.position is not None)
 
-    tracks_in_category = q.all()
+    tracks_in_category = (h.apply_filter(base_query, given_cat)).all()
 
     return given_cat, tracks_in_category

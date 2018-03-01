@@ -62,8 +62,7 @@ class User(db.Model):
     def __repr__(self):
         """Show relevant user info when printed"""
 
-        return "\n<User user_id={} display_name={}>".format(self.user_id,
-                                                            self.display_name)
+        return "\n<User user_id={} display_name={}>".format(self.user_id, self.display_name)
 
 
 class Playlist(db.Model, ToDictMixin):
@@ -81,8 +80,7 @@ class Playlist(db.Model, ToDictMixin):
     def __repr__(self):
         """Show relevant playlist info when printed"""
 
-        return "\n<Playlist playlist_id={} name={}>".format(self.playlist_id,
-                                                            self.name)
+        return "\n<Playlist playlist_id={} name={}>".format(self.playlist_id, self.name)
 
 
 class Track(db.Model, ToDictMixin, FormatConversionMixin):
@@ -136,8 +134,7 @@ class PlaylistTrack(db.Model):
     def __repr__(self):
         """Show track order"""
 
-        return "\n<PlaylistTrack pt_id={} position={}>".format(self.pt_id,
-                                                               self.position)
+        return "\n<PlaylistTrack pt_id={} position={}>".format(self.pt_id, self.position)
 
 
 class Category(db.Model, ToDictMixin, FormatConversionMixin):
@@ -165,34 +162,7 @@ class Category(db.Model, ToDictMixin, FormatConversionMixin):
     def __repr__(self):
         """Show filter information"""
 
-        return "\n<Category cat_id={} cat_name={}>".format(self.cat_id,
-                                                           self.cat_name)
-
-
-############################Example data for testing############################
-
-# def example_data():
-#     """Create sample data"""
-
-#     User.query.delete()
-#     Playlist.query.delete()
-#     Track.query.delete()
-#     PlaylistTrack.query.delete()
-#     Category.query.delete()
-
-#     # test users
-#     jean_grey = User(sp_user_id='a', display_name='Phoenix')
-#     henry_mccoy = User(sp_user_id='b', display_name='Beast')
-#     anna_marie = User(sp_user_id='c', display_name='Rogue')
-
-#     # test playlists
-
-
-#     db.session.add_all([jean_grey, henry_mccoy, anna_marie])
-#     db.session.commit()
-
-
-
+        return "\n<Category cat_id={} cat_name={}>".format(self.cat_id, self.cat_name)
 
 
 ################################Helper functions################################

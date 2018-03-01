@@ -49,7 +49,7 @@ def log_in():
 @app.route('/profile')
 def view_user_profile():
     """View current user profile page"""
-    
+
     # get the Spotify user profile
     sp_user_id, display_name = a.get_user_profile()
     # check to see if the current user is in the db/add if not
@@ -57,8 +57,7 @@ def view_user_profile():
     # add current user id to session
     h.add_user_to_session(current_user)
 
-    return render_template("profile-page.html",
-                           user=current_user)
+    return render_template("profile-page.html", user=current_user)
 
 
 @app.route('/my_playlists')
@@ -70,17 +69,19 @@ def view_user_playlists():
 
 @app.route('/get_db_playlists.json')
 def query_db_for_user_playlists():
+    """Get all Playlist objects in the DB belonging to the current user"""
     
     db_playlists = f.get_user_playlists()
 
     # make a list of dicts with just the id and name
-    playlist_data = [{ 'playlist_id': playlist.playlist_id, 'name': playlist.name} for playlist in db_playlists]
+    playlist_data = [{'playlist_id': playlist.playlist_id, 'name': playlist.name} for playlist in db_playlists]
 
     return jsonify(playlist_data)
 
 
 @app.route('/get_sp_playlists.json')
 def query_sp_for_user_playlists():
+    """Get all playlists from Spotify belonging to the current user"""
 
     spotify_playlists = a.get_user_playlists()
 
@@ -99,11 +100,8 @@ def add_playlists_to_db():
     # add playlist and track info to the db
     new_playlists = h.import_user_playlists(sp_user_id, playlists_to_add)
 
-    print ('new playlists in route:', new_playlists)
-
     playlist_data = [{playlist.playlist_id: playlist.name} for playlist in new_playlists]
-    print ('playlist data:', playlist_data)
-  
+    
     # redirect back to the user profile page
     return jsonify(playlist_data)
 
@@ -121,16 +119,15 @@ def work_on_playlist(playlist_id):
     # get the current user's filters from the db
     user_categories = f.get_user_categories_db()
 
-    return render_template('playlist.html', playlist=playlist, 
+    return render_template('playlist.html', playlist=playlist,
                            playlist_tracks=playlist_tracks,
-                user_categories=user_categories,)          
+                           user_categories=user_categories)          
 
 
 @app.route('/reorder.json', methods=['POST'])
 def update_playlist_in_db():
     """Update the track order of a playlist in the database"""
 
-    # playlist_id = request.form.get('playlist_id')
     new_track_order = json.loads(request.form.get('new_track_order'))
     f.update_track_order(new_track_order)
 
@@ -185,20 +182,13 @@ def match_tracks_to_category():
     """Finds the tracks that match the selected categoy"""
 
     cat_id = request.args.get('cat_id')
-    print cat_id
     playlist_id = request.args.get('playlist_id')
 
-    # track_list = f.get_tracks_in_playlist(playlist_id)
-
     selected_cat, matching_tracks = f.apply_category_to_playlist_db(cat_id, playlist_id)
-
-    print selected_cat
-    print matching_tracks
 
     track_ids = [track.track_id for track in matching_tracks]
 
     return jsonify({'matchingTracks': track_ids, 'categoryName': selected_cat.cat_name})
-
 
 
 if __name__ == "__main__":

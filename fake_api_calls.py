@@ -1,7 +1,6 @@
 # coding=utf8
 import requests
 from flask import session
-from model import User, Playlist, PlaylistTrack, Track, connect_to_db, db
 from config import (client_id, client_secret, redirect_uri, scope,
                     authorization_base_url, token_url, user_profile_url,
                     user_playlists_url, users_base_url, tracks_url,
