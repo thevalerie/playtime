@@ -4,10 +4,10 @@ import os
 client_id = os.environ['SPOTIFY_CONSUMER_KEY']
 client_secret = os.environ['SPOTIFY_CONSUMER_SECRET']
 redirect_uri = 'http://localhost:5000/login'
-scope = 'playlist-read-private playlist-modify-private'
+scope = 'playlist-modify playlist-modify-private'
 
 # API endpoints
-authorization_base_url = 'https://accounts.spotify.com/authorize/?'
+authorization_base_url = 'https://accounts.spotify.com/authorize?'
 token_url = 'https://accounts.spotify.com/api/token'
 user_profile_url = 'https://api.spotify.com/v1/me'
 user_playlists_url = 'https://api.spotify.com/v1/me/playlists'

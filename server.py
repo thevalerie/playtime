@@ -10,10 +10,6 @@ import api_calls as a
 import db_functions as f
 import helper as h
 from model import User, Playlist, PlaylistTrack, Track, Category, connect_to_db, db
-# from api_calls import (create_oauth, get_auth_url, get_token, get_user_profile,
-#                        get_user_playlists, get_playlist_data, get_track_data,
-#                        get_playlist_tracks)
-# from functions import (check_db_for_user, add_track_to_db,)
 
 app = Flask(__name__)
 app.secret_key = "ABC"
@@ -29,7 +25,7 @@ def homepage():
 
     session['state'] = 'ohheythere'
 
-    authorization_url = a.get_auth_url()
+    authorization_url = h.get_auth_url()
 
     return render_template("homepage.html", authorization_url=authorization_url)
 
@@ -42,25 +38,12 @@ def log_in():
     code = request.args.get('code')
     state = request.args.get('state')
 
-    # if the value for state doesn't match what's in the session,
-    # redirect back to homepage and try login again
-    if state != session['state']:
-        flash("Authentication failed, please try again")
-        return redirect('/')
+    status_code = h.authenticate_user(code, state)
 
-    response = a.get_token(code)
-    # if anything other than a 200 response code, call error message func
-    if response.status_code != 200:
-        return h.response_error(response.status_code)
-
-    # if success, save the access token and refresh token to the session
-    token = response.json()
-    session['access_token'] = token['access_token']
-    session['refresh_token'] = token['refresh_token']
-    print "Added to session: access_token", session['access_token']
-    print "Added to session: refresh_token", session['refresh_token']
-
-    return redirect('/profile')
+    if status_code != 200:
+        return render_template('error-page.html', status_code=status_code)
+    else:
+        return redirect('/profile')
 
 
 @app.route('/profile')
@@ -140,12 +123,10 @@ def work_on_playlist(playlist_id):
 
     return render_template('playlist.html', playlist=playlist, 
                            playlist_tracks=playlist_tracks,
-                           user_categories=user_categories,)
-                           # format_time=convert_to_mins_secs,
-                           # format_explicit=view_is_explicit,)
+                user_categories=user_categories,)          
 
 
-@app.route('/reorder', methods=['POST'])
+@app.route('/reorder.json', methods=['POST'])
 def update_playlist_in_db():
     """Update the track order of a playlist in the database"""
 
@@ -156,15 +137,15 @@ def update_playlist_in_db():
     return 'Successfully updated playlist in DB'
 
 
-@app.route('/push_to_spotify', methods=['POST'])
+@app.route('/push_to_spotify.json', methods=['POST'])
 def update_playlist_in_spotify():
     """Push playlist changes to Spotify"""
 
     playlist_id = request.form.get('playlist_id')
 
-    h.update_spotify_tracks(playlist_id)
+    response = h.update_spotify_tracks(playlist_id)
 
-    return 'Successfully updated playlist in Spotify'
+    return 'Updated playlist response:' + str(response)
 
 
 @app.route('/more_playlists')
@@ -185,13 +166,6 @@ def view_categories():
     return render_template('my_categories.html', categories=categories)
 
 
-@app.route('/create_category')
-def create_new_category():
-    """UI for user to create a new category"""
-  
-    return render_template('create_category.html')
-
-
 @app.route('/create_category.json', methods=['POST'])
 def add_category_to_db():
     """Create a new category, add to the db"""
@@ -203,7 +177,7 @@ def add_category_to_db():
     f.add_category_to_db(category_data)
   
     # redirect back to the user categories page
-    return jsonify('Success!')
+    return 'Success!'
 
 
 @app.route('/check_category.json')

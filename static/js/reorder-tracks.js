@@ -18,7 +18,7 @@ function updateTrackOrder(evt) {
         newTrackOrder[$(this).attr('data-pt-id')] = $(this).attr('data-position')
     });
 
-    $.post('/reorder', {'new_track_order' : JSON.stringify(newTrackOrder)},
+    $.post('/reorder.json', {'new_track_order' : JSON.stringify(newTrackOrder)},
                         function(data){ console.log(data) });
 }
 

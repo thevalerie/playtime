@@ -6,7 +6,7 @@ function sendChanges(evt) {
         'playlist_id': $(this).data('playlistId')
     };
 
-    $.post('/push_to_spotify', payload, function(data) {
+    $.post('/push_to_spotify.json', payload, function(data) {
         console.log(data);
         });    
 }

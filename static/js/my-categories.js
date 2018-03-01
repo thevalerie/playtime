@@ -9,8 +9,8 @@ function toPercentage(decimal) {
 
 function toMinsSecs(millisecs) {
 
-    let mins = milliseconds / 60000
-    let secs = (milliseconds % 60000) / 1000
+    let mins = millisecs / 60000
+    let secs = (millisecs % 60000) / 1000
 
     if (secs < 10) {
         return mins.toString() + ':0' + secs.toString()
@@ -70,7 +70,7 @@ $(window).on('click', function(evt) {
     }
 });
 
-// show modal for new category form
+// show/hide modal for new category form
 
 $('#newCatBtn').on('click', function() {
     $('#newCatModal').show();
@@ -91,7 +91,8 @@ function sendCategoryData(evt) {
 
     $.post('/create_category.json', $(this).serialize(), function(data) {
         console.log(data);
-        });    
+        $('#newCatModal').hide();
+        });
 }
 
 $("#newCategoryForm").on('submit', sendCategoryData);

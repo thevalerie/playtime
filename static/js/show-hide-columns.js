@@ -25,7 +25,7 @@ function showHideColumns(evt) {
 
     let to_toggle = $(this).prop('value');
     console.log(to_toggle)
-    $('.'+to_toggle).toggle()
+    $('.' + to_toggle).toggle()
 
 }
 

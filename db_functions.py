@@ -188,6 +188,8 @@ def add_category_to_db(category_data):
         category_data['valence_min'] = h.percent_to_decimal(category_data['valence_min'])
     if category_data.get('valence_max'):
         category_data['valence_max'] = h.percent_to_decimal(category_data['valence_max'])
+    if category_data.get('exclude_explicit'):
+        category_data['exclude_explicit'] = True
 
     new_category = Category(**category_data)
 

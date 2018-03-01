@@ -169,38 +169,47 @@ class Category(db.Model, ToDictMixin, FormatConversionMixin):
                                                            self.cat_name)
 
 
-# class TrackCategory(db.Model):
-#     """Category/track middle table"""
+############################Example data for testing############################
 
-#     __tablename__ = 'trackCategories'
+# def example_data():
+#     """Create sample data"""
 
-#     track_cat_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-#     track_id = db.Column(db.Integer, db.ForeignKey('tracks.track_id'))
-#     cat_id = db.Column(db.Integer, db.ForeignKey('categories.cat_id'))
-#     category_match = db.Column(db.Boolean)
+#     User.query.delete()
+#     Playlist.query.delete()
+#     Track.query.delete()
+#     PlaylistTrack.query.delete()
+#     Category.query.delete()
+
+#     # test users
+#     jean_grey = User(sp_user_id='a', display_name='Phoenix')
+#     henry_mccoy = User(sp_user_id='b', display_name='Beast')
+#     anna_marie = User(sp_user_id='c', display_name='Rogue')
+
+#     # test playlists
+
+
+#     db.session.add_all([jean_grey, henry_mccoy, anna_marie])
+#     db.session.commit()
 
 
 
-# class Template(db.Model):
-#     """Template for a type of playlist"""
-#     pass
 
 
-def connect_to_db(app):
+################################Helper functions################################
+
+def connect_to_db(app, db_uri='postgresql:///playtime'):
     """Connect the database to our Flask app."""
 
     # Configure to use our PstgreSQL database
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///playtime'
+    app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.app = app
     db.init_app(app)
 
 
 if __name__ == "__main__":
-    # As a convenience, if we run this module interactively, it will leave
-    # you in a state of being able to work with the database directly.
 
     from server import app
     connect_to_db(app)
-    # db.create_all()
+    db.create_all()
     print "Connected to DB."

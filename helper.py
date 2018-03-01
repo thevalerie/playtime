@@ -8,6 +8,51 @@ import db_functions as f
 from model import User, Playlist, PlaylistTrack, Track, Category, connect_to_db, db
 # import api_calls as a
 
+def get_auth_url():
+    """Create the OAuth authorization URL for the current user"""
+
+    # create params to get code from Spotify OAuth
+    payload = [('client_id', c.client_id),
+               ('response_type', 'code'),
+               ('redirect_uri', c.redirect_uri),
+               ('state', 'ohheythere'),
+               ('scope', c.scope)]
+
+    auth_url = c.authorization_base_url
+
+    for key, value in payload:
+        auth_url += key + '=' + value + '&'
+
+    auth_url = auth_url.rstrip('&')
+
+    print auth_url
+
+    return auth_url
+
+
+def authenticate_user(code, state):
+    """"""
+
+    # if the value for state doesn't match what's in the session,
+    # redirect back to homepage and try login again
+    if state != session['state']:
+        flash("Authentication failed, please try again")
+        return redirect('/')
+
+    response = a.get_token(code)
+    # if anything other than a 200 response code, call error message func
+    if response.status_code != 200:
+        return response.status_code
+
+    # if success, save the access token and refresh token to the session
+    token = response.json()
+    session['access_token'] = token['access_token']
+    session['refresh_token'] = token['refresh_token']
+    print "Added to session: access_token", session['access_token']
+    print "Added to session: refresh_token", session['refresh_token']
+
+    return response.status_code
+
 
 def add_user_to_session(current_user):
     """Add the current user id to the session"""
@@ -15,12 +60,6 @@ def add_user_to_session(current_user):
     session['current_user'] = current_user.user_id
 
     print "Added to session: current_user", session['current_user']
-
-
-def response_error(status_code):
-    """Status code error messaging"""
-
-    return render_template('error-page.html', status_code=status_code)
 
 
 def import_user_playlists(sp_user_id, playlists_to_add):
@@ -152,13 +191,21 @@ def update_spotify_tracks(playlist_id):
 
     new_track_ids = new_track_ids.rstrip(',')
 
-    result = a.update_playlist_sp(sp_user_id, sp_playlist_id, new_track_ids)
+    response = a.update_playlist_sp(sp_user_id, sp_playlist_id, new_track_ids)
 
-    print result
+    return response
 
 
 def mins_secs_to_millisecs(mins_secs):
-    """Turn a string formatted as mins:secs to an int representing milliseconds"""
+    """Turn a string formatted as mins:secs to an int representing milliseconds
+
+    >>>mins_secs_to_millisecs('3:45')
+    225000
+
+    >>>mins_secs_to_millisecs('4')
+    240000
+
+    """
 
     if ':' in mins_secs:
         mins, secs = mins_secs.split(':')
@@ -170,46 +217,11 @@ def mins_secs_to_millisecs(mins_secs):
 
 
 def percent_to_decimal(percentage):
-    """Turn a string formatted as a whole number percentage to its decimal equivalent"""
+    """Turn a string formatted as a whole number percentage to its decimal equivalent
+
+    >>>percent_to_decimal('50')
+    .5
+
+    """
 
     return float(percentage) / 100
-
-
-# def apply_category(cat_id, track_list):
-#     """Given a category ID and a list of track objects, return a list of tracks that match the category"""
-
-#     given_cat = Category.query.get(cat_id)
-#     tracks_in_category = []
-
-#     # check the track against each criterion in the category, if it passes all, add to the list
-#     for track in track_list:
-#         if track.duration < given_cat.duration_min:
-#             continue
-#         if given_cat.duration_max and (track.duration > given_cat.duration_max):
-#             continue
-#         if track.tempo < given_cat.tempo_min:
-#             continue
-#         if given_cat.tempo_max and (track.tempo > given_cat.tempo_max):
-#             continue
-#         if track.danceability < given_cat.danceability_min:
-#             continue
-#         if given_cat.danceability_max and (track.danceability > given_cat.danceability_max):
-#             continue
-#         if track.energy < given_cat.energy_min:
-#             continue
-#         if given_cat.energy_max and (track.energy > given_cat.energy_max):
-#             continue
-#         if track.valence < given_cat.valence_min:
-#             continue
-#         if given_cat.valence_max and (track.valence > given_cat.valence_max):
-#             continue
-#         if given_cat.exclude_explicit and track.is_explicit:
-#             continue
-#         tracks_in_category.append(track)
-
-#     return given_cat, tracks_in_category
-
-
-
-
-
