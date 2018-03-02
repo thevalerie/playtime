@@ -28,7 +28,7 @@ class FormatConversionMixin(object):
     """Mixin to convert time and percentage formats"""
 
     def to_mins_secs(self, attribute):
-        """Takes in the attribute to be converted (duration_min or duration_max), 
+        """Takes in the attribute to be converted (min_duration_ms or max_duration_ms), 
         turns length of time in milliseconds to a string in the format mins:secs"""
 
         milliseconds = attribute
@@ -93,7 +93,7 @@ class Track(db.Model, ToDictMixin, FormatConversionMixin):
     title = db.Column(db.String(100))
     artist = db.Column(db.String(100))
     album = db.Column(db.String(100))
-    duration = db.Column(db.Integer)
+    duration_ms = db.Column(db.Integer)
     tempo = db.Column(db.Integer)
     danceability = db.Column(db.Float)
     energy = db.Column(db.Float)
@@ -145,16 +145,16 @@ class Category(db.Model, ToDictMixin, FormatConversionMixin):
     cat_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     cat_name = db.Column(db.String(100), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
-    duration_min = db.Column(db.Integer)
-    duration_max = db.Column(db.Integer)
-    tempo_min = db.Column(db.Integer)
-    tempo_max = db.Column(db.Integer)
-    danceability_min = db.Column(db.Float)
-    danceability_max = db.Column(db.Float)
-    energy_min = db.Column(db.Float)
-    energy_max = db.Column(db.Float)
-    valence_min = db.Column(db.Float)
-    valence_max = db.Column(db.Float)
+    min_duration_ms = db.Column(db.Integer)
+    max_duration_ms = db.Column(db.Integer)
+    min_tempo = db.Column(db.Integer)
+    max_tempo = db.Column(db.Integer)
+    min_danceability = db.Column(db.Float)
+    max_danceability = db.Column(db.Float)
+    min_energy = db.Column(db.Float)
+    max_energy = db.Column(db.Float)
+    min_valence = db.Column(db.Float)
+    max_valence = db.Column(db.Float)
     exclude_explicit = db.Column(db.Boolean)
 
     user = db.relationship('User', backref='categories')

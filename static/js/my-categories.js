@@ -27,38 +27,40 @@ $('.catListing').on('click', function(evt) {
     console.log(catInfo)
     // replace HTML values in the modal with data for the category selected
     $('#category-name').text(catInfo.cat_name)
+        $('#catRecommend').val(catInfo.cat_id)
+        console.log($('#catRecommend').val())
         if (catInfo.exclude_explicit) {
             $('#exclude_explicit').text('Yes')
         }
-        if (catInfo.duration_min) {
-            $('#duration_min').text(toMinsSecs(catInfo.duration_min))
+        if (catInfo.min_duration_ms) {
+            $('#min_duration_ms').text(toMinsSecs(catInfo.min_duration_ms))
         }
-        if (catInfo.duration_max) {
-            $('#duration_max').text(toMinsSecs(catInfo.duration_max))
+        if (catInfo.max_duration_ms) {
+            $('#max_duration_ms').text(toMinsSecs(catInfo.max_duration_ms))
         }
-        if (catInfo.tempo_min) {
-            $('#tempo_min').text(catInfo.tempo_min)
+        if (catInfo.min_tempo) {
+            $('#min_tempo').text(catInfo.min_tempo)
         }
-        if (catInfo.tempo_max) {
-            $('#tempo_max').text(catInfo.tempo_max)
+        if (catInfo.max_tempo) {
+            $('#max_tempo').text(catInfo.max_tempo)
         }
-        if (catInfo.danceability_min) {
-            $('#danceability_min').text(toPercentage(catInfo.danceability_min))
+        if (catInfo.min_danceability) {
+            $('#min_danceability').text(toPercentage(catInfo.min_danceability))
         }
-        if (catInfo.danceability_max) {
-            $('#danceability_max').text(toPercentage(catInfo.danceability_max))
+        if (catInfo.max_danceability) {
+            $('#max_danceability').text(toPercentage(catInfo.max_danceability))
         }
-        if (catInfo.energy_min) {
-            $('#energy_min').text(toPercentage(catInfo.energy_min))
+        if (catInfo.min_energy) {
+            $('#min_energy').text(toPercentage(catInfo.min_energy))
         }
-        if (catInfo.energy_max) {
-            $('#energy_max').text(toPercentage(catInfo.energy_max))
+        if (catInfo.max_energy) {
+            $('#max_energy').text(toPercentage(catInfo.max_energy))
         }
-        if (catInfo.valence_min) {
-            $('#valence_min').text(toPercentage(catInfo.valence_min))
+        if (catInfo.min_valence) {
+            $('#min_valence').text(toPercentage(catInfo.min_valence))
         }
-        if (catInfo.valence_max) {
-            $('#valence_max').text(toPercentage(catInfo.valence_max))
+        if (catInfo.max_valence) {
+            $('#max_valence').text(toPercentage(catInfo.max_valence))
         }
 
     $('#viewCatModal').show();

@@ -35,25 +35,29 @@
                 <div class="container-fluid">
                     Exclude explicit?<span id='exclude_explicit'>No</span>
                         <br>Song length<br>
-                            Min:<span id="duration_min">None</span>
-                            Max:<span id="duration_max">None</span>
+                            Min:<span id="min_duration_ms">None</span>
+                            Max:<span id="max_duration_ms">None</span>
                         <br>Tempo<br>
-                            Min:<span id="tempo_min">None</span>
-                            Max:<span id="tempo_max">None</span>
+                            Min:<span id="min_tempo">None</span>
+                            Max:<span id="max_tempo">None</span>
                         <br>Danceability<br>
-                            Min:<span id="danceability_min">None</span>
-                            Max:<span id="danceability_max">None</span>
+                            Min:<span id="min_danceability">None</span>
+                            Max:<span id="max_danceability">None</span>
                         <br>Energy level<br>
-                            Min:<span id="energy_min">None</span>
-                            Max:<span id="energy_max">None</span>
+                            Min:<span id="min_energy">None</span>
+                            Max:<span id="max_energy">None</span>
                         <br>Cheerfulness<br>
-                            Min:<span id="valence_min">None</span>
-                            Max:<span id="valence_max">None</span>
+                            Min:<span id="min_valence">None</span>
+                            Max:<span id="max_valence">None</span>
                         <br>
                 </div>
                 </div>
                 <div class='modal-footer'>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <form id='getRecommendations' action='/get_recommendations'>
+                        <input id="catRecommend" name="cat_id" type="hidden" value="">
+                    </form>
+                    <button type="submit" class="btn btn-default" value="Submit" form='getRecommendations'>Get recommendations</button>
                 </div>
             </div>
         </div>
@@ -74,20 +78,20 @@
                         <input type="text" name="cat_name" placeholder="required" required>
                         Exclude explicit?<input type="checkbox" name="exclude_explicit" value="true">
                         <br>Song length<br>
-                            Min:<input type="text" name="duration_min" placeholder="mins:secs">
-                            Max:<input type="text" name="duration_max" placeholder="mins:secs">
+                            Min:<input type="text" name="min_duration_ms" placeholder="mins:secs">
+                            Max:<input type="text" name="max_duration_ms" placeholder="mins:secs">
                         <br>Tempo<br>
-                            Min:<input type="number" name="tempo_min" placeholder="BPM (beats per minute)">
-                            Max:<input type="number" name="tempo_max" placeholder="BPM (beats per minute)">
+                            Min:<input type="number" name="min_tempo" placeholder="BPM (beats per minute)">
+                            Max:<input type="number" name="max_tempo" placeholder="BPM (beats per minute)">
                         <br>Danceability<br>
-                            Min:<input type="number" name="danceability_min" placeholder="percent, 1-100" pattern=[1-100]>%
-                            Max:<input type="number" name="danceability_max" placeholder="percent, 1-100" pattern=[1-100]>%
+                            Min:<input type="number" name="min_danceability" placeholder="percent, 1-100" pattern=[1-100]>%
+                            Max:<input type="number" name="max_danceability" placeholder="percent, 1-100" pattern=[1-100]>%
                         <br>Energy level<br>
-                            Min:<input type="number" name="energy_min" placeholder="percent, 1-100" pattern=[1-100]>%
-                            Max:<input type="number" name="energy_max" placeholder="percent, 1-100" pattern=[1-100]>%
+                            Min:<input type="number" name="min_energy" placeholder="percent, 1-100" pattern=[1-100]>%
+                            Max:<input type="number" name="max_energy" placeholder="percent, 1-100" pattern=[1-100]>%
                         <br>Cheerfulness<br>
-                            Min:<input type="number" name="valence_min" placeholder="percent, 1-100" pattern=[1-100]>%
-                            Max:<input type="number" name="valence_max" placeholder="percent, 1-100" pattern=[1-100]>%
+                            Min:<input type="number" name="min_valence" placeholder="percent, 1-100" pattern=[1-100]>%
+                            Max:<input type="number" name="max_valence" placeholder="percent, 1-100" pattern=[1-100]>%
                         <br>      
                     </form>
                 </div>

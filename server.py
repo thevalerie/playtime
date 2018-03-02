@@ -214,6 +214,16 @@ def match_tracks_to_category():
     return jsonify({'matchingTracks': track_ids, 'categoryName': selected_cat.cat_name})
 
 
+@app.route('/get_recommendations')
+def category_recommendations():
+
+    cat_id = request.args.get('cat_id')
+
+    print h.get_category_recommendations(cat_id)
+
+    return redirect('/my_categories')
+
+
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the
     # point that we invoke the DebugToolbarExtension

@@ -81,7 +81,7 @@ def add_track_to_db(sp_track, audio_features):
     """Create Track object, add to database"""
 
     sp_track_id = sp_track['id']
-    duration = sp_track['duration_ms']
+    duration_ms = sp_track['duration_ms']
     album = sp_track['album']['name']
     is_explicit = sp_track['explicit']
     title = sp_track['name']
@@ -92,7 +92,7 @@ def add_track_to_db(sp_track, audio_features):
     valence = audio_features['valence']
 
     track = Track(sp_track_id=sp_track_id, title=title, artist=artist, album=album,
-                  duration=duration, tempo=tempo, danceability=danceability,
+                  duration_ms=duration_ms, tempo=tempo, danceability=danceability,
                   energy=energy, is_explicit=is_explicit, valence=valence,)
 
     db.session.add(track)
@@ -147,7 +147,7 @@ def apply_category_to_user_db(cat_id):
     base_query = db.session.query(Track).join(PlaylistTrack.track).join(PlaylistTrack.playlist).filter(
                  Playlist.user_id == session['current_user'], PlaylistTrack.position is not None)
 
-    tracks_in_category = (h.apply_filter(base_query, given_cat)).all()
+    tracks_in_category = (h.apply_filter_query(base_query, given_cat)).all()
 
     return given_cat, tracks_in_category
 
@@ -159,7 +159,7 @@ def apply_category_to_all_tracks(cat_id, offset=0):
 
     base_query = db.session.query(Track)
 
-    tracks_in_category = (h.apply_filter(base_query, given_cat)).offset(offset).limit(20).all()
+    tracks_in_category = (h.apply_filter_query(base_query, given_cat)).offset(offset).limit(20).all()
 
     return given_cat, tracks_in_category
 
@@ -255,20 +255,20 @@ def add_category_to_db(category_data):
 
     if category_data.get('duration_min'):
         category_data['duration_min'] = h.mins_secs_to_millisecs(category_data['duration_min'])   
-    if category_data.get('duration_max'):
-        category_data['duration_max'] = h.mins_secs_to_millisecs(category_data['duration_max'])
-    if category_data.get('danceability_min'):
-        category_data['danceability_min'] = h.percent_to_decimal(category_data['danceability_min'])
-    if category_data.get('danceability_max'):
-        category_data['danceability_max'] = h.percent_to_decimal(category_data['danceability_max'])
-    if category_data.get('energy_min'):
-        category_data['energy_min'] = h.percent_to_decimal(category_data['energy_min'])
-    if category_data.get('energy_max'):
-        category_data['energy_max'] = h.percent_to_decimal(category_data['energy_max'])
-    if category_data.get('valence_min'):
-        category_data['valence_min'] = h.percent_to_decimal(category_data['valence_min'])
-    if category_data.get('valence_max'):
-        category_data['valence_max'] = h.percent_to_decimal(category_data['valence_max'])
+    if category_data.get('max_duration_ms'):
+        category_data['max_duration_ms'] = h.mins_secs_to_millisecs(category_data['max_duration_ms'])
+    if category_data.get('min_danceability'):
+        category_data['min_danceability'] = h.percent_to_decimal(category_data['min_danceability'])
+    if category_data.get('max_danceability'):
+        category_data['max_danceability'] = h.percent_to_decimal(category_data['max_danceability'])
+    if category_data.get('min_energy'):
+        category_data['min_energy'] = h.percent_to_decimal(category_data['min_energy'])
+    if category_data.get('max_energy'):
+        category_data['max_energy'] = h.percent_to_decimal(category_data['max_energy'])
+    if category_data.get('min_valence'):
+        category_data['min_valence'] = h.percent_to_decimal(category_data['min_valence'])
+    if category_data.get('max_valence'):
+        category_data['max_valence'] = h.percent_to_decimal(category_data['max_valence'])
     if category_data.get('exclude_explicit'):
         category_data['exclude_explicit'] = True
 

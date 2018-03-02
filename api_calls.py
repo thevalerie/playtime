@@ -4,7 +4,7 @@ from flask import session
 from config import (client_id, client_secret, redirect_uri, scope,
                     authorization_base_url, token_url, user_profile_url,
                     user_playlists_url, users_base_url, tracks_url,
-                    audio_features_url,)
+                    audio_features_url, recommendations_url)
 
 
 def create_headers():
@@ -126,9 +126,15 @@ def get_recommendations_sp(parameters):
     headers = create_headers()
     payload = parameters
 
-    response = requests.get(, headers=headers, params=payload)
+    response = requests.get(recommendations_url, headers=headers, params=payload)
 
     basic_track_info = response.json()['tracks']
+
+    seed_info = response.json()['seeds']
+
+    import pdb; pdb.set_trace()
+
+    print seed_info
 
     return basic_track_info
 

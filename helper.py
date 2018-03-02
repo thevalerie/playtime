@@ -72,9 +72,9 @@ def import_user_playlists(sp_user_id, playlists_to_add):
 
         # get data for all the tracks
         sp_tracks = [track_obj['track'] for track_obj in tracks_to_add]
-        
+
         # create string of all the spotify IDs to send to API call
-        sp_track_ids = ','.join(sp_tracks)
+        sp_track_ids = ','.join(sp_track['id'] for sp_track in sp_tracks)
         
         audio_features = a.get_audio_features_sp(sp_track_ids)
         # make the track object and audio features object into a tuple
@@ -146,7 +146,7 @@ def update_playlist_from_sp(sp_playlist_id, sp_track_ids):
         # query tracks table to see if it's already in the db
     for sp_track_id in sp_track_ids:
         track_obj = Track.query.filter(Track.sp_track_id == sp_track_id).first()
-        pt_obj = match_playlist_track_db(sp_track_id, sp_playlist_id)
+        pt_obj = f.match_playlist_track_db(sp_track_id, sp_playlist_id)
         # if not, add to string of IDs to send
         if not track_obj:
             tracks_to_add += sp_track_id + ","
@@ -197,26 +197,26 @@ def apply_filter_query(base_query, given_cat):
     """Given a base query and a category object, build a query based on the filter criteria"""
     
     # go through each criterion, if it is specified, add it to the filter
-    if given_cat.duration_min:
-        base_query = base_query.filter(Track.duration > given_cat.duration_min)
-    if given_cat.duration_max:
-        base_query = base_query.filter(Track.duration < given_cat.duration_max)
-    if given_cat.tempo_min:
-        base_query = base_query.filter(Track.tempo > given_cat.tempo_min)
-    if given_cat.tempo_max:
-        base_query = base_query.filter(Track.tempo < given_cat.tempo_max)
-    if given_cat.danceability_min:
-        base_query = base_query.filter(Track.danceability > given_cat.danceability_min)
-    if given_cat.danceability_max:
-        base_query = base_query.filter(Track.danceability < given_cat.danceability_max)
-    if given_cat.energy_min:
-        base_query = base_query.filter(Track.energy > given_cat.energy_min)
-    if given_cat.energy_max:
-        base_query = base_query.filter(Track.energy < given_cat.energy_max)
-    if given_cat.valence_min:
-        base_query = base_query.filter(Track.valence > given_cat.valence_min)
-    if given_cat.valence_max:
-        base_query = base_query.filter(Track.valence < given_cat.valence_max)
+    if given_cat.min_duration_ms:
+        base_query = base_query.filter(Track.duration_ms > given_cat.min_duration_ms)
+    if given_cat.max_duration_ms:
+        base_query = base_query.filter(Track.duration_ms < given_cat.max_duration_ms)
+    if given_cat.min_tempo:
+        base_query = base_query.filter(Track.tempo > given_cat.min_tempo)
+    if given_cat.max_tempo:
+        base_query = base_query.filter(Track.tempo < given_cat.max_tempo)
+    if given_cat.min_danceability:
+        base_query = base_query.filter(Track.danceability > given_cat.min_danceability)
+    if given_cat.max_danceability:
+        base_query = base_query.filter(Track.danceability < given_cat.max_danceability)
+    if given_cat.min_energy:
+        base_query = base_query.filter(Track.energy > given_cat.min_energy)
+    if given_cat.max_energy:
+        base_query = base_query.filter(Track.energy < given_cat.max_energy)
+    if given_cat.min_valence:
+        base_query = base_query.filter(Track.valence > given_cat.min_valence)
+    if given_cat.max_valence:
+        base_query = base_query.filter(Track.valence < given_cat.max_valence)
     if given_cat.exclude_explicit:
         base_query = base_query.filter(not Track.is_explicit)
 
@@ -260,23 +260,55 @@ def get_category_recommendations(cat_id):
     recommended_tracks = []
 
     # first, check the database to see if we already have 20 tracks that match
-    given_cat, matches_in_db = apply_category_to_all_tracks(cat_id)
+    given_cat, matches_in_db = f.apply_category_to_all_tracks(cat_id)
 
     # if the list is 20 tracks long, add the track IDs to the suggested list and return
-    if len(matches_in_db) >= 20:
-        recommended_tracks.extend(matches_in_db)
-        return recommended_tracks
+    # if len(matches_in_db) >= 20:
+    #     recommended_tracks.extend(matches_in_db)
+    #     return recommended_tracks
 
     # if we have some matching tracks in the DB, but not enough to recommend,
     # use those tracks as seed data to get more tracks from Spotify
     if matches_in_db:
-        # NEED TO WRITE THIS API CALL
-        seed_tracks = [track.sp_track_id for track in matches_in_db[:5]]
-        parameters = create_recommendation_params(given_cat, seed_tracks=seed_tracks)
-        tracks_from_sp = a.get_recommendations_sp(parameters)
+        seed_track_ids = [track.sp_track_id for track in matches_in_db[:5]]
+        params = create_recommendation_params(given_cat, seed_track_ids=seed_track_ids)
+        sp_tracks = a.get_recommendations_sp(params)
+
+        # create string of all the spotify IDs to send to audio featuresAPI call
+        sp_track_ids = ','.join(track['id'] for track in sp_tracks)
+        
+        audio_features = a.get_audio_features_sp(sp_track_ids)
+        # make the track object and audio features object into a tuple
+        sp_track_info = zip(sp_tracks, audio_features)
+
+        # add each track to database
+        for track_info in sp_track_info:
+            # create track object and add to the db
+            track = f.add_track_to_db(track_info[0], track_info[1])
+            recommended_tracks.append(track)
+
+        return recommended_tracks
 
 
-def create_recommendation_params(category_object, seed_artists=None, seed_genres=None, seed_tracks=None):
+def create_recommendation_params(category_object, seed_artist_ids=None, seed_genre_ids=None, seed_track_ids=None):
     """Given a category object and seed data, construct parameters for Spotify get request"""
 
+    # get all the category's attributes make a dict of just the ones we need
+    category_attrs = category_object.to_dict()
+    extra_attrs = ('cat_id', 'cat_name', 'user_id', 'exclude_explicit')
+    params = {key: value for key, value in category_attrs.iteritems()
+                      if key not in extra_attrs and value is not None}
 
+    if seed_artist_ids:
+        seed_artists = ','.join(seed_artist_ids)
+        params['seed_artists'] = seed_artists
+
+    if seed_genre_ids:
+        seed_genres = ','.join(seed_genre_ids)
+        params['seed_genres'] = seed_genres
+
+    if seed_track_ids:
+        seed_tracks = ','.join(seed_track_ids)
+        params['seed_tracks'] = seed_tracks
+
+    return params
