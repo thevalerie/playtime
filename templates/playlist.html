@@ -1,47 +1,67 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <div class="container-fluid">
     <h1>{{ playlist.name }}</h1>
+    <div class="container-fluid">
     {% if playlist_tracks %}
-        <button id='saveChanges' class="btn btn-default" data-playlist-id={{ playlist.playlist_id }}>Save Changes</button>
-        Show category:
+    <div class='container-fluid'>
+        <div class="dropdown">
+          <button class="btn btn-default pull-right dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            Dropdown
+            <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dLabel">
+            <li><a href="#" id='showHideColumnsBtn' data-toggle='modal' data-target='#showHideColumnsModal'>Customize View</a></li>
+            <li role="separator" class="divider"></li>
+            <li class="dropdown-header">Show category label</li>
+                {% for category in user_categories %}
+                    <li><a href="#" class='selected-cat' data-cat-id={{ category.cat_id }}>{{ category.cat_name }}</a></li>
+                {% endfor %}
+                <li><a href="#" id='clear-cat'>(Hide)</a></li>
+            <!-- <li role="separator" class="divider"></li> -->
+            <!-- <li id='saveChanges' data-playlist-id={{ playlist.playlist_id }}><a href="#">Save Changes</a></li> -->
+          </ul>
+        </div>
+        <button id='saveChanges' class="btn btn-default pull-right" data-playlist-id={{ playlist.playlist_id }}>Save Changes</button>
+    </div>
+        <!-- Show category:
             <select id='selected-category' name="selected-category">
                 <option value="None" selected></option>
                 {% for category in user_categories %}
                     <option data-cat-id={{ category.cat_id }}>{{ category.cat_name }}</option>
                 {% endfor %}
-            </select>
-        <button id='showHideColumnsBtn' class="btn btn-default" data-toggle='modal' data-target='#showHideColumnsModal'>Customize columns</button> 
+            </select> -->
+        <!-- <button id='showHideColumnsBtn' class="btn btn-default" data-toggle='modal' data-target='#showHideColumnsModal'>Customize columns</button>  -->
+
         <div class="container-fluid">
             <table id='playlistTable'>
                 <thead>
                 <tr>
-                    <th class='track-title'>TITLE</th>
-                    <th class='track-artist'>ARTIST</th>
-                    <th class='track-album'>ALBUM</th>
-                    <th class='track-duration-ms'>DURATION</th>
-                    <th class='track-tempo'>BPM</th>
-                    <th class='track-danceability'>DANCEABILITY</th>
-                    <th class='track-energy'>ENERGY</th>
-                    <th class='track-valence'>CHEERFULNESS</th>
-                    <th class='track-is-explicit'>EXPLICIT?</th>
-                    <th class='track-category'>CATEGORIES</th>
+                    <th class='track-title default-show'>TITLE</th>
+                    <th class='track-artist default-show'>ARTIST</th>
+                    <th class='track-album default-hide'>ALBUM</th>
+                    <th class='track-duration-ms default-show'>DURATION</th>
+                    <th class='track-tempo default-show'>BPM</th>
+                    <th class='track-danceability default-hide'>DANCEABILITY</th>
+                    <th class='track-energy default-hide'>ENERGY</th>
+                    <th class='track-valence default-hide'>CHEERFULNESS</th>
+                    <th class='track-is-explicit default-hide'>EXPLICIT?</th>
+                    <th class='track-category default-hide'>CATEGORIES</th>
                 </tr>
                 </thead>
                 <tbody id="tracksTable" data-playlist-id={{ playlist.playlist_id }}>
                     {% for item in playlist_tracks %}
                         <tr class='track' data-track-id={{ item.track.track_id }} data-pt-id={{ item.pt_id }} data-position={{ item.position }}>
-                            <td class='track-title' data-track-title={{ item.track.title }}>{{ item.track.title }}</td>
-                            <td class='track-artist' data-track-artist={{ item.track.artist }}>{{ item.track.artist }}</td>
-                            <td class='track-album' data-track-album={{ item.track.album }}>{{ item.track.album }}</td>
-                            <td class='track-duration-ms' data-track-duration-ms={{ item.track.duration_ms }}>{{ item.track.to_mins_secs(item.track.duration_ms) }}</td>
-                            <td class='track-tempo' data-track-tempo={{ item.track.tempo }}>{{ item.track.tempo }}</td>
-                            <td class='track-danceability' data-track-danceability={{ item.track.danceability }}>{{ item.track.to_percentage(item.track.danceability) }}</td>
-                            <td class='track-energy' data-track-energy={{ item.track.energy }}>{{ item.track.to_percentage(item.track.energy) }}</td>
-                            <td class='track-valence' data-track-valence={{ item.track.valence }}>{{ item.track.to_percentage(item.track.valence) }}</td>
-                            <td class='track-is-explicit' data-track-is-explicit={{ item.track.is_explicit }}>{{ item.track.view_is_explicit() }}</td>
-                            <td class="track-category"></td>
+                            <td class='track-title default-show' data-track-title={{ item.track.title }}>{{ item.track.title }}</td>
+                            <td class='track-artist default-show' data-track-artist={{ item.track.artist }}>{{ item.track.artist }}</td>
+                            <td class='track-album default-hide' data-track-album={{ item.track.album }}>{{ item.track.album }}</td>
+                            <td class='track-duration-ms default-show' data-track-duration-ms={{ item.track.duration_ms }}>{{ item.track.to_mins_secs(item.track.duration_ms) }}</td>
+                            <td class='track-tempo default-show' data-track-tempo={{ item.track.tempo }}>{{ item.track.tempo }}</td>
+                            <td class='track-danceability default-hide' data-track-danceability={{ item.track.danceability }}>{{ item.track.to_percentage(item.track.danceability) }}</td>
+                            <td class='track-energy default-hide' data-track-energy={{ item.track.energy }}>{{ item.track.to_percentage(item.track.energy) }}</td>
+                            <td class='track-valence default-hide' data-track-valence={{ item.track.valence }}>{{ item.track.to_percentage(item.track.valence) }}</td>
+                            <td class='track-is-explicit default-hide' data-track-is-explicit={{ item.track.is_explicit }}>{{ item.track.view_is_explicit() }}</td>
+                            <td class="track-category default-hide"></td>
                         </tr>
                     {% endfor %}
                 </tbody>  
@@ -61,17 +81,18 @@
                     <h1>Select columns to view</h1>
                 </div>
                 <div class='modal-body'>
-                    <input class='column-checkbox' type='checkbox' name='column-name' value='track-title' checked>Title<br>
-                    <input class='column-checkbox' type='checkbox' name='column-name' value='track-artist' checked>Artist<br>
-                    <input class='column-checkbox' type='checkbox' name='column-name' value='track-album'>Album<br>
-                    <input class='column-checkbox' type='checkbox' name='column-name' value='track-duration-ms' checked>Duration<br>
-                    <input class='column-checkbox' type='checkbox' name='column-name' value='track-tempo' checked>BPM<br>
-                    <input class='column-checkbox' type='checkbox' name='column-name' value='track-danceability'>Danceability<br>
-                    <input class='column-checkbox' type='checkbox' name='column-name' value='track-energy'>Energy<br>
-                    <input class='column-checkbox' type='checkbox' name='column-name' value='track-valence'>Cheerfulness<br>
-                    <input class='column-checkbox' type='checkbox' name='column-name' value='track-is-explicit'>Explicit?
+                    <input class='column-checkbox default-checked' type='checkbox' name='column-name' value='track-title' checked>Title<br>
+                    <input class='column-checkbox default-checked' type='checkbox' name='column-name' value='track-artist' checked>Artist<br>
+                    <input class='column-checkbox default-unchecked' type='checkbox' name='column-name' value='track-album'>Album<br>
+                    <input class='column-checkbox default-checked' type='checkbox' name='column-name' value='track-duration-ms' checked>Duration<br>
+                    <input class='column-checkbox default-checked' type='checkbox' name='column-name' value='track-tempo' checked>BPM<br>
+                    <input class='column-checkbox default-unchecked' type='checkbox' name='column-name' value='track-danceability'>Danceability<br>
+                    <input class='column-checkbox default-unchecked' type='checkbox' name='column-name' value='track-energy'>Energy<br>
+                    <input class='column-checkbox default-unchecked' type='checkbox' name='column-name' value='track-valence'>Cheerfulness<br>
+                    <input class='column-checkbox default-unchecked' type='checkbox' name='column-name' value='track-is-explicit'>Explicit?
                 </div>
                 <div class='modal-footer'>
+                    <button type="button" class="btn btn-default" id='reset-columns'>Reset</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
             </div>

@@ -17,10 +17,25 @@ function tagTracksInCategory(data) {
 }
 
 
+// function showCategories(evt) {
+
+//     let payload = {
+//         'cat_id': $(this).children('option:selected').data('catId'),
+//         'playlist_id': $('#tracksTable').data('playlistId')
+//     };
+
+//     $.get('/check_category.json', payload, (data => tagTracksInCategory(data))
+//     );
+// }
+
+
+// $('#selected-category').on('change', showCategories)
+
+
 function showCategories(evt) {
 
     let payload = {
-        'cat_id': $(this).children('option:selected').data('catId'),
+        'cat_id': $(this).data('catId'),
         'playlist_id': $('#tracksTable').data('playlistId')
     };
 
@@ -29,4 +44,13 @@ function showCategories(evt) {
 }
 
 
-$('#selected-category').on('change', showCategories)
+$('.selected-cat').on('click', showCategories)
+
+
+function hideCategories() {
+
+    $('.track').children('td.track-category').text('');
+    $('.track-category').hide();
+}
+
+$('#clear-cat').on('click', hideCategories)

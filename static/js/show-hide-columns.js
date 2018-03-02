@@ -1,11 +1,8 @@
 "use strict";
 
-$('.track-album').hide();
-$('.track-danceability').hide();
-$('.track-energy').hide();
-$('.track-valence').hide();
-$('.track-is-explicit').hide();
-$('.track-category').hide();
+// start with default column view
+$('.default-hide').hide();
+
 
 // show modal for customize column view
 
@@ -13,11 +10,6 @@ $('#showHideColumnsBtn').on('click', function() {
     $('#showHideColumnsModal').show();
 });
 
-$(window).on('click', function(evt) {
-    if (evt.target == $('#showHideColumnsModal')) {
-        $('#showHideColumnsModal').hide();
-    }
-});
 
 // toggle columns show/hide
 
@@ -30,3 +22,19 @@ function showHideColumns(evt) {
 }
 
 $(".column-checkbox").on('click', showHideColumns);
+
+
+// reset to default column view
+
+function resetColumnView(evt) {
+
+    // reset the column view to the default
+    $('.default-show').show();
+    $('.default-hide').hide();
+
+    // reset checkboxes to the default
+    $('.default-checked').prop('checked', true);
+    $('.default-unchecked').prop('checked', false);
+}
+
+$('#reset-columns').on('click', resetColumnView);
