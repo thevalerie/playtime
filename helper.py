@@ -159,9 +159,17 @@ def update_playlist_from_sp(sp_playlist_id, sp_track_ids):
         sp_tracks = a.get_tracks_sp(tracks_to_add)
         audio_features = a.get_audio_features_sp(tracks_to_add)
 
-        f.update_tracks_db(sp_tracks, audio_features)
+        update_tracks_db(sp_tracks, audio_features)
 
     f.update_playlist_tracks_db(sp_track_ids, sp_playlist_id, playlist_tracks_to_add)
+
+
+def update_tracks_db(sp_tracks, audio_features):
+    """Add tracks to database from lists of Spotify tracks and corresponding audio features"""
+
+    # for each track that needs to be added, pass the Spotify track data and audio features to the db function
+    for i in range(len(sp_tracks)):
+        f.add_track_to_db(sp_tracks[i], audio_features[i])
 
 
 def update_spotify_tracks(playlist_id):
@@ -244,3 +252,31 @@ def percent_to_decimal(percentage):
     """
 
     return float(percentage) / 100
+
+
+def get_category_recommendations(cat_id):
+    """Get track recommendations matching a given category ID"""
+
+    recommended_tracks = []
+
+    # first, check the database to see if we already have 20 tracks that match
+    given_cat, matches_in_db = apply_category_to_all_tracks(cat_id)
+
+    # if the list is 20 tracks long, add the track IDs to the suggested list and return
+    if len(matches_in_db) >= 20:
+        recommended_tracks.extend(matches_in_db)
+        return recommended_tracks
+
+    # if we have some matching tracks in the DB, but not enough to recommend,
+    # use those tracks as seed data to get more tracks from Spotify
+    if matches_in_db:
+        # NEED TO WRITE THIS API CALL
+        seed_tracks = [track.sp_track_id for track in matches_in_db[:5]]
+        parameters = create_recommendation_params(given_cat, seed_tracks=seed_tracks)
+        tracks_from_sp = a.get_recommendations_sp(parameters)
+
+
+def create_recommendation_params(category_object, seed_artists=None, seed_genres=None, seed_tracks=None):
+    """Given a category object and seed data, construct parameters for Spotify get request"""
+
+

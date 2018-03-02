@@ -39,6 +39,7 @@ class FlaskTestsRoutes(TestCase):
 
         # Get the Flask test client
         app.config['TESTING'] = True
+        app.config['SECRET_KEY'] = 'key'
         self.client = app.test_client()
 
         # Connect to test database
@@ -77,6 +78,39 @@ class FlaskTestsRoutes(TestCase):
 
         result = self.client.get('/my_categories')
         self.assertIn('Slow', result.data)
+
+
+class FlaskDatabaseTests(TestCase):
+    """Tests for my database
+
+STRATEGY HERE: test the type of object that comes back
+
+    """
+
+    def setUp(self):
+        """Stuff to do before every test."""
+
+        # Get the Flask test client
+        app.config['TESTING'] = True
+        app.config['SECRET_KEY'] = 'key'
+        self.client = app.test_client()
+
+        # Connect to test database
+        connect_to_db(app, "postgresql:///testdb")
+
+        with self.client as c:
+            with c.session_transaction() as sess:
+                sess['current_user'] = 1
+
+    def tearDown(self):
+        """Do at end of every test."""
+
+        db.session.close()
+
+    def test_match_playlist_track_db(self):
+
+        result = db_functions.get_playlist_tracks_db(1)
+        self.assertIs((result[0]), "<class 'model.PlaylistTrack'>")
 
 
 

@@ -76,7 +76,6 @@ def get_tracks_sp(tracks_to_add):
     payload = {'ids': tracks_to_add}
 
     response = requests.get(tracks_url, headers=headers, params=payload)
-    print response
     
     basic_track_info = response.json()['tracks']
 
@@ -119,3 +118,17 @@ def update_playlist_sp(sp_user_id, sp_playlist_id, new_track_ids):
     response = requests.put(url, headers=headers, params=payload)
 
     return response
+
+
+def get_recommendations_sp(parameters):
+    """Given a set of parameters, get recommendations from Spotify"""
+
+    headers = create_headers()
+    payload = parameters
+
+    response = requests.get(, headers=headers, params=payload)
+
+    basic_track_info = response.json()['tracks']
+
+    return basic_track_info
+

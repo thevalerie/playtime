@@ -9,7 +9,11 @@
     {% if categories %}
         <div>
             {% for category in categories %}
-                <div data-json='{{ category.to_json() }}' data-cat-id={{category.cat_id}} class='catListing' data-toggle='modal' data-target='#viewCatModal'>{{ category.cat_name }}</a></div>
+                <div>
+                    <span data-json='{{ category.to_json() }}' data-cat-id={{category.cat_id}} class='catListing' data-toggle='modal' data-target='#viewCatModal'>{{ category.cat_name }}</span>
+                    <span class='glyphicon glyphicon-pencil'></span>
+                    <span class='glyphicon glyphicon-trash'></span>
+                </div>
             {% endfor %}
         </div>
         </br>

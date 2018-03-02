@@ -40,22 +40,36 @@ def log_in():
 
     status_code = h.authenticate_user(code, state)
 
-    if status_code != 200:
-        return render_template('error-page.html', status_code=status_code)
-    else:
-        return redirect('/profile')
-
-
-@app.route('/profile')
-def view_user_profile():
-    """View current user profile page"""
-
     # get the Spotify user profile
     sp_user_id, display_name = a.get_user_profile()
     # check to see if the current user is in the db/add if not
     current_user = f.check_db_for_user(sp_user_id, display_name)
     # add current user id to session
     h.add_user_to_session(current_user)
+
+    if status_code != 200:
+        return render_template('error-page.html', status_code=status_code)
+    else:
+        return redirect('/profile')
+
+
+@app.route('/log_out')
+def log_out():
+    """Remove user and tokens from session, redirect to homepage"""
+
+    session.clear()
+
+    return redirect(c.log_out_url)
+
+
+@app.route('/profile')
+def view_user_profile():
+    """View current user profile page"""
+
+    if 'current_user' not in session:
+        return redirect('/')
+
+    current_user = User.query.get(session['current_user'])
 
     return render_template("profile-page.html", user=current_user)
 
@@ -64,13 +78,16 @@ def view_user_profile():
 def view_user_playlists():
     """View current user's playlists in the database/import more from Spotify"""
 
+    if 'current_user' not in session:
+        return redirect('/')
+
     return render_template("my_playlists.html")
 
 
 @app.route('/get_db_playlists.json')
 def query_db_for_user_playlists():
     """Get all Playlist objects in the DB belonging to the current user"""
-    
+        
     db_playlists = f.get_user_playlists()
 
     # make a list of dicts with just the id and name
@@ -109,6 +126,9 @@ def add_playlists_to_db():
 @app.route('/playlist/<playlist_id>')
 def work_on_playlist(playlist_id):
     """View a selected playlist"""
+
+    if 'current_user' not in session:
+        return redirect('/')
 
     # query database to get the playlist info
     playlist = Playlist.query.get(playlist_id)
@@ -157,6 +177,9 @@ def load_more_playlists():
 @app.route('/my_categories')
 def view_categories():
     """Display current user's song categories"""
+
+    if 'current_user' not in session:
+        return redirect('/')
 
     categories = f.get_user_categories_db()
 

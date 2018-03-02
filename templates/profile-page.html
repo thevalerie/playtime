@@ -1,9 +1,11 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>Profile page</h1>
-    Hi {{ user.display_name }}!</br>
-    
-    <a href="/my_playlists">Playlists</a><br>
-    <a href="/my_categories">Categories</a>
+    <div class='container-fluid'>
+        <h1>Profile page</h1>
+        Hi {{ user.display_name }}!</br>
+        
+        <a href="/my_playlists">Playlists</a><br>
+        <a href="/my_categories">Categories</a>
+    </div>
 {% endblock %}
