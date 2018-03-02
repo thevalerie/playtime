@@ -4,7 +4,7 @@
     <div class="container-fluid">
     <h1>{{ playlist.name }}</h1>
     {% if playlist_tracks %}
-        <button id='saveChanges' data-playlist-id={{ playlist.playlist_id }}>Save Changes</button>
+        <button id='saveChanges' class="btn btn-default" data-playlist-id={{ playlist.playlist_id }}>Save Changes</button>
         Show category:
             <select id='selected-category' name="selected-category">
                 <option value="None" selected></option>

@@ -223,13 +223,13 @@ def apply_filter_query(base_query, given_cat):
     return base_query
 
 
-def mins_secs_to_millisecs(mins_secs):
+def to_millisecs(mins_secs):
     """Turn a string formatted as mins:secs to an int representing milliseconds
 
-    >>>mins_secs_to_millisecs('3:45')
+    >>>to_millisecs('3:45')
     225000
 
-    >>>mins_secs_to_millisecs('4')
+    >>>to_millisecs('4')
     240000
 
     """
@@ -243,10 +243,10 @@ def mins_secs_to_millisecs(mins_secs):
     return (int(mins) * 60000) + (int(secs) * 1000)
 
 
-def percent_to_decimal(percentage):
+def to_decimal(percentage):
     """Turn a string formatted as a whole number percentage to its decimal equivalent
 
-    >>>percent_to_decimal('50')
+    >>>to_decimal('50')
     .5
 
     """
@@ -299,13 +299,15 @@ def create_recommendation_params(category_object, seed_artist_ids=None, seed_gen
     params = {key: value for key, value in category_attrs.iteritems()
                       if key not in extra_attrs and value is not None}
 
-    if seed_artist_ids:
-        seed_artists = ','.join(seed_artist_ids)
-        params['seed_artists'] = seed_artists
+    # code to handle seeding with artists and/or genres
 
-    if seed_genre_ids:
-        seed_genres = ','.join(seed_genre_ids)
-        params['seed_genres'] = seed_genres
+    # if seed_artist_ids:
+    #     seed_artists = ','.join(seed_artist_ids)
+    #     params['seed_artists'] = seed_artists
+
+    # if seed_genre_ids:
+    #     seed_genres = ','.join(seed_genre_ids)
+    #     params['seed_genres'] = seed_genres
 
     if seed_track_ids:
         seed_tracks = ','.join(seed_track_ids)
