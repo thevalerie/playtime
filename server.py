@@ -219,9 +219,10 @@ def category_recommendations():
 
     cat_id = request.args.get('cat_id')
 
-    print h.get_category_recommendations(cat_id)
+    category, recommended_tracks = h.get_category_recommendations(cat_id)
 
-    return redirect('/my_categories')
+    return jsonify(render_template('/recommendations.html', category=category, 
+                                   recommended_tracks=recommended_tracks))
 
 
 if __name__ == "__main__":

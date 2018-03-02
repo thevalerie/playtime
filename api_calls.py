@@ -132,9 +132,5 @@ def get_recommendations_sp(parameters):
 
     seed_info = response.json()['seeds']
 
-    import pdb; pdb.set_trace()
-
-    print seed_info
-
     return basic_track_info
 

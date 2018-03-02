@@ -1,5 +1,6 @@
 # coding=utf8
 from flask import session
+import random
 from config import client_id, redirect_uri, scope, authorization_base_url
 from model import User, Playlist, PlaylistTrack, Track, Category, db
 import api_calls as a
@@ -270,7 +271,8 @@ def get_category_recommendations(cat_id):
     # if we have some matching tracks in the DB, but not enough to recommend,
     # use those tracks as seed data to get more tracks from Spotify
     if matches_in_db:
-        seed_track_ids = [track.sp_track_id for track in matches_in_db[:5]]
+        seed_tracks = random.sample(matches_in_db, 5)
+        seed_track_ids = [track.sp_track_id for track in seed_tracks]
         params = create_recommendation_params(given_cat, seed_track_ids=seed_track_ids)
         sp_tracks = a.get_recommendations_sp(params)
 
@@ -287,7 +289,7 @@ def get_category_recommendations(cat_id):
             track = f.add_track_to_db(track_info[0], track_info[1])
             recommended_tracks.append(track)
 
-        return recommended_tracks
+        return given_cat, recommended_tracks
 
 
 def create_recommendation_params(category_object, seed_artist_ids=None, seed_genre_ids=None, seed_track_ids=None):
