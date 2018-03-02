@@ -29,12 +29,13 @@ class FormatConversionMixin(object):
 
     def to_mins_secs(self, attribute):
         """Takes in the attribute to be converted (min_duration_ms or max_duration_ms), 
-        turns length of time in milliseconds to a string in the format mins:secs"""
+        turns length of time in milliseconds to a string in the format mins:secs or the string 'None'"""
 
-        milliseconds = attribute
+        if not attribute:
+            return 'None'
 
-        mins = milliseconds / 60000
-        secs = (milliseconds % 60000) / 1000
+        mins = attribute / 60000
+        secs = (attribute % 60000) / 1000
 
         if secs < 10:
             return str(mins) + ':0' + str(secs)
@@ -45,9 +46,10 @@ class FormatConversionMixin(object):
         """Takes in the attribute to be converted,
         turns decimal representation of percentage to decimal string representation"""
 
-        decimal = attribute
+        if not attribute:
+            return 'None'
 
-        return str(int(decimal * 100)) + '%'
+        return str(int(attribute * 100)) + '%'
 
 
 class User(db.Model):

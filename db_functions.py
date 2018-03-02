@@ -253,22 +253,22 @@ def match_playlist_track_db(sp_track_id, sp_playlist_id):
 def add_category_to_db(category_data):
     """Create Category object, add to database"""
 
-    if category_data.get('duration_min'):
-        category_data['duration_min'] = h.mins_secs_to_millisecs(category_data['duration_min'])   
+    if category_data.get('min_duration_ms'):
+        category_data['min_duration_ms'] = h.to_millisecs(category_data['min_duration_ms'])   
     if category_data.get('max_duration_ms'):
-        category_data['max_duration_ms'] = h.mins_secs_to_millisecs(category_data['max_duration_ms'])
+        category_data['max_duration_ms'] = h.to_millisecs(category_data['max_duration_ms'])
     if category_data.get('min_danceability'):
-        category_data['min_danceability'] = h.percent_to_decimal(category_data['min_danceability'])
+        category_data['min_danceability'] = h.to_decimal(category_data['min_danceability'])
     if category_data.get('max_danceability'):
-        category_data['max_danceability'] = h.percent_to_decimal(category_data['max_danceability'])
+        category_data['max_danceability'] = h.to_decimal(category_data['max_danceability'])
     if category_data.get('min_energy'):
-        category_data['min_energy'] = h.percent_to_decimal(category_data['min_energy'])
+        category_data['min_energy'] = h.to_decimal(category_data['min_energy'])
     if category_data.get('max_energy'):
-        category_data['max_energy'] = h.percent_to_decimal(category_data['max_energy'])
+        category_data['max_energy'] = h.to_decimal(category_data['max_energy'])
     if category_data.get('min_valence'):
-        category_data['min_valence'] = h.percent_to_decimal(category_data['min_valence'])
+        category_data['min_valence'] = h.to_decimal(category_data['min_valence'])
     if category_data.get('max_valence'):
-        category_data['max_valence'] = h.percent_to_decimal(category_data['max_valence'])
+        category_data['max_valence'] = h.to_decimal(category_data['max_valence'])
     if category_data.get('exclude_explicit'):
         category_data['exclude_explicit'] = True
 
