@@ -168,14 +168,14 @@ def apply_category_to_user_db(cat_id):
     return given_cat, tracks_in_category
 
 
-def apply_category_to_all_tracks(cat_id, offset=0):
+def apply_category_to_all_tracks(cat_id):
     """Given a category ID, return all tracks in the DB that match (batches of 20)"""
 
     given_cat = get_category_info_db(cat_id)
 
     base_query = db.session.query(Track)
 
-    tracks_in_category = (h.apply_filter_query(base_query, given_cat)).offset(offset).limit(20).all()
+    tracks_in_category = (h.apply_filter_query(base_query, given_cat)).all()
 
     return given_cat, tracks_in_category
 

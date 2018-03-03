@@ -301,16 +301,10 @@ def get_category_recommendations(cat_id):
 
     recommended_tracks = []
 
-    # first, check the database to see if we already have 20 tracks that match
+    # first, check the database to see if we have tracks that match
     given_cat, matches_in_db = f.apply_category_to_all_tracks(cat_id)
 
-    # if the list is 20 tracks long, add the track IDs to the suggested list and return
-    # if len(matches_in_db) >= 20:
-    #     recommended_tracks.extend(matches_in_db)
-    #     return recommended_tracks
-
-    # if we have some matching tracks in the DB, but not enough to recommend,
-    # use those tracks as seed data to get more tracks from Spotify
+    # use a random sampling of those tracks as seed data to get more tracks from Spotify
     if matches_in_db:
         seed_tracks = random.sample(matches_in_db, 5)
         seed_track_ids = [track.sp_track_id for track in seed_tracks]
