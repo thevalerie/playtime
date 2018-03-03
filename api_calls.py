@@ -132,6 +132,24 @@ def delete_tracks_sp(sp_user_id, sp_playlist_id, tracks_to_remove):
     return response
 
 
+def add_tracks_sp(sp_user_id, sp_playlist_id, tracks_to_add):
+    """Add specified tracks to a specified playlist"""
+
+    url = (users_base_url + sp_user_id + '/playlists/' + sp_playlist_id + '/tracks')
+    headers = create_headers()
+    payload = {'uris': tracks_to_add}
+
+    response = requests.post(url, headers=headers, params=payload)
+
+    print url
+    print headers
+    print payload
+
+    print response.json()
+
+    return response
+
+
 def get_recommendations_sp(parameters):
     """Given a set of parameters, get recommendations from Spotify"""
 

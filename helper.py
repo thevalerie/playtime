@@ -194,10 +194,37 @@ def update_spotify_tracks(playlist_id):
     return response
 
 
+def add_spotify_tracks(source_playlist_id, target_playlist_id, track_ids):
+    """Handle adding tracks to a Spotify playlist"""
+
+    print('Helper 200 track_ids:', track_ids)
+
+    sp_user_id = User.query.get(session['current_user']).sp_user_id
+    sp_playlist_id = Playlist.query.get(target_playlist_id).sp_playlist_id
+    import pdb; pdb.set_trace()
+    tracks_to_add = f.get_tracks_list(source_playlist_id, track_ids)
+
+    print('Helper 207 tracks_to_add:', tracks_to_add)
+
+    sp_track_ids = ""
+
+    for track in tracks_to_add:
+        sp_track_id = track.sp_track_id
+        sp_track_ids += 'spotify:track:' + sp_track_id + ','
+
+    sp_track_ids = sp_track_ids.rstrip(',')
+
+    print('Helper 217 sp_track_ids', sp_track_ids)
+
+    response = a.add_tracks_sp(sp_user_id, sp_playlist_id, sp_track_ids)
+
+    return response
+
+
 def delete_spotify_tracks(playlist_id, track_ids):
     """Handle removing tracks from Spotify playlist"""
 
-    tracks_to_remove = f.get_playlist_tracks_list(playlist_id, track_ids)
+    tracks_to_remove = f.get_tracks_list(playlist_id, track_ids)
 
     sp_track_ids_to_remove = []
 

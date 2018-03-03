@@ -7,11 +7,12 @@
     <div class='container-fluid'>
         <div class="dropdown">
           <button class="btn btn-default pull-right dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-            Dropdown
+            Options
             <span class="caret"></span>
           </button>
           <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dLabel">
             <li><a href="#" id='activateDelete'>Delete Songs</a></li>
+            <li><a href="#" id='activateAdd'>Add to Playlist</a></li>
             <li><a href="#" id='showHideColumnsBtn' data-toggle='modal' data-target='#showHideColumnsModal'>Customize View</a></li>
             <li role="separator" class="divider"></li>
             <li class="dropdown-header">Show category label</li>
@@ -23,6 +24,18 @@
         </div>
         <button id='saveChanges' class="btn btn-default pull-right" data-playlist-id={{ playlist.playlist_id }}>Save Changes</button>
         <button id='saveDelete' class="btn btn-default pull-right" data-playlist-id={{ playlist.playlist_id }}>Delete Tracks</button>
+
+        <div id="selectPlaylist" class="dropdown">
+          <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            Select Playlist
+            <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="dLabel">
+            {% for playlist in user_playlists %}
+                <li><a href="#" class='addToPlaylist' data-playlist-id={{ playlist.playlist_id}} data-sp-playlist-id= {{ playlist.sp_playlist_id }}>{{ playlist.name }}</a></li>
+            {% endfor %}
+          </ul>
+        </div>
     </div>
 
         <div class="container-fluid">
@@ -30,6 +43,7 @@
                 <thead>
                 <tr>
                     <th class='select-delete default-hide-col'><input id='select-all-delete' type='checkbox'></th>
+                    <th class='select-add default-hide-col'><input id='select-all-add' type='checkbox'></th>
                     <th class='track-title default-show-col'>TITLE</th>
                     <th class='track-artist default-show-col'>ARTIST</th>
                     <th class='track-album default-hide-col'>ALBUM</th>
@@ -46,6 +60,7 @@
                     {% for item in playlist_tracks %}
                         <tr class='track' data-track-id={{ item.track.track_id }} data-pt-id={{ item.pt_id }} data-position={{ item.position }}>
                             <td class='select-delete default-hide-col'><input class='selected-track-delete' type='checkbox' value={{ item.track.track_id }}></td>
+                            <td class='select-add default-hide-col'><input class='selected-track-add' type='checkbox' value={{ item.track.track_id }}></td>
                             <td class='track-title default-show-col' data-track-title={{ item.track.title }}>{{ item.track.title }}</td>
                             <td class='track-artist default-show-col' data-track-artist={{ item.track.artist }}>{{ item.track.artist }}</td>
                             <td class='track-album default-hide-col' data-track-album={{ item.track.album }}>{{ item.track.album }}</td>
@@ -96,6 +111,7 @@
     <script type="text/javascript" src="/static/js/show-category-labels.js"></script>
     <script type="text/javascript" src="/static/js/show-hide-columns.js"></script>
     <script type="text/javascript" src="/static/js/reorder-tracks.js"></script>
-    <script type="text/javascript" src="/static/js/delete-add-tracks.js"></script>
+    <script type="text/javascript" src="/static/js/delete-tracks.js"></script>
+    <script type="text/javascript" src="/static/js/add-tracks.js"></script>
     <script type="text/javascript" src="/static/js/push-changes-to-spotify.js"></script>
 {% endblock %}

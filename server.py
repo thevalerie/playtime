@@ -139,9 +139,13 @@ def work_on_playlist(playlist_id):
     # get the current user's filters from the db
     user_categories = f.get_user_categories_db()
 
+    # get the current user's playlists from the db
+    user_playlists = f.get_user_playlists()
+
     return render_template('playlist.html', playlist=playlist,
                            playlist_tracks=playlist_tracks,
-                           user_categories=user_categories)          
+                           user_categories=user_categories,
+                           user_playlists=user_playlists)          
 
 
 @app.route('/reorder.json', methods=['POST'])
@@ -235,6 +239,20 @@ def delete_tracks_from_playlist():
     h.delete_spotify_tracks(playlist_id, track_ids)
 
     return jsonify(playlist_id)
+
+
+@app.route('/add_tracks_playlist', methods=['POST'])
+def add_tracks_to_playlist():
+
+    source_playlist_id = request.form.get('source_playlist_id')
+    target_playlist_id = request.form.get('target_playlist_id')
+    track_ids = request.form.getlist('track_ids[]')
+
+    print request.form
+
+    h.add_spotify_tracks(source_playlist_id, target_playlist_id, track_ids)
+
+    return jsonify(source_playlist_id)
 
 
 if __name__ == "__main__":

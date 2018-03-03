@@ -132,6 +132,16 @@ def get_tracks(lst_track_ids):
     return tracks
 
 
+def get_tracks_list(playlist_id, lst_track_ids):
+    """Given a playlist ID and list of track IDs, get the corresponding Track objects"""
+
+    tracks = db.session.query(Track).join(PlaylistTrack).filter(
+                      PlaylistTrack.playlist_id == playlist_id).filter(
+                      Track.track_id.in_(lst_track_ids)).all()
+
+    return tracks
+
+
 def apply_category_to_playlist_db(cat_id, playlist_id):
     """Given a category ID and playlist ID, return tracks in that playlist that match the category criteria"""
 
@@ -241,18 +251,6 @@ def get_playlist_tracks_db(playlist_id):
                       PlaylistTrack.position != None).order_by(PlaylistTrack.position).all()
 
     return playlist_tracks
-
-
-def get_playlist_tracks_list(playlist_id, lst_track_ids):
-    """Given a playlist ID and list of track IDs, get the corresponding PlaylistTrack objects"""
-
-    tracks = db.session.query(Track).join(PlaylistTrack).filter(
-                      PlaylistTrack.playlist_id == playlist_id).filter(
-                      Track.track_id.in_(lst_track_ids)).all()
-
-    print ('Tracks to remove from spotify:', tracks)
-
-    return tracks
 
 
 def match_playlist_track_db(sp_track_id, sp_playlist_id):
