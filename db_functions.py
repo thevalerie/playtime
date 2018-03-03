@@ -132,12 +132,10 @@ def get_tracks(lst_track_ids):
     return tracks
 
 
-def get_tracks_list(playlist_id, lst_track_ids):
-    """Given a playlist ID and list of track IDs, get the corresponding Track objects"""
+def get_tracks_list(lst_track_ids):
+    """Given list of track IDs, get the corresponding Track objects"""
 
-    tracks = db.session.query(Track).join(PlaylistTrack).filter(
-                      PlaylistTrack.playlist_id == playlist_id).filter(
-                      Track.track_id.in_(lst_track_ids)).all()
+    tracks = db.session.query(Track).filter(Track.track_id.in_(lst_track_ids)).all()
 
     return tracks
 

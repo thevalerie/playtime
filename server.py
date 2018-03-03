@@ -226,8 +226,10 @@ def category_recommendations():
 
     category, recommended_tracks = h.get_category_recommendations(cat_id)
 
+    user_playlists = f.get_user_playlists()
+
     return render_template('/recommendations.html', category=category, 
-                                   recommended_tracks=recommended_tracks)
+                           recommended_tracks=recommended_tracks, user_playlists=user_playlists)
 
 
 @app.route('/delete_tracks_playlist', methods=['POST'])
@@ -241,18 +243,26 @@ def delete_tracks_from_playlist():
     return jsonify(playlist_id)
 
 
-@app.route('/add_tracks_playlist', methods=['POST'])
+@app.route('/add_tracks_playlist.json', methods=['POST'])
 def add_tracks_to_playlist():
 
-    source_playlist_id = request.form.get('source_playlist_id')
-    target_playlist_id = request.form.get('target_playlist_id')
+    playlist_id = request.form.get('playlist_id')
     track_ids = request.form.getlist('track_ids[]')
 
-    print request.form
+    h.add_spotify_tracks(playlist_id, track_ids)
 
-    h.add_spotify_tracks(source_playlist_id, target_playlist_id, track_ids)
+    return jsonify(playlist_id)
 
-    return jsonify(source_playlist_id)
+
+# @app.route('/add_recommended_tracks.json', methods=['POST'])
+# def add_recommended_tracks_to_playlist():
+
+#     target_playlist_id = request.form.get('target_playlist_id')
+#     track_ids = request.form.getlist('track_ids[]')
+
+#     h.add_spotify_tracks(target_playlist_id, track_ids)
+
+#     return jsonify(target_playlist_id)
 
 
 if __name__ == "__main__":

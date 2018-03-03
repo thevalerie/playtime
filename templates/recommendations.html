@@ -14,36 +14,47 @@
             <li><a href="#" id='showHideColumnsBtn' data-toggle='modal' data-target='#showHideColumnsModal'>Customize View</a></li>
           </ul>
         </div>
+        <div id="selectPlaylist" class="dropdown">
+          <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            Add to playlist
+            <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="dLabel">
+            {% for playlist in user_playlists %}
+                <li><a href="#" class='addToPlaylist' data-playlist-id={{ playlist.playlist_id}} data-sp-playlist-id= {{ playlist.sp_playlist_id }}>{{ playlist.name }}</a></li>
+            {% endfor %}
+          </ul>
+        </div>
     </div>
         <div class="container-fluid">
-            <table id='playlistTable'>
+            <table id='recommendationsTable'>
                 <thead>
                 <tr>
-                    <th class='track-title default-show'>TITLE</th>
-                    <th class='track-artist default-show'>ARTIST</th>
-                    <th class='track-album default-hide'>ALBUM</th>
-                    <th class='track-duration-ms default-show'>DURATION</th>
-                    <th class='track-tempo default-show'>BPM</th>
-                    <th class='track-danceability default-hide'>DANCEABILITY</th>
-                    <th class='track-energy default-hide'>ENERGY</th>
-                    <th class='track-valence default-hide'>CHEERFULNESS</th>
-                    <th class='track-is-explicit default-hide'>EXPLICIT?</th>
-                    <th class='track-category default-hide'>CATEGORIES</th>
+                    <th class='select-add default-show-col'><input id='select-all-add' type='checkbox'></th>
+                    <th class='track-title default-show-col'>TITLE</th>
+                    <th class='track-artist default-show-col'>ARTIST</th>
+                    <th class='track-album default-hide-col'>ALBUM</th>
+                    <th class='track-duration-ms default-show-col'>DURATION</th>
+                    <th class='track-tempo default-show-col'>BPM</th>
+                    <th class='track-danceability default-hide-col'>DANCEABILITY</th>
+                    <th class='track-energy default-hide-col'>ENERGY</th>
+                    <th class='track-valence default-hide-col'>CHEERFULNESS</th>
+                    <th class='track-is-explicit default-hide-col'>EXPLICIT?</th>
                 </tr>
                 </thead>
                 <tbody id="tracksTable"}}>
                     {% for track in recommended_tracks %}
                         <tr class='track' data-track-id={{ track.track_id }}>
-                            <td class='track-title default-show' data-track-title={{ track.title }}>{{ track.title }}</td>
-                            <td class='track-artist default-show' data-track-artist={{ track.artist }}>{{ track.artist }}</td>
-                            <td class='track-album default-hide' data-track-album={{ track.album }}>{{ track.album }}</td>
-                            <td class='track-duration-ms default-show' data-track-duration-ms={{ track.duration_ms }}>{{ track.to_mins_secs(track.duration_ms) }}</td>
-                            <td class='track-tempo default-show' data-track-tempo={{ track.tempo }}>{{ track.tempo }}</td>
-                            <td class='track-danceability default-hide' data-track-danceability={{ track.danceability }}>{{ track.to_percentage(track.danceability) }}</td>
-                            <td class='track-energy default-hide' data-track-energy={{ track.energy }}>{{ track.to_percentage(track.energy) }}</td>
-                            <td class='track-valence default-hide' data-track-valence={{ track.valence }}>{{ track.to_percentage(track.valence) }}</td>
-                            <td class='track-is-explicit default-hide' data-track-is-explicit={{ track.is_explicit }}>{{ track.view_is_explicit() }}</td>
-                            <td class="track-category default-hide"></td>
+                            <td class='select-add default-show-col'><input class='selected-track-add' type='checkbox' value={{ track.track_id }}></td>
+                            <td class='track-title default-show-col' data-track-title={{ track.title }}>{{ track.title }}</td>
+                            <td class='track-artist default-show-col' data-track-artist={{ track.artist }}>{{ track.artist }}</td>
+                            <td class='track-album default-hide-col' data-track-album={{ track.album }}>{{ track.album }}</td>
+                            <td class='track-duration-ms default-show-col' data-track-duration-ms={{ track.duration_ms }}>{{ track.to_mins_secs(track.duration_ms) }}</td>
+                            <td class='track-tempo default-show-col' data-track-tempo={{ track.tempo }}>{{ track.tempo }}</td>
+                            <td class='track-danceability default-hide-col' data-track-danceability={{ track.danceability }}>{{ track.to_percentage(track.danceability) }}</td>
+                            <td class='track-energy default-hide-col' data-track-energy={{ track.energy }}>{{ track.to_percentage(track.energy) }}</td>
+                            <td class='track-valence default-hide-col' data-track-valence={{ track.valence }}>{{ track.to_percentage(track.valence) }}</td>
+                            <td class='track-is-explicit default-hide-col' data-track-is-explicit={{ track.is_explicit }}>{{ track.view_is_explicit() }}</td>
                         </tr>
                     {% endfor %}
                 </tbody>  
@@ -81,4 +92,5 @@
         </div>
     </div>    
     <script type="text/javascript" src="/static/js/show-hide-columns.js"></script>
+    <script type="text/javascript" src="/static/js/add-tracks.js"></script>
 {% endblock %}
