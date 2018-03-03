@@ -1,6 +1,21 @@
 "use strict";
 
-let tracksToDelete = new Set()
+$('#saveDelete').hide();
+let tracksToDelete = new Set();
+
+// handle displaying the delete checkboxes & button
+
+function displayDeleteCheckboxes() {
+    
+    tracksToDelete.clear();
+    $('#select-all-delete').prop('checked', false)
+    $('.selected-track-delete').prop('checked', false)
+    $('.select-delete').toggle();
+    $('#saveDelete').toggle();
+    $('#saveChanges').toggle();
+}
+
+$('#activateDelete').on('click', displayDeleteCheckboxes)
 
 // handle checking/unchecking the "check all" checkbox
 
@@ -54,6 +69,11 @@ function deleteTracksPlaylist(evt) {
             });
 
         tracksToDelete.clear();
+        $('#select-all-delete').prop('checked', false)
+        $('.selected-track-delete').prop('checked', false)
+        $('.select-delete').hide();
+        $('#saveDelete').hide();
+        $('#saveChanges').show();
     }
 }
 
