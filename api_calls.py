@@ -120,6 +120,18 @@ def update_playlist_sp(sp_user_id, sp_playlist_id, new_track_ids):
     return response
 
 
+def delete_tracks_sp(sp_user_id, sp_playlist_id, tracks_to_remove):
+    """Remove specified tracks from a specified playlist"""
+
+    url = (users_base_url + sp_user_id + '/playlists/' + sp_playlist_id + '/tracks')
+    headers = {'Authorization': 'Bearer ' + session['access_token'], 'Content-Type': 'application/json'}
+    payload = {"tracks": tracks_to_remove}
+
+    response = requests.delete(url, headers=headers, json=payload)
+
+    return response
+
+
 def get_recommendations_sp(parameters):
     """Given a set of parameters, get recommendations from Spotify"""
 

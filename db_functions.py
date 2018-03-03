@@ -118,10 +118,18 @@ def get_tracks_in_playlist(playlist_id):
     """Takes a playlist ID, returns a list of track objects in that playlist"""
 
     tracks_in_playlist = db.session.query(Track).join(PlaylistTrack).filter(
-        PlaylistTrack.playlist_id == playlist_id, PlaylistTrack.position is not None).order_by(
+        PlaylistTrack.playlist_id == playlist_id, PlaylistTrack.position != None).order_by(
         PlaylistTrack.position).all()
 
     return tracks_in_playlist
+
+
+def get_tracks(lst_track_ids):
+    """Takes a list of track IDs, returns a list of corresponding track objects"""
+
+    tracks = db.session.query(Track).filter(Track.track_id.in_(lst_track_ids)).all()
+
+    return tracks
 
 
 def apply_category_to_playlist_db(cat_id, playlist_id):
@@ -131,7 +139,7 @@ def apply_category_to_playlist_db(cat_id, playlist_id):
 
     # base_query
     base_query = db.session.query(Track).join(PlaylistTrack).filter(
-                 PlaylistTrack.playlist_id == playlist_id, PlaylistTrack.position is not None)
+                 PlaylistTrack.playlist_id == playlist_id, PlaylistTrack.position != None)
 
     tracks_in_category = (h.apply_filter_query(base_query, given_cat)).all()
 
@@ -145,7 +153,7 @@ def apply_category_to_user_db(cat_id):
 
     # base_query
     base_query = db.session.query(Track).join(PlaylistTrack.track).join(PlaylistTrack.playlist).filter(
-                 Playlist.user_id == session['current_user'], PlaylistTrack.position is not None)
+                 Playlist.user_id == session['current_user'], PlaylistTrack.position != None)
 
     tracks_in_category = (h.apply_filter_query(base_query, given_cat)).all()
 
@@ -185,7 +193,7 @@ def add_playlist_track_to_db(playlist, track, position):
 #Edit rows in playlistTracks table
 
 def update_track_order(new_track_order):
-    """Get the PlaylistTrack object from the database and update its position"""
+    """Given a list of PlaylistTrack object in order, update their positions"""
 
     updated_pt_objects = []
 
@@ -229,10 +237,22 @@ def remove_playlist_tracks_db(playlist_tracks_to_remove):
 def get_playlist_tracks_db(playlist_id):
     """Get the PlaylistTrack objects for a given playlist, in position order"""
 
-    playlist_tracks = PlaylistTrack.query.filter(PlaylistTrack.playlist_id == playlist_id,
-                      PlaylistTrack.position is not None).order_by(PlaylistTrack.position).all()
+    playlist_tracks = db.session.query(PlaylistTrack).filter(PlaylistTrack.playlist_id == playlist_id).filter(
+                      PlaylistTrack.position != None).order_by(PlaylistTrack.position).all()
 
     return playlist_tracks
+
+
+def get_playlist_tracks_list(playlist_id, lst_track_ids):
+    """Given a playlist ID and list of track IDs, get the corresponding PlaylistTrack objects"""
+
+    tracks = db.session.query(Track).join(PlaylistTrack).filter(
+                      PlaylistTrack.playlist_id == playlist_id).filter(
+                      Track.track_id.in_(lst_track_ids)).all()
+
+    print ('Tracks to remove from spotify:', tracks)
+
+    return tracks
 
 
 def match_playlist_track_db(sp_track_id, sp_playlist_id):

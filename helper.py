@@ -194,6 +194,26 @@ def update_spotify_tracks(playlist_id):
     return response
 
 
+def delete_spotify_tracks(playlist_id, track_ids):
+    """Handle removing tracks from Spotify playlist"""
+
+    tracks_to_remove = f.get_playlist_tracks_list(playlist_id, track_ids)
+
+    sp_track_ids_to_remove = []
+
+    for track in tracks_to_remove:
+        sp_track_id = track.sp_track_id
+        value = "spotify:track:" + sp_track_id
+        sp_track_ids_to_remove.append({"uri": value})
+
+    sp_user_id = User.query.get(session['current_user']).sp_user_id
+    sp_playlist_id = Playlist.query.get(playlist_id).sp_playlist_id
+
+    response = a.delete_tracks_sp(sp_user_id, sp_playlist_id, sp_track_ids_to_remove)
+
+    return response
+
+
 def apply_filter_query(base_query, given_cat):
     """Given a base query and a category object, build a query based on the filter criteria"""
     

@@ -1,7 +1,7 @@
 "use strict";
 
 // start with default column view
-$('.default-hide').hide();
+$('.default-hide-col').hide();
 
 
 // show modal for customize column view
@@ -28,8 +28,8 @@ $(".column-checkbox").on('click', showHideColumns);
 function resetColumnView(evt) {
 
     // reset the column view to the default
-    $('.default-show').show();
-    $('.default-hide').hide();
+    $('.default-show-col').show();
+    $('.default-hide-col').hide();
 
     // reset checkboxes to the default
     $('.default-checked').prop('checked', true);

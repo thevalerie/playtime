@@ -149,6 +149,7 @@ def update_playlist_in_db():
     """Update the track order of a playlist in the database"""
 
     new_track_order = json.loads(request.form.get('new_track_order'))
+
     f.update_track_order(new_track_order)
 
     return 'Successfully updated playlist in DB'
@@ -221,8 +222,19 @@ def category_recommendations():
 
     category, recommended_tracks = h.get_category_recommendations(cat_id)
 
-    return jsonify(render_template('/recommendations.html', category=category, 
-                                   recommended_tracks=recommended_tracks))
+    return render_template('/recommendations.html', category=category, 
+                                   recommended_tracks=recommended_tracks)
+
+
+@app.route('/delete_tracks_playlist', methods=['POST'])
+def delete_tracks_from_playlist():
+
+    playlist_id = request.form.get('playlist_id')
+    track_ids = request.form.getlist('track_ids[]')
+
+    h.delete_spotify_tracks(playlist_id, track_ids)
+
+    return jsonify(playlist_id)
 
 
 if __name__ == "__main__":

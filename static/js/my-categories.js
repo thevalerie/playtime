@@ -39,7 +39,8 @@ $('.catListing').on('click', function(evt) {
 
     // replace HTML values in the modal with data for the category selected
     $('#cat-id-recommend').data('catId', catInfo.cat_id);
-    console.log($('#cat-id-recommend').data('catIdRecommend'));
+    $('#cat-id-recommend').attr('href', '/get_recommendations?cat_id=' + catInfo.cat_id)
+
     $('#category-name').text(catInfo.cat_name);
     $('#exclude_explicit').text(displayIfValid(catInfo.exclude_explicit));
     $('#min_duration_ms').text(toMinsSecs(catInfo.min_duration_ms));
@@ -56,23 +57,12 @@ $('.catListing').on('click', function(evt) {
     $('#viewCatModal').show();
 });
 
-// button to get recommendations
+// close modal when button to get recommendations is clicked
 
-function getRecommendations(evt) {
-
-    let payload = {
-        'cat_id': $(this).data('catId')
-    };
-
-    $.get('/get_recommendations', payload, function(response) {
-        let w = window.open();
-        $(w.document.body).html(response);
-        $('#viewCatModal').hide();
+$('#cat-id-recommend').on('click', function(){
+    $('#viewCatModal').hide();
         window.location.replace('/my_categories');
-    });
-}
-
-$('#cat-id-recommend').on('click', getRecommendations)
+})
 
 // helper functions
 
