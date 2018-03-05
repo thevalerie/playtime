@@ -12,11 +12,11 @@ $('.clr-form').on('click', function() {
     $('#newCategoryForm').trigger("reset");
 });
 
-$(window).on('click', function(evt) {
-    if (evt.target != $('#newCatModal')) {
-        $('#newCategoryForm').trigger("reset");
-    }
-});
+// $(window).on('click', function(evt) {
+//     $('#newCategoryForm').trigger("reset");
+// }).on('click', $('#newCatModal'), function(evt) {
+//     evt.stopPropagation();
+// });
 
 // submit form to create a new category
 

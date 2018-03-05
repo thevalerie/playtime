@@ -212,7 +212,9 @@ def match_tracks_to_category():
     cat_id = request.args.get('cat_id')
     playlist_id = request.args.get('playlist_id')
 
-    selected_cat, matching_tracks = f.apply_category_to_playlist_db(cat_id, playlist_id)
+    selected_cat = f.get_category_info_db(cat_id)
+
+    matching_tracks = f.apply_category_to_playlist_db(selected_cat, playlist_id)
 
     track_ids = [track.track_id for track in matching_tracks]
 
@@ -249,20 +251,11 @@ def add_tracks_to_playlist():
     playlist_id = request.form.get('playlist_id')
     track_ids = request.form.getlist('track_ids[]')
 
+    print track_ids
+
     h.add_spotify_tracks(playlist_id, track_ids)
 
     return jsonify(playlist_id)
-
-
-# @app.route('/add_recommended_tracks.json', methods=['POST'])
-# def add_recommended_tracks_to_playlist():
-
-#     target_playlist_id = request.form.get('target_playlist_id')
-#     track_ids = request.form.getlist('track_ids[]')
-
-#     h.add_spotify_tracks(target_playlist_id, track_ids)
-
-#     return jsonify(target_playlist_id)
 
 
 if __name__ == "__main__":

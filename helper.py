@@ -202,6 +202,8 @@ def add_spotify_tracks(target_playlist_id, track_ids):
 
     tracks_to_add = f.get_tracks_list(track_ids)
 
+    print tracks_to_add
+
     sp_track_ids = ""
 
     for track in tracks_to_add:
@@ -218,7 +220,7 @@ def add_spotify_tracks(target_playlist_id, track_ids):
 def delete_spotify_tracks(playlist_id, track_ids):
     """Handle removing tracks from Spotify playlist"""
 
-    tracks_to_remove = f.get_tracks_list(playlist_id, track_ids)
+    tracks_to_remove = f.get_tracks_list(track_ids)
 
     sp_track_ids_to_remove = []
 
@@ -301,8 +303,14 @@ def get_category_recommendations(cat_id):
 
     recommended_tracks = []
 
-    # first, check the database to see if we have tracks that match
-    given_cat, matches_in_db = f.apply_category_to_all_tracks(cat_id)
+    given_cat = f.get_category_info_db(cat_id)
+
+    # first, check the database to see if the user has at least 5 tracks that match
+    matches_in_db = f.apply_category_to_user_db(given_cat)
+
+    # if not, widen search to all tracks to get seed data
+    if len(matches_in_db) < 5:
+        matches_in_db = f.apply_category_to_all_tracks(given_cat)
 
     # use a random sampling of those tracks as seed data to get more tracks from Spotify
     if matches_in_db:

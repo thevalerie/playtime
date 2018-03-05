@@ -140,10 +140,8 @@ def get_tracks_list(lst_track_ids):
     return tracks
 
 
-def apply_category_to_playlist_db(cat_id, playlist_id):
+def apply_category_to_playlist_db(given_cat, playlist_id):
     """Given a category ID and playlist ID, return tracks in that playlist that match the category criteria"""
-
-    given_cat = get_category_info_db(cat_id)
 
     # base_query
     base_query = db.session.query(Track).join(PlaylistTrack).filter(
@@ -151,13 +149,11 @@ def apply_category_to_playlist_db(cat_id, playlist_id):
 
     tracks_in_category = (h.apply_filter_query(base_query, given_cat)).all()
 
-    return given_cat, tracks_in_category
+    return tracks_in_category
 
 
-def apply_category_to_user_db(cat_id):
+def apply_category_to_user_db(given_cat):
     """Given a category ID, return all tracks in the current user's playlists that match"""
-
-    given_cat = get_category_info_db(cat_id)
 
     # base_query
     base_query = db.session.query(Track).join(PlaylistTrack.track).join(PlaylistTrack.playlist).filter(
@@ -165,19 +161,17 @@ def apply_category_to_user_db(cat_id):
 
     tracks_in_category = (h.apply_filter_query(base_query, given_cat)).all()
 
-    return given_cat, tracks_in_category
+    return tracks_in_category
 
 
-def apply_category_to_all_tracks(cat_id):
+def apply_category_to_all_tracks(given_cat):
     """Given a category ID, return all tracks in the DB that match (batches of 20)"""
-
-    given_cat = get_category_info_db(cat_id)
 
     base_query = db.session.query(Track)
 
     tracks_in_category = (h.apply_filter_query(base_query, given_cat)).all()
 
-    return given_cat, tracks_in_category
+    return tracks_in_category
 
 
 ################################################################################

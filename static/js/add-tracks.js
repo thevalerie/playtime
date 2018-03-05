@@ -30,9 +30,13 @@ $('#activateAdd').on('click', displayAddCheckboxes)
 function selectDeselectAdd(evt) {
     
     if ($(this).prop('checked')) {
-        $('.selected-track-add').prop('checked', true)
+        $('.selected-track-add').prop('checked', true);
+        $('.selected-track-add').each(function() {
+            tracksToAdd.add($(this).prop('value'))
+        });
     } else {
-        $('.selected-track-add').prop('checked', false)
+        $('.selected-track-add').prop('checked', false);
+        tracksToAdd.clear()
     }
 }
 
