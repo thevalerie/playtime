@@ -81,7 +81,9 @@ def view_user_playlists():
     if 'current_user' not in session:
         return redirect('/')
 
-    return render_template("my_playlists.html")
+    current_user = User.query.get(session['current_user'])
+
+    return render_template("my_playlists.html", user=current_user)
 
 
 @app.route('/get_db_playlists.json')
@@ -130,6 +132,8 @@ def work_on_playlist(playlist_id):
     if 'current_user' not in session:
         return redirect('/')
 
+    current_user = User.query.get(session['current_user'])
+
     # query database to get the playlist info
     playlist = Playlist.query.get(playlist_id)
 
@@ -145,7 +149,8 @@ def work_on_playlist(playlist_id):
     return render_template('playlist.html', playlist=playlist,
                            playlist_tracks=playlist_tracks,
                            user_categories=user_categories,
-                           user_playlists=user_playlists)          
+                           user_playlists=user_playlists,
+                           user=current_user)          
 
 
 @app.route('/reorder.json', methods=['POST'])
@@ -186,9 +191,11 @@ def view_categories():
     if 'current_user' not in session:
         return redirect('/')
 
+    current_user = User.query.get(session['current_user'])
+
     categories = f.get_user_categories_db()
 
-    return render_template('my_categories.html', categories=categories)
+    return render_template('my_categories.html', categories=categories, user=current_user)
 
 
 @app.route('/create_category.json', methods=['POST'])
@@ -228,10 +235,12 @@ def category_recommendations():
 
     category, recommended_tracks = h.get_category_recommendations(cat_id)
 
+    current_user = User.query.get(session['current_user'])
+
     user_playlists = f.get_user_playlists()
 
     return render_template('/recommendations.html', category=category, 
-                           recommended_tracks=recommended_tracks, user_playlists=user_playlists)
+                           recommended_tracks=recommended_tracks, user=current_user, user_playlists=user_playlists)
 
 
 @app.route('/delete_tracks_playlist', methods=['POST'])
@@ -268,6 +277,6 @@ if __name__ == "__main__":
     connect_to_db(app)
 
     # Use the DebugToolbar
-    DebugToolbarExtension(app)
+    # DebugToolbarExtension(app)
 
     app.run(port=5000, host='0.0.0.0')

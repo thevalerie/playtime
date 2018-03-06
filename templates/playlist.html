@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>{{ playlist.name }}</h1>
+    <div class='container-fluid'><h1>{{ playlist.name }}</h1></div>
     <div class="container-fluid">
     {% if playlist_tracks %}
     <div class='container-fluid'>
@@ -22,7 +22,7 @@
                 <li><a href="#" id='clear-cat'>(Hide)</a></li>
           </ul>
         </div>
-        <button id='saveChanges' class="btn btn-default pull-right" data-playlist-id={{ playlist.playlist_id }}>Save Changes</button>
+        <button id='saveChanges' class="btn btn-default" data-playlist-id={{ playlist.playlist_id }}>Save Changes</button>
         <button id='saveDelete' class="btn btn-default pull-right" data-playlist-id={{ playlist.playlist_id }}>Delete Tracks</button>
 
         <div id="selectPlaylist" class="dropdown">
@@ -39,11 +39,11 @@
     </div>
 
         <div class="container-fluid">
-            <table id='playlistTable'>
+            <table class='table table-responsive' id='playlistTable'>
                 <thead>
                 <tr>
                     <th class='select-delete default-hide-col'><input id='select-all-delete' type='checkbox'></th>
-                    <th class='select-add default-hide-col'><input id='select-all-add' type='checkbox'></th>
+                    <th class='select-add default-hide-col'><input class='add-tracks-checkbox' id='select-all-add' type='checkbox'></th>
                     <th class='track-title default-show-col'>TITLE</th>
                     <th class='track-artist default-show-col'>ARTIST</th>
                     <th class='track-album default-hide-col'>ALBUM</th>
@@ -60,7 +60,7 @@
                     {% for item in playlist_tracks %}
                         <tr class='track' data-track-id={{ item.track.track_id }} data-pt-id={{ item.pt_id }} data-position={{ item.position }}>
                             <td class='select-delete default-hide-col'><input class='selected-track-delete' type='checkbox' value={{ item.track.track_id }}></td>
-                            <td class='select-add default-hide-col'><input class='selected-track-add' type='checkbox' value={{ item.track.track_id }}></td>
+                            <td class='select-add default-hide-col'><input class='selected-track-add add-tracks-checkbox' type='checkbox' value={{ item.track.track_id }}></td>
                             <td class='track-title default-show-col' data-track-title={{ item.track.title }}>{{ item.track.title }}</td>
                             <td class='track-artist default-show-col' data-track-artist={{ item.track.artist }}>{{ item.track.artist }}</td>
                             <td class='track-album default-hide-col' data-track-album={{ item.track.album }}>{{ item.track.album }}</td>

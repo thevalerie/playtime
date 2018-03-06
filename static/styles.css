@@ -1,0 +1,102 @@
+/* COLORS */
+/*
+teal: #76A5AF
+dark teal (black alternative): #2B3C40
+coral: #DD8787
+light gray (white alternative): #EDEDED
+yellow: #E0D18D
+*/
+
+
+body {
+    font-family: 'Poppins', 'Helvetica', 'Arial', sans-serif;
+    font-weight: 300;
+    color: #2B3C40;
+}
+
+h1, h2, h3 {
+    font-weight: 800;
+}
+
+th {
+    font-weight: 200;
+    font-size: 12px;
+}
+
+a {
+    color: #76A5AF;
+}
+
+a:hover {
+    color: #DD8787;
+    text-decoration: none;
+}
+
+.jumbotron {
+    background-image: url('images/dailey_b_w_planks.jpg');
+    background-size: cover;
+    /*width: 640px;*/
+    height: 809px;
+}
+
+.navbar-default {
+    background-color: #76A5AF;
+    color: #EDEDED;
+}
+
+.navbar-default .navbar-nav>li>a, .navbar-default .navbar-brand {
+    color: #EDEDED;
+}
+
+.btn-default {
+    border-radius: 25px;
+    background-color: #76A5AF;
+    border-color: #76A5AF;
+    padding: 8px 22px;
+    text-transform: uppercase;
+    font-size: 11px;
+    font-weight: 300;
+    color: #EDEDED;
+}
+
+.btn-md {
+    font-size: 14px;
+}
+
+.btn-lg {
+    font-size: 18px;
+}
+
+.dropdown:hover {
+    color: #DD8787;
+}
+
+.open>.dropdown-toggle.btn-default:focus, .open>.dropdown-toggle.btn-default:hover {
+    background-color: #DD8787;
+    color: #2B3C40;
+}
+
+.profile-section {
+    height: 500px;
+    border-radius: 5px;
+}
+
+.spacer {
+    width: 10px;
+}
+
+#playlists-div {
+    background-image: url('images/dailey_b_w_lunges.jpg');
+}
+
+#categories-div {
+    background-image: url('images/dailey_b_w_splits.jpg');
+}
+
+#categories-table {
+    border: 0px;
+}
+
+#categories-table>tbody>tr>td {
+    border-top: 0px;
+}

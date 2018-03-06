@@ -1,11 +1,16 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <div class='container-fluid'>
-        <h1>Profile page</h1>
-        Hi {{ user.display_name }}!</br>
-        
-        <a href="/my_playlists">Playlists</a><br>
-        <a href="/my_categories">Categories</a>
+    <div class='container'>
+        <div class='col-xs-12'>
+            <h1>{{ user.display_name }}'s profile</h1>
+        </div>
+        <div class='col-xs-5 profile-section' id='playlists-div'>
+            <h3><a href="/my_playlists">Playlists</a></h3>
+        </div>
+        <div class="col-md-2 spacer"></div>
+        <div class='col-xs-5 profile-section' id='categories-div'>
+            <h3><a href="/my_categories">Categories</a></h3>
+        </div>
     </div>
 {% endblock %}

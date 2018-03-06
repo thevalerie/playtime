@@ -1,26 +1,28 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <div class="container-fluid">
-    <h1>My Categories</h1>
-    <button id='newCatBtn' class="btn btn-default" data-toggle='modal' data-target='#newCatModal'>Add new</button>
-    <br>
-    {% autoescape false %}
-    {% if categories %}
-        <div>
-            {% for category in categories %}
+    <div class="container">
+        <div class='col-xs-12'>
+            <h1>My Categories</h1>
+            <button id='newCatBtn' class="btn btn-default btn-md" data-toggle='modal' data-target='#newCatModal'>Add new</button>
+            <br>
+            {% autoescape false %}
+            {% if categories %}
                 <div>
-                    <span data-json='{{ category.to_json() }}' data-cat-id={{category.cat_id}} class='catListing' data-toggle='modal' data-target='#viewCatModal'>{{ category.cat_name }}</span>
-                    <span class='glyphicon glyphicon-pencil'></span>
-                    <span class='glyphicon glyphicon-trash'></span>
+                    <table class='table table-responsive' id='categories-table'>
+                    {% for category in categories %}
+                        <tr>
+                            <td data-json='{{ category.to_json() }}' data-cat-id={{category.cat_id}} class='catListing' data-toggle='modal' data-target='#viewCatModal'>{{ category.cat_name }}</td>
+                            <td class='glyphicon glyphicon-pencil'></td>
+                            <td class='glyphicon glyphicon-trash'></td>
+                        </tr>
+                    {% endfor %}
                 </div>
-            {% endfor %}
+            {% else %}
+                You haven't created any categories yet!    
+            {% endif %}
+            {% endautoescape %}
         </div>
-        </br>
-    {% else %}
-        You haven't created any categories yet!    
-    {% endif %}
-    {% endautoescape %}
     </div>
 
     <!-- Modal to view category -->
