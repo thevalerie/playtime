@@ -228,10 +228,10 @@ def match_tracks_to_category():
     return jsonify({'matchingTracks': track_ids, 'categoryName': selected_cat.cat_name})
 
 
-@app.route('/get_recommendations')
-def category_recommendations():
+@app.route('/get_recommendations/<cat_id>')
+def category_recommendations(cat_id):
 
-    cat_id = request.args.get('cat_id')
+    # cat_id = request.args.get('cat_id')
 
     category, recommended_tracks = h.get_category_recommendations(cat_id)
 

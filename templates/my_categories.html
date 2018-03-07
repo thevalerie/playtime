@@ -4,7 +4,7 @@
     <div class="container">
         <div class='col-xs-12'>
             <h1>My Categories</h1>
-            <button id='newCatBtn' class="btn btn-default btn-md" data-toggle='modal' data-target='#newCatModal'>Add new</button>
+            <button id='newCatBtn' class="btn btn-default btn-md pull-right" data-toggle='modal' data-target='#newCatModal'>Add new</button>
             <br>
             {% autoescape false %}
             {% if categories %}
@@ -12,7 +12,7 @@
                     <table class='table table-responsive' id='categories-table'>
                     {% for category in categories %}
                         <tr>
-                            <td data-json='{{ category.to_json() }}' data-cat-id={{category.cat_id}} class='catListing' data-toggle='modal' data-target='#viewCatModal'>{{ category.cat_name }}</td>
+                            <td data-json='{{ category.to_json() }}' data-cat-id={{category.cat_id}} class='catListing' data-toggle='modal' data-target='#viewCatModal'><a href="#">{{ category.cat_name }}</a></td>
                             <td class='glyphicon glyphicon-pencil'></td>
                             <td class='glyphicon glyphicon-trash'></td>
                         </tr>
@@ -56,7 +56,7 @@
                 </div>
                 <div class='modal-footer'>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <a id="cat-id-recommend" data-cat-id="" href="" target="_blank"><button type="button" class="btn btn-default">Get recommendations</button></a>
+                    <a id="cat-id-recommend" data-cat-id="" href=""><button type="button" class="btn btn-default">Get recommendations</button></a>
                 </div>
             </div>
         </div>
@@ -72,7 +72,7 @@
                 </div>
                 <div class='modal-body'>
                 <div class="container-fluid">
-                    <form id="newCategoryForm" action="/create_category" method='POST'>
+                    <form class='form' id="newCategoryForm" action="/create_category" method='POST'>
                         Category name:<br>
                         <input type="text" name="cat_name" placeholder="required" required>
                         Exclude explicit?<input type="checkbox" name="exclude_explicit" value="true">

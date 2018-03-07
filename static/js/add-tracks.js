@@ -73,11 +73,13 @@ function addTracksPlaylist(evt) {
     
     } else {
 
-        let TrackIds = Array.from(tracksToAdd)
+        let trackIds = Array.from(tracksToAdd)
+        let playlistId = $(this).data('playlistId')
+        let playlistName = $(this).data('playlistName')
 
         // send a post request to add the tracks
-        let payload = {'playlist_id': $(this).data('playlistId'),
-                       'track_ids[]': TrackIds};
+        let payload = {'playlist_id': playlistId,
+                       'track_ids[]': trackIds};
 
         $.post('/add_tracks_playlist.json', payload, function(data) {
 
@@ -91,6 +93,8 @@ function addTracksPlaylist(evt) {
                 $('.select-add').hide();
                 $('#selectPlaylist').hide();
                 $('#saveChanges').show();
+            } else {
+                showConfirmationModal(trackIds, playlistId, playlistName);
             }
         });
 
@@ -98,6 +102,18 @@ function addTracksPlaylist(evt) {
 }
 
 $('.addToPlaylist').on('click', addTracksPlaylist)
+
+// handle showing confirmation modal
+
+function showConfirmationModal(trackIds, playlistId, playlistName) {
+
+    let numTracksAdded = trackIds.length
+    
+    $('#numTracksAdded').text(numTracksAdded)
+    $('#linkPlaylistAdded').attr('href', '/playlist/' + playlistId)
+    $('#linkPlaylistAdded').text(' ' + playlistName)
+    $('#confirmAddtoPlaylistModal').show();
+}
 
 // handle adding from one playlist to another
 

@@ -63,8 +63,10 @@ def get_playlist_data(sp_user_id, sp_playlist_id):
     
     response = requests.get(url, headers=headers, params=payload)
     playlist_data = response.json()
+    print playlist_data
     playlist_name = playlist_data['name']
     tracks_to_add = playlist_data['tracks']['items']
+
 
     return [playlist_name, tracks_to_add]
 

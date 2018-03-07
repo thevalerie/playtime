@@ -30,10 +30,17 @@ class CurrentDbPlaylists extends React.Component {
         if (this.props.dbPlaylists.length > 0) {
             dbPlaylistsToDisplay =
                 <div>
-                    <h3>Select a playlist to work on:</h3>
-                    <ul>
-                        { this.createLinks() }
-                    </ul>
+                    <div>
+                        <h3>Select a playlist to work on:</h3>
+                        <table>
+                        <tbody>
+                            { this.createLinks() }
+                        </tbody>
+                        </table>
+                    </div>
+                    <div className='col-xs-12'>
+                        <button className='btn btn-default'>Import more from Spotify</button>
+                    </div>
                 </div>
         } else {
             dbPlaylistsToDisplay =
@@ -80,13 +87,13 @@ class PlaylistLink extends React.Component {
 
     render() {
         return (
-            <div >
-                <li>
+                <tr>
+                    <td>
                     <a href={'/playlist/'+ this.props.dbPlaylistId}>
                     {this.props.dbPlaylistName}
                     </a>
-                </li>
-            </div>
+                    </td>
+                </tr>
         );
     }
 }

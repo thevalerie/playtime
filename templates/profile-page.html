@@ -3,14 +3,14 @@
 {% block content %}
     <div class='container'>
         <div class='col-xs-12'>
-            <h1>{{ user.display_name }}'s profile</h1>
+            <h1>{{ user.display_name }}'s items</h1>
         </div>
-        <div class='col-xs-5 profile-section' id='playlists-div'>
-            <h3><a href="/my_playlists">Playlists</a></h3>
-        </div>
+        <a href="/my_playlists"><div class='col-xs-5 profile-section' id='playlists-div'>
+            <h3>Playlists</h3>
+        </div></a>
         <div class="col-md-2 spacer"></div>
-        <div class='col-xs-5 profile-section' id='categories-div'>
-            <h3><a href="/my_categories">Categories</a></h3>
-        </div>
+        <a href="/my_categories"><div class='col-xs-5 profile-section' id='categories-div'>
+            <h3>Categories</h3>
+        </div></a>
     </div>
 {% endblock %}

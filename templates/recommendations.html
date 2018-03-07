@@ -1,33 +1,35 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>Recommendations based on {{ category.cat_name }}</h1>
     <div class="container-fluid">
-        {% if recommended_tracks %}
-    <div class='container-fluid'>
-        <div class="dropdown">
-          <button class="btn btn-default pull-right dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-            Dropdown
-            <span class="caret"></span>
-          </button>
-          <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dLabel">
-            <li><a href="#" id='showHideColumnsBtn' data-toggle='modal' data-target='#showHideColumnsModal'>Customize View</a></li>
-          </ul>
+        <div class='col-xs-12'>
+            <h1>Recommendations based on {{ category.cat_name }}</h1>
         </div>
-        <div id="selectPlaylist" class="dropdown">
-          <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-            Add to playlist
-            <span class="caret"></span>
-          </button>
-          <ul class="dropdown-menu" aria-labelledby="dLabel">
-            {% for playlist in user_playlists %}
-                <li><a href="#" class='addToPlaylist' data-playlist-id={{ playlist.playlist_id}} data-sp-playlist-id= {{ playlist.sp_playlist_id }}>{{ playlist.name }}</a></li>
-            {% endfor %}
-          </ul>
+    
+    
+    {% if recommended_tracks %}
+        <div class='container-fluid'>
+            <div>
+              <button class="btn btn-default pull-right" id='showHideColumnsBtn' data-toggle='modal' data-target='#showHideColumnsModal'>
+                Customize View
+              </button>
+            </div>
+
+            <div id="selectPlaylist" class="dropdown">
+              <button class="btn btn-default dropdown-toggle pull-right view-action-btn" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                Add to playlist
+                <span class="caret"></span>
+              </button>
+              <ul id='addToPlaylistDropdown' class="dropdown-menu dropdown-menu-right pull-right" aria-labelledby="dLabel">
+                {% for playlist in user_playlists %}
+                    <li><a href="#" class='addToPlaylist' data-playlist-id={{ playlist.playlist_id}} data-sp-playlist-id={{ playlist.sp_playlist_id }} data-playlist-name={{ playlist.name }}>{{ playlist.name }}</a></li>
+                {% endfor %}
+              </ul>
+            </div>
         </div>
-    </div>
-        <div class="container-fluid">
-            <table id='recommendationsTable'>
+
+        <div class='container-fluid'>
+            <table class='table table-responsive' id='recommendationsTable'>
                 <thead>
                 <tr>
                     <th class='select-add default-show-col'><input id='select-all-add' type='checkbox'></th>
@@ -64,7 +66,7 @@
         No recommendations available for this category
     {% endif %}
     </div>
-
+    </div>
     <!-- Modal show/hide columns -->
     <div class='modal' id='showHideColumnsModal' role='dialog'>
         <div class='modal-dialog'>
@@ -86,6 +88,24 @@
                 </div>
                 <div class='modal-footer'>
                     <button type="button" class="btn btn-default" id='reset-columns'>Reset</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal confirm add to playlist -->
+    <div class='modal' id='confirmAddtoPlaylistModal' role='dialog'>
+        <div class='modal-dialog'>
+            <div class='modal-content'>
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h1>Songs added</h1>
+                </div>
+                <div class='modal-body'>
+                    <span id='numTracksAdded'></span>tracks have been added to<a id='linkPlaylistAdded' href=""></a>
+                </div>
+                <div class='modal-footer'>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
             </div>

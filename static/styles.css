@@ -1,6 +1,6 @@
 /* COLORS */
 /*
-teal: #76A5AF
+teal: #4D7C84
 dark teal (black alternative): #2B3C40
 coral: #DD8787
 light gray (white alternative): #EDEDED
@@ -11,6 +11,7 @@ yellow: #E0D18D
 body {
     font-family: 'Poppins', 'Helvetica', 'Arial', sans-serif;
     font-weight: 300;
+    font-size: 16px;
     color: #2B3C40;
 }
 
@@ -18,9 +19,12 @@ h1, h2, h3 {
     font-weight: 800;
 }
 
+h1 {
+    font-size: 48px;
+}
+
 th {
     font-weight: 200;
-    font-size: 12px;
 }
 
 a {
@@ -36,39 +40,60 @@ a:hover {
     background-image: url('images/dailey_b_w_planks.jpg');
     background-size: cover;
     /*width: 640px;*/
-    height: 809px;
+    height: 600px;
+}
+
+.table {
+    margin: 20px 0px;
 }
 
 .navbar-default {
-    background-color: #76A5AF;
+    background-color: #4D7C84;
     color: #EDEDED;
+}
+
+.navbar-brand {
+    padding: 8px 12px;
 }
 
 .navbar-default .navbar-nav>li>a, .navbar-default .navbar-brand {
     color: #EDEDED;
 }
 
+.icon {
+    padding-bottom: 8px;
+    padding-right: 5px;
+}
+
 .btn-default {
-    border-radius: 25px;
-    background-color: #76A5AF;
-    border-color: #76A5AF;
-    padding: 8px 22px;
+    border-radius: 24px;
+    background-color: #4D7C84;
+    border-color: #4D7C84;
+    padding: 8px 24px;
     text-transform: uppercase;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 300;
     color: #EDEDED;
 }
 
 .btn-md {
-    font-size: 14px;
+    /*font-size: 12px;*/
+    padding: 8px 32px;
 }
 
 .btn-lg {
-    font-size: 18px;
+    /*font-size: 24px;*/
+    padding: 8px 86px;
 }
 
 .dropdown:hover {
     color: #DD8787;
+}
+
+.dropdown-menu-right {
+    right: 132px;
+    left: auto;
+    top: 32px;
 }
 
 .open>.dropdown-toggle.btn-default:focus, .open>.dropdown-toggle.btn-default:hover {
@@ -85,6 +110,9 @@ a:hover {
     width: 10px;
 }
 
+.view-action-btn {
+    margin-right: 8px;
+}
 #playlists-div {
     background-image: url('images/dailey_b_w_lunges.jpg');
 }
@@ -99,4 +127,13 @@ a:hover {
 
 #categories-table>tbody>tr>td {
     border-top: 0px;
+}
+
+#selectPlaylistDropdown {
+    margin-right: 9em;
+}
+
+#addToPlaylistDropdown {
+    margin-right: 11em;
+    top: 8.2em;
 }

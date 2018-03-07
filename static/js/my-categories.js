@@ -20,16 +20,16 @@ $('.clr-form').on('click', function() {
 
 // submit form to create a new category
 
-function sendCategoryData(evt) {
-    evt.preventDefault();
+// function sendCategoryData(evt) {
+//     evt.preventDefault();
 
-    $.post('/create_category.json', $(this).serialize(), function(data) {
-        $('#newCatModal').hide();
-        window.location.replace('/my_categories');
-        });
-}
+//     $.post('/create_category.json', $(this).serialize(), function(data) {
+//         $('#newCatModal').hide();
+//         window.location.replace('/my_categories');
+//         });
+// }
 
-$("#newCategoryForm").on('submit', sendCategoryData);
+// $("#newCategoryForm").on('submit', sendCategoryData);
 
 // show modal to view category info
 
@@ -39,7 +39,7 @@ $('.catListing').on('click', function(evt) {
 
     // replace HTML values in the modal with data for the category selected
     $('#cat-id-recommend').data('catId', catInfo.cat_id);
-    $('#cat-id-recommend').attr('href', '/get_recommendations?cat_id=' + catInfo.cat_id)
+    $('#cat-id-recommend').attr('href', '/get_recommendations/' + catInfo.cat_id)
 
     $('#category-name').text(catInfo.cat_name);
     $('#exclude_explicit').text(displayIfValid(catInfo.exclude_explicit));
@@ -59,10 +59,10 @@ $('.catListing').on('click', function(evt) {
 
 // close modal when button to get recommendations is clicked
 
-$('#cat-id-recommend').on('click', function(){
-    $('#viewCatModal').hide();
-        window.location.replace('/my_categories');
-})
+// $('#cat-id-recommend').on('click', function(){
+//     $('#viewCatModal').hide();
+//         window.location.replace('/my_categories');
+// })
 
 // helper functions
 
