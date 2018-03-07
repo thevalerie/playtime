@@ -314,7 +314,10 @@ def get_category_recommendations(cat_id):
 
     # use a random sampling of those tracks as seed data to get more tracks from Spotify
     if matches_in_db:
-        seed_tracks = random.sample(matches_in_db, 5)
+        if len(matches_in_db) < 5:
+            seed_tracks = matches_in_db
+        else:
+            seed_tracks = random.sample(matches_in_db, 5)
         seed_track_ids = [track.sp_track_id for track in seed_tracks]
         params = create_recommendation_params(given_cat, seed_track_ids=seed_track_ids)
         sp_tracks = a.get_recommendations_sp(params)

@@ -4,6 +4,7 @@
     <div class="container">
         <div class='col-xs-12'>
             <h2>My Categories</h2>
+        </div>
             {% autoescape false %}
             {% if categories %}
                 <div>
@@ -14,17 +15,16 @@
                             <td class='glyphicon glyphicon-pencil'></td>
                             <td class='glyphicon glyphicon-trash'></td>
                         </tr>
-                    </table>
                     {% endfor %}
+                    </table>
                 </div>
+            {% else %}
+                <div class='col-xs-12' id='noCatsYet'>You haven't created any categories yet!</div>
+            {% endif %}
                 <div class='col-xs-6'>
                     <button id='newCatBtn' class='btn btn-default btn-md center-block' data-toggle='modal' data-target='#newCatModal'>Add new</button>
                 </div>
-            {% else %}
-                You haven't created any categories yet!    
-            {% endif %}
             {% endautoescape %}
-        </div>
     </div>
 
     <!-- Modal to view category -->

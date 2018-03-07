@@ -86,7 +86,7 @@ class PlaylistLink extends React.Component {
 
     render() {
         return (
-                <tr>
+                <tr className="dbPlaylistsRow">
                     <td>
                     <a href={'/playlist/'+ this.props.dbPlaylistId}>
                     {this.props.dbPlaylistName}

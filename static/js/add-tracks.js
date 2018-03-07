@@ -111,7 +111,7 @@ function showConfirmationModal(trackIds, playlistId, playlistName) {
     
     $('#numTracksAdded').text(numTracksAdded)
     $('#linkPlaylistAdded').attr('href', '/playlist/' + playlistId)
-    $('#linkPlaylistAdded').text(' ' + playlistName)
+    $('#linkPlaylistAdded').text(playlistName)
     $('#confirmAddtoPlaylistModal').show();
 }
 

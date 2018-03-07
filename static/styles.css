@@ -178,10 +178,10 @@ label {
     top: 32px;
 }
 
-.open>.dropdown-toggle.btn-default:focus, .open>.dropdown-toggle.btn-default:hover {
+/*.open>.dropdown-toggle.btn-default:focus, .open>.dropdown-toggle.btn-default:hover {
     background-color: #DD8787;
     color: #2B3C40;
-}
+}*/
 
 .profile-section {
     height: 30em;
@@ -231,7 +231,7 @@ a.categoryLink:hover {
 
 #addToPlaylistDropdown {
     margin-right: 11em;
-    top: 8.2em;
+    top: 7em;
 }
 
 #clear-cat {
@@ -240,4 +240,8 @@ a.categoryLink:hover {
 
 #dbPlaylistsTable>tbody>tr>td {
     border: none;
+}
+
+#noCatsYet {
+    padding: 15px;
 }

@@ -24,5 +24,6 @@ function updateTrackOrder(evt) {
 
 $("#tracksTable").sortable( {
     helper: reorderTracks,
+    cursor: "move",
     stop: updateTrackOrder
     }).disableSelection();
