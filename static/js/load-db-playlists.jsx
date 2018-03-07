@@ -29,22 +29,21 @@ class CurrentDbPlaylists extends React.Component {
 
         if (this.props.dbPlaylists.length > 0) {
             dbPlaylistsToDisplay =
-                <div>
-                    <div>
-                        <h3>Select a playlist to work on:</h3>
-                        <table>
+                <div id='myPlaylistsImage'>
+                    <div>    
+                        <table id='dbPlaylistsTable' className='table'>
                         <tbody>
                             { this.createLinks() }
                         </tbody>
                         </table>
                     </div>
-                    <div className='col-xs-12'>
-                        <button className='btn btn-default'>Import more from Spotify</button>
+                    <div className='col-xs-6'>
+                        <button className='btn btn-default center-block'>Import more from Spotify</button>
                     </div>
                 </div>
         } else {
             dbPlaylistsToDisplay =
-                <h3>Looks like you haven't added any playlists yet! Sync playlists from Spotify:</h3>
+                <h4>Looks like you haven't added any playlists yet! Sync playlists from Spotify:</h4>
         }
 
         return(

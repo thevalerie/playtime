@@ -4,7 +4,7 @@ teal: #4D7C84
 dark teal (black alternative): #2B3C40
 coral: #DD8787
 light gray (white alternative): #EDEDED
-yellow: #E0D18D
+yellow: #E0C860
 */
 
 
@@ -12,6 +12,7 @@ body {
     font-family: 'Poppins', 'Helvetica', 'Arial', sans-serif;
     font-weight: 300;
     font-size: 16px;
+    background-color: #EDEDED;
     color: #2B3C40;
 }
 
@@ -21,6 +22,14 @@ h1, h2, h3 {
 
 h1 {
     font-size: 48px;
+}
+
+h2 {
+    font-size: 32px;
+}
+
+h3 {
+    font-size: 24;
 }
 
 th {
@@ -56,13 +65,35 @@ a:hover {
     padding: 8px 12px;
 }
 
+.navbar-default .navbar-brand:focus, .navbar-default .navbar-brand:hover, .navbar-default .navbar-nav>li>a:hover {
+    color: #2B3C40;
+}
+
 .navbar-default .navbar-nav>li>a, .navbar-default .navbar-brand {
     color: #EDEDED;
+}
+
+.navbar-default .navbar-nav>.open>a, .navbar-default .navbar-nav>.open>a:focus, .navbar-default .navbar-nav>.open>a:hover {
+    color: #2B3C40;
 }
 
 .icon {
     padding-bottom: 8px;
     padding-right: 5px;
+}
+
+.modal-header {
+    border: none;
+}
+
+.modal-header-text {
+    margin: .5em 0em;
+    padding-left: 15px;
+    /*margin-bottom: .5em;*/
+}
+
+.form>.input {
+    margin: .25em;
 }
 
 .btn-default {
@@ -74,6 +105,12 @@ a:hover {
     font-size: 12px;
     font-weight: 300;
     color: #EDEDED;
+}
+
+.btn-default:hover {
+    background-color: #EDEDED;
+    color: #2B3C40;
+    border-color: #2B3C40;
 }
 
 .btn-md {
@@ -102,23 +139,37 @@ a:hover {
 }
 
 .profile-section {
-    height: 500px;
+    height: 30em;
     border-radius: 5px;
 }
 
-.spacer {
-    width: 10px;
+a.categoryLink:hover {
+    color: #E0C860;
+}
+
+.col-xs-6 {
+    width: 48%;
 }
 
 .view-action-btn {
     margin-right: 8px;
 }
+
 #playlists-div {
     background-image: url('images/dailey_b_w_lunges.jpg');
 }
 
+#playlists-div:hover {
+    background-image: url('images/dailey_lunges_color_wash.jpg');
+    color:#EDEDED;
+}
+
 #categories-div {
     background-image: url('images/dailey_b_w_splits.jpg');
+}
+#categories-div:hover {
+    background-image: url('images/dailey_splits_color_wash.jpg');
+    color:#EDEDED
 }
 
 #categories-table {
@@ -136,4 +187,12 @@ a:hover {
 #addToPlaylistDropdown {
     margin-right: 11em;
     top: 8.2em;
+}
+
+#clear-cat {
+    color: #EDEDED;
+}
+
+#dbPlaylistsTable>tbody>tr>td {
+    border: none;
 }

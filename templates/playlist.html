@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <div class='container-fluid'><h1>{{ playlist.name }}</h1></div>
+    <div class='container-fluid'><h2>{{ playlist.name }}</h2></div>
     
     {% if playlist_tracks %}
     <div class='container-fluid'>
@@ -19,7 +19,7 @@
                 {% for category in user_categories %}
                     <li><a href="#" class='selected-cat' data-cat-id={{ category.cat_id }}>{{ category.cat_name }}</a></li>
                 {% endfor %}
-                <li><a href="#" id='clear-cat'>(Hide)</a></li>
+                <li><a href="#" id='clear-cat'>Hide</a></li>
           </ul>
         </div>
         <button id='saveChanges' class="btn btn-default pull-right view-action-btn" data-playlist-id={{ playlist.playlist_id }}>Save Changes</button>
@@ -88,9 +88,9 @@
             <div class='modal-content'>
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h1>Select columns to view</h1>
+                    <h3 class='modal-header-text'>Select columns to view</h3>
                 </div>
-                <div class='modal-body'>
+                <div class='modal-body form-group'>
                     <input class='column-checkbox default-checked' type='checkbox' name='column-name' value='track-title' checked>Title<br>
                     <input class='column-checkbox default-checked' type='checkbox' name='column-name' value='track-artist' checked>Artist<br>
                     <input class='column-checkbox default-unchecked' type='checkbox' name='column-name' value='track-album'>Album<br>

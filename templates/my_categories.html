@@ -3,20 +3,22 @@
 {% block content %}
     <div class="container">
         <div class='col-xs-12'>
-            <h1>My Categories</h1>
-            <button id='newCatBtn' class="btn btn-default btn-md pull-right" data-toggle='modal' data-target='#newCatModal'>Add new</button>
-            <br>
+            <h2>My Categories</h2>
             {% autoescape false %}
             {% if categories %}
                 <div>
                     <table class='table table-responsive' id='categories-table'>
                     {% for category in categories %}
                         <tr>
-                            <td data-json='{{ category.to_json() }}' data-cat-id={{category.cat_id}} class='catListing' data-toggle='modal' data-target='#viewCatModal'><a href="#">{{ category.cat_name }}</a></td>
+                            <td data-json='{{ category.to_json() }}' data-cat-id={{category.cat_id}} class='catListing' data-toggle='modal' data-target='#viewCatModal'><a class='categoryLink' href="#">{{ category.cat_name }}</a></td>
                             <td class='glyphicon glyphicon-pencil'></td>
                             <td class='glyphicon glyphicon-trash'></td>
                         </tr>
+                    </table>
                     {% endfor %}
+                </div>
+                <div class='col-xs-6'>
+                    <button id='newCatBtn' class='btn btn-default btn-md center-block' data-toggle='modal' data-target='#newCatModal'>Add new</button>
                 </div>
             {% else %}
                 You haven't created any categories yet!    
@@ -31,7 +33,7 @@
             <div class='modal-content'>
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h1 id='category-name'></h1>
+                    <h3 id='category-name' class='modal-header-text'></h3>
                 </div>
                 <div class='modal-body'>
                 <div class="container-fluid">
@@ -68,7 +70,7 @@
             <div class='modal-content'>
                 <div class="modal-header">
                     <button type="button" class="close clr-form" data-dismiss="modal">&times;</button>
-                    <h1>Create a new category</h1>
+                    <h3 class='modal-header-text'>Create a new category</h3>
                 </div>
                 <div class='modal-body'>
                 <div class="container-fluid">
@@ -109,7 +111,7 @@
             <div class='modal-content'>
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h1>Edit category</h1>
+                    <h3 class='modal-header-text'>Edit category</h3>
                 </div>
                 <div class='modal-body'>
 
