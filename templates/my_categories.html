@@ -37,23 +37,34 @@
                 </div>
                 <div class='modal-body'>
                 <div class="container-fluid">
-                    Exclude explicit?<span id='exclude_explicit'></span>
-                        <br>Song length<br>
-                            Min:<span id="min_duration_ms"></span>
-                            Max:<span id="max_duration_ms"></span>
-                        <br>Tempo<br>
-                            Min:<span id="min_tempo"></span>
-                            Max:<span id="max_tempo"></span>
-                        <br>Danceability<br>
-                            Min:<span id="min_danceability"></span>
-                            Max:<span id="max_danceability"></span>
-                        <br>Energy level<br>
-                            Min:<span id="min_energy"></span>
-                            Max:<span id="max_energy"></span>
-                        <br>Cheerfulness<br>
-                            Min:<span id="min_valence"></span>
-                            Max:<span id="max_valence"></span>
-                        <br>
+                    <div class="row categoryRow">
+                        <span class="categoryLabel">Exclude explicit?</span><span class="categoryItem" id='exclude_explicit'></span>
+                    </div>
+                    <div class="row categoryRow">
+                        <span class="categoryLabel">Song length</span><br>
+                            <span class="categoryMin">Min:<span class="categoryItem" id="min_duration_ms"></span></span>
+                            Max:<span class="categoryItem" id="max_duration_ms"></span>
+                    </div>
+                    <div class="row categoryRow">
+                        <span class="categoryLabel">Tempo</span><br>
+                            <span class="categoryMin">Min:<span class="categoryItem" id="min_tempo"></span></span>
+                            Max:<span class="categoryItem" id="max_tempo"></span>
+                    </div>
+                    <div class="row categoryRow">
+                        <span class="categoryLabel">Danceability</span><br>
+                            <span class="categoryMin">Min:<span class="categoryItem" id="min_danceability"></span></span>
+                            Max:<span class="categoryItem" id="max_danceability"></span>
+                    </div>
+                    <div class="row categoryRow">
+                        <span class="categoryLabel">Energy level</span><br>
+                            <span class="categoryMin">Min:<span class="categoryItem" id="min_energy"></span></span>
+                            Max:<span class="categoryItem" id="max_energy"></span>
+                    </div>
+                    <div class="row categoryRow">
+                        <span class="categoryLabel">Cheerfulness</span><br>
+                            <span class="categoryMin">Min:<span class="categoryItem" id="min_valence"></span></span>
+                            Max:<span class="categoryItem" id="max_valence"></span>
+                    </div>
                 </div>
                 </div>
                 <div class='modal-footer'>
@@ -74,25 +85,26 @@
                 </div>
                 <div class='modal-body'>
                 <div class="container-fluid">
-                    <form class='form' id="newCategoryForm" action="/create_category" method='POST'>
-                        Category name:<br>
-                        <input type="text" name="cat_name" placeholder="required" required>
-                        Exclude explicit?<input type="checkbox" name="exclude_explicit" value="true">
-                        <br>Song length<br>
-                            Min:<input type="text" name="min_duration_ms" placeholder="mins:secs">
-                            Max:<input type="text" name="max_duration_ms" placeholder="mins:secs">
-                        <br>Tempo<br>
-                            Min:<input type="number" name="min_tempo" placeholder="BPM (beats per minute)">
-                            Max:<input type="number" name="max_tempo" placeholder="BPM (beats per minute)">
-                        <br>Danceability<br>
-                            Min:<input type="number" name="min_danceability" placeholder="percent, 1-100" pattern=[1-100]>%
-                            Max:<input type="number" name="max_danceability" placeholder="percent, 1-100" pattern=[1-100]>%
-                        <br>Energy level<br>
-                            Min:<input type="number" name="min_energy" placeholder="percent, 1-100" pattern=[1-100]>%
-                            Max:<input type="number" name="max_energy" placeholder="percent, 1-100" pattern=[1-100]>%
-                        <br>Cheerfulness<br>
-                            Min:<input type="number" name="min_valence" placeholder="percent, 1-100" pattern=[1-100]>%
-                            Max:<input type="number" name="max_valence" placeholder="percent, 1-100" pattern=[1-100]>%
+                    <form class='form form-inline' id="newCategoryForm" action="/create_category" method='POST'>
+                        <label for="formGroupCatName">Name</label>
+                        <input id='formGroupCatName' type="text" name="cat_name" placeholder=" required" required>
+                        <br><label for="formGroupExcludeExplicit">Exclude explicit?</label>
+                        <input id=for="formGroupExcludeExplicit" type="checkbox" name="exclude_explicit" value="true">
+                        <br><label for="formGroupMinDuration">Song length</label><br>
+                            Min:<input id="formGroupMinDuration" type="text" name="min_duration_ms" placeholder=" mins:secs">
+                            Max:<input type="text" name="max_duration_ms" placeholder=" mins:secs">
+                        <br><label for="formGroupMinTempo">Tempo</label><br>
+                            Min:<input id="formGroupMinTempo" type="number" name="min_tempo" placeholder=" BPM">
+                            Max:<input type="number" name="max_tempo" placeholder=" BPM">
+                        <br><label for="formGroupMinDanceability">Danceability</label><br>
+                            Min:<input id="formGroupMinDanceability" type="number" name="min_danceability" placeholder=" percent, 1-100" pattern=[1-100]>%
+                            Max:<input type="number" name="max_danceability" placeholder=" percent, 1-100" pattern=[1-100]>%
+                        <br><label for="formGroupMinEnergy">Energy level</label><br>
+                            Min:<input id="formGroupMinEnergy" type="number" name="min_energy" placeholder=" percent, 1-100" pattern=[1-100]>%
+                            Max:<input type="number" name="max_energy" placeholder=" percent, 1-100" pattern=[1-100]>%
+                        <br><label for="formGroupMinValence">Positivity<br>
+                            Min:<input id="formGroupMinValence" type="number" name="min_valence" placeholder=" percent, 1-100" pattern=[1-100]>%
+                            Max:<input type="number" name="max_valence" placeholder=" percent, 1-100" pattern=[1-100]>%
                         <br>      
                     </form>
                 </div>

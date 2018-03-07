@@ -42,7 +42,6 @@ $('.catListing').on('click', function(evt) {
     $('#cat-id-recommend').attr('href', '/get_recommendations/' + catInfo.cat_id)
 
     $('#category-name').text(catInfo.cat_name);
-    $('#exclude_explicit').text(displayIfValid(catInfo.exclude_explicit));
     $('#min_duration_ms').text(toMinsSecs(catInfo.min_duration_ms));
     $('#max_duration_ms').text(toMinsSecs(catInfo.max_duration_ms));
     $('#min_tempo').text(displayIfValid(catInfo.min_tempo));
@@ -53,6 +52,12 @@ $('.catListing').on('click', function(evt) {
     $('#max_energy').text(toPercentage(catInfo.max_energy));
     $('#min_valence').text(toPercentage(catInfo.min_valence));
     $('#max_valence').text(toPercentage(catInfo.max_valence));
+
+    if (catInfo.exclude_explicit) {
+        $('#exclude_explicit').text('Yes'); 
+    } else {
+        $('#exclude_explicit').text('No'); 
+    }
 
     $('#viewCatModal').show();
 });

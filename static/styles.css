@@ -29,7 +29,7 @@ h2 {
 }
 
 h3 {
-    font-size: 24;
+    font-size: 24px;
 }
 
 th {
@@ -43,6 +43,25 @@ a {
 a:hover {
     color: #DD8787;
     text-decoration: none;
+}
+
+input {
+    border-radius: 5px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #4D7C84;
+    margin: 2px 2px 2px 4px;
+}
+
+input::placeholder {
+    font-size: 12px;
+    margin: 2px;
+}
+
+label {
+    font-weight: 400;
+    margin-top: 6px;
+    margin-bottom: 4px;
 }
 
 .jumbotron {
@@ -59,6 +78,8 @@ a:hover {
 .navbar-default {
     background-color: #4D7C84;
     color: #EDEDED;
+    border: none;
+    border-radius: 0px;
 }
 
 .navbar-brand {
@@ -84,6 +105,7 @@ a:hover {
 
 .modal-header {
     border: none;
+    padding: 15px 15px 8px 15px;
 }
 
 .modal-header-text {
@@ -92,8 +114,31 @@ a:hover {
     /*margin-bottom: .5em;*/
 }
 
+.modal-body {
+    padding: 0px 15px 15px;
+}
+
 .form>.input {
     margin: .25em;
+}
+
+.row {
+    margin-right: 0px;
+    margin-left: 0px; 
+    padding-bottom: 10px;
+}
+
+.categoryLabel {
+    font-weight: 400;
+}
+
+.categoryItem {
+    padding-left: 4px;
+}
+
+.categoryMin {
+    float: left;
+    width: 20%
 }
 
 .btn-default {
